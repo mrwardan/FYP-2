@@ -1,0 +1,65 @@
+body {
+background-color: brown;
+height: 100vh;
+background-size: cover;
+background-position: center;
+}
+
+.login-page {
+padding: 10% 0 0;
+margin: auto auto;
+}
+
+.form {
+    position: relative;
+    z-index: 1;
+    background: #ffffff;
+    max-width: 350px;
+    margin: auto auto;
+    text-align: center;
+    padding: 30px;
+
+}
+.form input {
+    font-family: "Roboto", sans-serif;
+    outline: 1;
+    background: #f2f2f2;
+    width: 90%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: 14px;
+    font-size: 14px;
+}
+
+.form button {
+    margin:0 auto;
+    display:block;
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    outline: 1;
+    background: #4c74af;
+    width: 100%;
+    border: 0;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    cursor: pointer;
+}
+#login-title {
+
+    background-image: url("UTM.jpg");
+   padding: 15%;
+   
+}
+#T-text {
+    font-weight: bold;
+    font-size: 120%;
+
+    
+}
+#F-forgat {
+    text-align: left;
+
+
+}
