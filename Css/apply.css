@@ -1,0 +1,267 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+/* Common styles shared among the divs */
+h1 {
+    color: black;
+}
+
+body {
+    background-color: rgba(9, 31, 55, 0.788);
+    background-repeat: no-repeat;
+    background: cover;
+    background-size: 100%;
+}
+
+#pic {
+    width: 100%;
+    height: 100vh;
+}
+
+
+
+
+#Userinfo {
+    display: block;
+    float: left;
+    background-color: beige;
+    width: 45%;
+    height: 800px;
+    margin: 0% 25%;
+    box-shadow: -1px 13px 25px 1px black;
+    text-align: center;
+    padding-top: 5%;
+}
+
+#upload {
+    font-size: 1em;
+    display: none;
+    float: left;
+    background-color: beige;
+    width: 50%;
+    height: 50%;
+    margin: 0% 25%;
+    box-shadow: -1px 13px 25px 1px black;
+    text-align: center;
+    padding-top: 5%;
+    
+}
+#thank {
+    display: none;
+    margin: 5% auto;
+    border: solid #232323;
+    border-radius: 25%;
+    box-shadow: -1px 13px 25px 1px black;
+    width: 20%;
+    padding: 5%;
+    background-color: beige;
+    opacity: .8;
+}
+
+#tha {
+    text-align: center;
+    color: red;
+    padding-top: 5%;
+}
+
+#done {
+
+    color: white;
+    display: block;
+    margin: 5% auto;
+    border: none;
+    background-color: beige;
+    padding: 4%;
+}
+
+
+p {
+    text-align: center
+}
+
+/* for passport page upload and edit */
+
+tr , td > #Birthday_Day {
+    width: 60px;
+    height: 40px;
+}
+tr , td > #Birthday_Mnth {
+    width: 60px;
+    height: 40px;
+}
+tr , td > #Birthday_Year {
+    width: 60px;
+    height: 40px;
+}
+
+
+#teco {
+    width: 50%;
+    display: block;
+    margin: auto;
+
+
+}
+
+
+h1 {
+    animation: text-shadow 1.5s ease-in-out infinite;
+    font-size: 5em;
+    font-weight: 900;
+    line-height: 1;
+}
+
+h1:hover {
+    animation-play-state: paused;
+}
+
+a {
+    color: black;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+
+.buttnext,
+.btnb,
+.buttback {
+    float: left;
+    width: 20%;
+    padding: 5px 20px;
+    border-radius: 7%;
+    border: none;
+    background-color: #232323;
+    color: white;
+}
+
+.toCenterbrn {
+    background-color: red;
+}
+
+.butt {
+    background-color: #232323;
+    border: none;
+    color: white;
+    border-radius: 5%;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+
+}
+
+.pbtn {
+    margin: 10%;
+
+}
+
+
+/* for Submit btn */
+.pbtmS {
+    color: white;
+    width: 25%;
+    padding: 5px 20px;
+    border-radius: 7%;
+    font-size: 12px;
+    border: none;
+    background-color: #232323;
+    margin-left: 10%;
+
+}
+
+.p1 {
+    font-size: 1.4em;
+    padding-left: 30%;
+    background-color: #232323;
+    color: white;
+    display: flex;
+    padding: 10%;
+}
+
+
+#alert {
+    color: red;
+    font-weight: bold;
+    margin-top: 5px;
+    display: none;
+}
+
+#alert.popup {
+    display: block;
+}
+#table0{
+    width: 100%;
+    height: 550px;
+}
+
+table {
+    width: 700px;
+    font-family: Calibri;
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+#nextBtn {
+    width: 70px;
+    height: 30px;
+    border: none;
+    background-color: #232323;
+    color: white;
+    align-content: flex-end;
+    align-items: flex-end;
+    align-self: flex-end;
+}
+
+#nm {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2%;
+}
+
+#Addtwo {
+    border: none;
+    opacity: .8;
+    background-color: none;
+
+}
+
+#file,
+#file1,
+#file2, 
+#file3,
+#file4, 
+#file5,
+#file6,  
+#file7,
+#file13,
+#Birthday_Month,
+#Birthday_Day,
+#Birthday_Year,
+textarea {
+
+   font: 65% Arial, Helvetica, sans-serif;
+   max-width: 200px;
+   margin: 5px auto;
+   padding: 10px;
+  
+   
+  
+
+} 
+
+#V1,
+#V2,
+#V3,
+#V4{
+    display: block;
+    margin: auto auto;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 10%;
+}
