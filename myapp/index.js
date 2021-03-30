@@ -14,17 +14,17 @@ const port = 9999;
 const DBurl = 'mongodb+srv://Mohammed:Mohammed1234$@viva.yvpma.mongodb.net/Viva?retryWrites=true&w=majority';
 
 app.use(express.static(path.join(__dirname, './public')));
+app.use('/', require('./routes/routes'));
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(DBurl, {
       // useNewUrlParser: true,
       // useUnifiedTopology: true,
-      // useFindAndModify: false,
-      // useCreateIndex: true
+       useFindAndModify: false,
 
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      //useCreateIndex: true
+      useCreateIndex: true
     })
     console.log("MonogDB connected successfuly");
 
@@ -48,11 +48,12 @@ app.engine(
   })
 );
 app.get('/login', (req, res) => {
-  res.render('login', { layout: false });
+  res.render('login', { layout: false ,fail:false});
 })
 app.get('/signup', (req, res) => {
   res.render('Rform');
 })
+
 // app.post('/login', async (req, res) => {
 //   console.log(req.body);
 //   const {email, password } = req.body;
@@ -79,23 +80,8 @@ app.get('/signup', (req, res) => {
 
 
 app.post('/signup', async (req, res) => {
-  
-  const { email,  password: plainTextPassword, fullName, username  } = req.body
-
-	if (!username || typeof username !== 'string') {
-		return res.json({ status: 'error', error: 'Invalid username' })
-	}
-
-	if (!plainTextPassword || typeof plainTextPassword !== 'string') {
-		return res.json({ status: 'error', error: 'Invalid password' })
-	}
-
-	if (plainTextPassword.length < 5) {
-		return res.json({
-			status: 'error',
-			error: 'Password too small. Should be atleast 6 characters'
-		})
-	}
+  console.log("req.body",req.body);
+  const { email,  password: plainTextPassword, fullName, username, major, phone  } = req.body
 
   
 	const password = await bcrypt.hash(plainTextPassword, 7)
@@ -106,6 +92,8 @@ app.post('/signup', async (req, res) => {
       password,
       fullName,
       username,
+      major,
+      phone
     })
  
    
@@ -132,14 +120,14 @@ app.post('/login', async (req,res) => {
   if (user) {
 
     const hashedPass = await bcrypt.hash(req.body.password, 7)
-    console.log('P1', user.password);
-   console.log('P2', hashedPass );
+  //   console.log('P1', user.password);
+  //  console.log('P2', hashedPass );
    console.log(await bcrypt.compare(req.body.password, user.password))
     try {
       if(await bcrypt.compare(req.body.password, user.password)) {
         res.send('Success')
       } else {
-        res.send('Not Allowed')
+        res.render('login',{fail:true})
       }
     } catch {
       res.status(500).send()
@@ -154,6 +142,34 @@ app.post('/login', async (req,res) => {
 }
  
 })
+
+
+app.post('/Dashboard', async (req, res) => {
+  
+
+    
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.set("view engine", "hbs");
 app.get('/wardan', (req, res) => {

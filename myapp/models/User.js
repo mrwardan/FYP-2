@@ -19,6 +19,16 @@ const UserSchema = new mongoose.Schema(
 			required: true,
 			unique: true,  
 		},
+		major: {
+			type: String,
+			required: true,
+			 
+		},
+		phone: {
+			type: String,
+			required: true,
+			 
+		},
 		image: {
 			type: String,
 		},
@@ -26,12 +36,10 @@ const UserSchema = new mongoose.Schema(
 			type: Date,
 			default: Date.now
 		},
-	},{
-		collation: 'users'
 	}
 )
 
-const model = mongoose.model('UserSchema', UserSchema)
+const model = mongoose.model('user', UserSchema)
 
 module.exports = model
 
