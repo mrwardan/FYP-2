@@ -71,17 +71,23 @@ app.engine(
 app.get("/",(req,res)=>{
   res.redirect("/login")
 })
+app.get("/signup",(req,res)=>{
+  res.redirect("Rform", {layout: 'main.hbs'})
+})
 app.post('/signup', async (req, res) => {
   console.log("req.body", req.body);
   const { type, email, password: plainTextPassword, fullName, major, phone , matricNo} = req.body
 
 
-  let response = '';
+  let response_Supervisor = '';
+  let response_Student= '';
+  let response_Examiner = '';
 
 
   const password = await bcrypt.hash(plainTextPassword, 7)
 
   try {
+
     switch (type) {
 
        case "Supervisor":
@@ -89,33 +95,33 @@ app.post('/signup', async (req, res) => {
           fullName,
           major,
           phone,
+          email
         
         }
         data.staffNo = matricNo;
-         response = await SUPERVISOR.create(data)
+        response_Supervisor = await SUPERVISOR.create(data)
 ///////////////////
          let user_Data = {
           type,
           email,
           password,
 
-
-        
         }
 
-        user_Data.userId = response._id;
-        response = await USER.create(user_Data);
+        user_Data.userId = response_Supervisor._id;
+        response_Supervisor = await USER.create(user_Data);
 
          
 
          break;
        case "Student":
        
-         response = await STUDENT.create({
+        response_Student = await STUDENT.create({
           fullName,
           major,
           phone,
-          matricNo
+          matricNo,
+          email
         })
 
          let temp_data ={
@@ -124,9 +130,9 @@ app.post('/signup', async (req, res) => {
           type,
           
         }
-        temp_data.userId = response._id;
+        temp_data.userId = response_Student._id;
 
-        let res2 = await USER.create(temp_data);
+         response_Student = await USER.create(temp_data);
 
 
         break;
@@ -139,7 +145,7 @@ app.post('/signup', async (req, res) => {
         
         }
         Ex_data.staffNo = matricNo;
-         response = await EXAMINER.create(Ex_data)
+        response_Examiner = await EXAMINER.create(Ex_data)
 ///////////////////
          let Ex_user_Data = {
           type,
@@ -150,8 +156,8 @@ app.post('/signup', async (req, res) => {
         
         }
 
-        Ex_user_Data.userId = response._id;
-        response = await USER.create(Ex_user_Data);
+        Ex_user_Data.userId = response_Examiner._id;
+        response_Examiner = await USER.create(Ex_user_Data);
 
         break;
 
@@ -185,7 +191,6 @@ app.post('/login', async (req, res) => {
 const {email, password} = req.body;
 
   const user = await USER.findOne({ email:email }).lean()
-  console.log(user);
 
 
 
@@ -212,6 +217,8 @@ const {email, password} = req.body;
             try {
               userData = await SUPERVISOR.findById(user.userId)
               req.session.user =userData
+
+              // console.log('The is the supervisor: ',supervisors);
             } catch (error) {
               console.log(error);
               
@@ -239,7 +246,7 @@ const {email, password} = req.body;
          default:
            break;
        }
-       console.log("userData",userData);
+      // console.log("The userData is:",userData);
      
        res.redirect(user.type+"/dashboard")
        
@@ -324,8 +331,6 @@ app.all('*', function(req, res) {
 
 
 });
-
-
 
 app.set("view engine", "hbs");
 

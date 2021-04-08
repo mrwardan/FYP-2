@@ -9,7 +9,19 @@ const SUPERVISOR = require('../models/Supervisor');
 
 route.get('/dashboard',ensureAuth,(req, res, next) =>
 {
-    res.render('adminHome')
+  
+    res.render('Admin/adminHome', {layout: 'mainAdmin'})
+
+})
+route.get('/Home',ensureAuth,(req, res, next) =>
+{
+    res.render('Admin/adminHome', {layout: 'mainAdmin'})
+
+})
+route.get('/signout',(req, res, next) =>
+{
+  req.session.destroy(); 
+  res.render('login', {layout: 'mainAdmin'})
 
 })
 route.get('/manageUsers', ensureAuth ,async (req, res) => {
@@ -24,9 +36,11 @@ route.get('/manageUsers', ensureAuth ,async (req, res) => {
   //res.json(users);
 
 
-  res.render('crud', { supervisors: supervisors, students: students, examiners: examiners,  layout: false });
+  res.render('Admin/Dashboard', { supervisors: supervisors, students: students, examiners: examiners,  layout: false });
 
 })
+
+
 
 
 

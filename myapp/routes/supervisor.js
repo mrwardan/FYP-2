@@ -5,12 +5,72 @@ const SUPERVISOR = require('../models/Supervisor');
 
 
 
-route.get('/dashboard', (req, res, next) =>
+route.get('/dashboard', ensureAuth, async (req, res, next) =>
 {
-    res.render('Supervisor/Dashboard')
+  
+
+
+ res.render('Supervisor/Dashboard', {user: req.session.user,  layout: 'mainSV.hbs'})
+//res.json(req.session.user);
+
+ console.log('User Name from session : ',user.fullName );
 
 })
-route.post('/assign', async (req, res, next) =>
+
+route.get('/home',ensureAuth, (req, res, next) =>
+{
+    res.render('Supervisor/Dashboard', {user: req.session.user, layout:'mainSV.hbs'})
+
+})
+route.get('/profile', ensureAuth,  (req, res, next) =>
+{
+    res.render('Supervisor/profile', {user: req.session.user, layout:'mainSV.hbs'})
+
+})
+
+route.get('/students',ensureAuth,  (req, res, next) =>
+{
+    res.render('Supervisor/students', {user: req.session.user, layout:'mainSV.hbs'})
+
+})
+route.get('/editinfo',ensureAuth,  (req, res, next) =>
+{
+    res.render('Supervisor/editinfo', {user: req.session.user, layout:'mainSV.hbs'})
+
+})
+route.post('/editinfo',ensureAuth, async  (req, res, next) =>
+{
+  const { phone } =req.body;
+
+  console.log("TEST: "+req.session.user);
+    try {
+  
+     
+    await SUPERVISOR.findByIdAndUpdate(req.session.user._id, {phone:phone},  {new: true},
+  
+      function (err, response) {
+        // Handle any possible database errors
+        if (err) {
+          console.log("we hit an error" + err);
+          res.json({
+            message: 'Database Update Failure'
+          });
+        }
+
+        res.send('scussess')
+        console.log("This is the Response: " + response);
+      })
+  
+  
+      
+    } catch (error) {
+      res.json(error)
+    }
+
+  
+})
+
+route.post('/assign', ensureAuth, async (req, res, next) =>
 {
 
   const { matricNo } =req.body;
@@ -60,7 +120,12 @@ try {
 })
 
 
+route.get('/signout',(req, res, next) =>
+{
+  req.session.destroy(); 
+  res.render('login', {layout: 'mainSV'})
 
+})
 
 
 function ensureAuth(req,res,next) {
@@ -69,7 +134,7 @@ function ensureAuth(req,res,next) {
     next()
   }else
   {
-    res.redirect('login');
+    res.redirect('/login');
   }
   
 }

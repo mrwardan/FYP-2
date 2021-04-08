@@ -8,7 +8,7 @@ const SUPERVISOR = require('../models/Supervisor');
 
 route.get('/dashboard', (req, res, next) =>
 {
-    res.render('studentPage')
+    res.render('Student/studentPage')
 })
 route.get('/getSV', async (req, res, next) =>
 {
@@ -19,6 +19,7 @@ route.get('/getSV', async (req, res, next) =>
     
   } catch (error) {
     res.json(error);
+    
     
   }
 })
