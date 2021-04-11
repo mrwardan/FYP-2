@@ -2,8 +2,56 @@ var express = require('express');
 const route = express.Router();
 const STUDENT = require('../models/Student');
 const SUPERVISOR = require('../models/Supervisor');
+const multer = require('multer');
+const path = require('path')
 
 
+
+//define storage for the images
+
+const storage = multer.diskStorage({
+  //destination for files
+  destination: function (request, file, callback) {
+    callback(null, './public/upload/images');
+  },
+
+  //add back the extension
+  filename: function (request, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  },
+});
+
+//upload parameters for multer
+const upload = multer({
+  storage: storage,
+      
+  limits: {
+
+    fieldSize: 1024 * 1024 * 3,
+  },
+  fileFilter: function(req, file, cb){
+   let ch = checkFileType(file, cb);
+   console.log(ch);
+   
+  }
+});
+
+// Check File Type
+function checkFileType(file, cb){
+  // Allowed ext
+  const filetypes = /jpeg|jpg|png|gif/;
+  // Check ext
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  // Check mime
+  const mimetype = filetypes.test(file.mimetype);
+
+  if(mimetype && extname){
+    return cb(null,true);
+  } else {
+    cb('Error: Images Only!');
+   
+  }
+}
 
 route.get('/dashboard', ensureAuth, async (req, res, next) =>
 {
@@ -13,7 +61,7 @@ route.get('/dashboard', ensureAuth, async (req, res, next) =>
  res.render('Supervisor/Dashboard', {user: req.session.user,  layout: 'mainSV.hbs'})
 //res.json(req.session.user);
 
- console.log('User Name from session : ',user.fullName );
+//  console.log('User Name from session : ', user.fullName );
 
 })
 
@@ -38,15 +86,49 @@ route.get('/editinfo',ensureAuth,  (req, res, next) =>
     res.render('Supervisor/editinfo', {user: req.session.user, layout:'mainSV.hbs'})
 
 })
-route.post('/editinfo',ensureAuth, async  (req, res, next) =>
+route.get('/addStudent',ensureAuth,  async (req, res, next) =>
 {
-  const { phone } =req.body;
+  const students = await STUDENT.find({}).lean();
+  res.render('Supervisor/students', {user: req.session.user, students: students, layout:false})
 
-  console.log("TEST: "+req.session.user);
+})
+route.post('/profile', ensureAuth, upload.single('image') , async (req, res, next) =>
+{
+  // console.log(req.file);
+  // console.log(req.body);
+
+  await SUPERVISOR.findByIdAndUpdate(req.session.user._id, {image:req.file.filename},  {new: true},
+  
+    function (err, response) {
+      // Handle any possible database errors
+      if (err) {
+        console.log("we hit an error" + err);
+        res.json({
+          message: 'Database Update Failure'
+        });
+      }
+      req.session.user = response;
+      res.redirect('profile')
+      console.log("This is the Response: " + response);
+    })
+})
+route.post('/editinfo', ensureAuth,  async  (req, res, next) =>
+{
+  const { fullName, phone, postion, institute, major} =req.body;
+
+  // console.log("The user information: "+req.session.user);
+   console.log('The request file:', req.file);
+
+
+   
+   
+
+  
     try {
+     
   
      
-    await SUPERVISOR.findByIdAndUpdate(req.session.user._id, {phone:phone},  {new: true},
+     await SUPERVISOR.findByIdAndUpdate(req.session.user._id, {fullName:fullName, phone:phone,postion:postion, institute:institute, major:major},  {new: true},
   
       function (err, response) {
         // Handle any possible database errors
@@ -56,8 +138,9 @@ route.post('/editinfo',ensureAuth, async  (req, res, next) =>
             message: 'Database Update Failure'
           });
         }
+        req.session.user = response;
 
-        res.send('scussess')
+        res.redirect('profile')
         console.log("This is the Response: " + response);
       })
   
@@ -66,13 +149,14 @@ route.post('/editinfo',ensureAuth, async  (req, res, next) =>
     } catch (error) {
       res.json(error)
     }
+    
 
   
 })
 
-route.post('/assign', ensureAuth, async (req, res, next) =>
+route.post('/addStudent', ensureAuth, async (req, res, next) =>
 {
-
+  
   const { matricNo } =req.body;
 
 console.log(req.session.user);
@@ -96,10 +180,17 @@ console.log(req.session.user);
         });
       }
       console.log("This is the Response: " + response);
+     
     })
 
+ 
+      const allstudents = await STUDENT.find({supervisorId: req.session.user._id}).lean()
+      console.log(allstudents);
+      
+    
 
-     res.send('scussess')
+
+     res.redirect('students')
     
   } catch (error) {
     
@@ -107,6 +198,8 @@ console.log(req.session.user);
 
 
 })
+
+
 
 route.get('/getall', async (req,res)=>{
 

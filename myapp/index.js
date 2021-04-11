@@ -8,13 +8,12 @@ const USER = require('./models/User');
 const SUPERVISOR = require('./models/Supervisor');
 const STUDENT = require('./models/Student');
 const EXAMINER = require('./models/Examiner');
+const multer = require('multer');
+const MongoStore = require("connect-mongo");
 
 
-const { ok } = require('assert');
+
 const bcrypt = require('bcryptjs');
-const bcrypt1 = require('bcrypt')
-const { response } = require('express');
-const alert = require('alert');
 const app = express();
 const port = 9999;
 const DBurl = 'mongodb+srv://Mohammed:Mohammed1234$@viva.yvpma.mongodb.net/Viva?retryWrites=true&w=majority';
@@ -25,6 +24,10 @@ const DBurl = 'mongodb+srv://Mohammed:Mohammed1234$@viva.yvpma.mongodb.net/Viva?
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: DBurl
+})
   //saveUninitialized: true,
  // cookie: { secure: true }
 }))
@@ -68,6 +71,7 @@ app.engine(
   })
 );
 
+
 app.get("/",(req,res)=>{
   res.redirect("/login")
 })
@@ -75,7 +79,7 @@ app.get("/signup",(req,res)=>{
   res.redirect("Rform", {layout: 'main.hbs'})
 })
 app.post('/signup', async (req, res) => {
-  console.log("req.body", req.body);
+  // console.log("req.body", req.body);
   const { type, email, password: plainTextPassword, fullName, major, phone , matricNo} = req.body
 
 
@@ -95,12 +99,12 @@ app.post('/signup', async (req, res) => {
           fullName,
           major,
           phone,
-          email
+          email,
         
         }
         data.staffNo = matricNo;
         response_Supervisor = await SUPERVISOR.create(data)
-///////////////////
+
          let user_Data = {
           type,
           email,
@@ -115,14 +119,18 @@ app.post('/signup', async (req, res) => {
 
          break;
        case "Student":
+
+       let studentData =
+       {
+        fullName,
+        major,
+        phone,
+        matricNo,
+        email,
+
+       }
        
-        response_Student = await STUDENT.create({
-          fullName,
-          major,
-          phone,
-          matricNo,
-          email
-        })
+        response_Student = await STUDENT.create(studentData)
 
          let temp_data ={
           email,
@@ -142,11 +150,11 @@ app.post('/signup', async (req, res) => {
           fullName,
           major,
           phone,
+          email,
         
         }
         Ex_data.staffNo = matricNo;
         response_Examiner = await EXAMINER.create(Ex_data)
-///////////////////
          let Ex_user_Data = {
           type,
           email,
@@ -167,7 +175,7 @@ app.post('/signup', async (req, res) => {
   
 
 
-    console.log('User created successfully: ', response)
+    // console.log('User created successfully: ', response_Student)
     // alert('User is created successfully')
   } catch (error) {
     if (error.code === 11000) {
@@ -177,7 +185,7 @@ app.post('/signup', async (req, res) => {
     throw error
   }
 
-  res.json({ status: 'ok' })
+  res.render('login');
 
 })
 
@@ -191,13 +199,15 @@ app.post('/login', async (req, res) => {
 const {email, password} = req.body;
 
   const user = await USER.findOne({ email:email }).lean()
+  // console.log('The user email is: ',req.body.email);
 
 
 
   if (user) {
 
     if (await bcrypt.compare(password, user.password)) {
-        var userData="";
+      var userData="";
+      
      
        switch (user.type) {
          case "Student":
@@ -212,11 +222,13 @@ const {email, password} = req.body;
           
            break;
            case "Supervisor":
-            console.log("Supervisor: ");
-
+          // console.log(req.body);
             try {
               userData = await SUPERVISOR.findById(user.userId)
+
+
               req.session.user =userData
+             // console.log("Supervisor's userdata : ",userData);
 
               // console.log('The is the supervisor: ',supervisors);
             } catch (error) {
@@ -325,12 +337,12 @@ app.use('/Student', require('./routes/student'));
 app.use('/Supervisor', require('./routes/supervisor'));
 app.use('/Examiner', require('./routes/examiner'));
 app.use('/Admin', require('./routes/admin'));
-app.all('*', function(req, res) {
-  res.status(404).render('error');
+// app.all('*', function(req, res) {
+//   res.status(404).render('login');
 
 
 
-});
+// });
 
 app.set("view engine", "hbs");
 
