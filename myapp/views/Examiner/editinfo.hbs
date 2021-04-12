@@ -1,0 +1,112 @@
+
+
+  {{>slidebar_EX}}
+  <div class="main">
+
+
+<form class="form-horizontal"  method="POST" action="/Examiner/editinfo">
+  <fieldset>
+    <div id="legend">
+      <legend class="">Edit Your Information</legend>
+    </div>
+  
+ 
+     <div class="control-group">
+      <!-- Username -->
+      <label class="control-label" ></label>
+      <div class="controls">
+                <i class="bi bi-chevron-right"></i> <strong>Email:</strong> <span>{{user.email}}</span>
+
+      </div>
+    </div>
+
+     <div class="control-group">
+      <!-- Username -->
+      <label class="control-label" ></label>
+      <div class="controls">
+                <i class="bi bi-chevron-right"></i> <strong>staffNo:</strong> <span>{{user.staffNo}}</span>
+
+      </div>
+    </div>
+
+
+
+      <div class="control-group">
+      <!-- Username -->
+      <label class="control-label" ></label>
+      <div class="controls">
+                <i class="bi bi-chevron-right"></i> <strong>Full Name:</strong> <span></span>
+
+        <input type="text" id="fullName" name="fullName" value="{{user.fullName}}" class="input-xlarge">
+      </div>
+    </div>
+
+     <div class="control-group">
+      <!-- Examiner Type -->
+      <label class="control-label" ></label>
+      <div class="controls">
+       <i class="bi bi-chevron-right"></i> <strong> Examiner Type:</strong> <span></span>
+        <select id="items"  id="examinerType" name="examinerType"  >
+  <option value="Internal Examiner">Internal Examiner</option>
+  <option value="External Examiner">External Examiner</option>
+</select>
+      </div>
+    </div>
+
+  <div class="control-group">
+      <!-- institute -->
+      <label class="control-label" ></label>
+      <div class="controls">
+                <i class="bi bi-chevron-right"></i> <strong> Institute:</strong> <span></span>
+
+        <input type="text" id="institute" name="institute"  value="{{user.institute}}" class="input-xlarge">
+      </div>
+    </div>
+
+      <div class="control-group">
+      <!-- postion -->
+      <label class="control-label" ></label>
+      <div class="controls">
+                <i class="bi bi-chevron-right"></i> <strong>Postion:</strong> <span></span>
+
+        <input type="text" id="postion" name="postion" value="{{user.postion}}" class="input-xlarge">
+      </div>
+    </div>
+    
+
+
+      <div class="control-group">
+      <!-- Username -->
+      <label class="control-label" ></label>
+      <div class="controls">
+                <i class="bi bi-chevron-right"></i> <strong>Phone:</strong> <span></span>
+
+        <input type="text" id="phone" name="phone"  value="{{user.phone}}"  class="input-xlarge">
+      </div>
+    </div>
+    
+
+       <div class="control-group">
+      <!-- Username -->
+      <label class="control-label" ></label>
+      <div class="controls">
+                <i class="bi bi-chevron-right"></i> <strong>Major:</strong> <span></span>
+
+        <input type="text" id="major" name="major" value="{{user.major}}"  class="input-xlarge">
+      </div>
+    </div>
+
+    
+ 
+   
+ 
+    <div class="control-group">
+      <!-- Button -->
+      <div class="controls">
+        <button class="btn btn-success" value="submit">Submit</button>
+      </div>
+    </div>
+  </fieldset>
+</form>
+
+  </div>

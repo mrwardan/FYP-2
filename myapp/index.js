@@ -154,7 +154,9 @@ app.post('/signup', async (req, res) => {
         
         }
         Ex_data.staffNo = matricNo;
+
         response_Examiner = await EXAMINER.create(Ex_data)
+
          let Ex_user_Data = {
           type,
           email,
@@ -166,6 +168,7 @@ app.post('/signup', async (req, res) => {
 
         Ex_user_Data.userId = response_Examiner._id;
         response_Examiner = await USER.create(Ex_user_Data);
+
 
         break;
 
@@ -195,6 +198,8 @@ app.post('/signup', async (req, res) => {
 
 
 app.post('/login', async (req, res) => {
+  console.log(req.body);
+
 
 const {email, password} = req.body;
 
@@ -206,15 +211,17 @@ const {email, password} = req.body;
   if (user) {
 
     if (await bcrypt.compare(password, user.password)) {
-      var userData="";
+      var userData_ST="";
+      var userData_SP="";
+      var userData_EX="";
       
      
        switch (user.type) {
          case "Student":
           console.log('student');
           try {
-            userData = await STUDENT.findById(user.userId)
-            req.session.user =userData
+            userData_ST = await STUDENT.findById(user.userId)
+            req.session.user =userData_ST
           } catch (error) {
             console.log(error);
             
@@ -224,10 +231,10 @@ const {email, password} = req.body;
            case "Supervisor":
           // console.log(req.body);
             try {
-              userData = await SUPERVISOR.findById(user.userId)
+              userData_SP = await SUPERVISOR.findById(user.userId)
 
 
-              req.session.user =userData
+              req.session.user =userData_SP
              // console.log("Supervisor's userdata : ",userData);
 
               // console.log('The is the supervisor: ',supervisors);
@@ -240,10 +247,11 @@ const {email, password} = req.body;
             break;
        
             case "Examiner":
-              console.log("Examiner");
               try {
-                userData = await EXAMINER.findById(user.userId)
-                req.session.user =userData
+
+                userData_EX = await EXAMINER.findById(user.userId)
+                req.session.user =userData_EX;
+
               } catch (error) {
                 console.log(error);
                 
@@ -258,10 +266,9 @@ const {email, password} = req.body;
          default:
            break;
        }
-      // console.log("The userData is:",userData);
      
-       res.redirect(user.type+"/dashboard")
-       
+       res.redirect(user.type + "/dashboard")
+      //  console.log('The User Type: ',user.type);
 
       
     }else{

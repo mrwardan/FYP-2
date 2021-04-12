@@ -76,9 +76,18 @@ route.get('/profile', ensureAuth,  (req, res, next) =>
 
 })
 
-route.get('/students',ensureAuth,  (req, res, next) =>
+route.get('/students',ensureAuth, async (req, res, next) =>
 {
-    res.render('Supervisor/students', {user: req.session.user, layout:'mainSV.hbs'})
+  try {
+    
+    const allstudents = await STUDENT.find({supervisorId: req.session.user._id}).lean()
+    console.log(allstudents);
+    res.render('Supervisor/students', {students: allstudents, user: req.session.user, layout:'mainSV.hbs'})
+    
+  } catch (error) {
+    
+  }
+   
 
 })
 route.get('/editinfo',ensureAuth,  (req, res, next) =>
@@ -90,6 +99,17 @@ route.get('/addStudent',ensureAuth,  async (req, res, next) =>
 {
   const students = await STUDENT.find({}).lean();
   res.render('Supervisor/students', {user: req.session.user, students: students, layout:false})
+
+})
+route.get('/manageExaminers',ensureAuth,  async (req, res, next) =>
+{
+  res.render('Supervisor/examinersSelection', {user: req.session.user, layout:'mainSV.hbs'})
+
+})
+route.get('/signout',(req, res, next) =>
+{
+  req.session.destroy(); 
+  res.render('login', {layout: 'mainSV'})
 
 })
 route.post('/profile', ensureAuth, upload.single('image') , async (req, res, next) =>
@@ -157,9 +177,8 @@ route.post('/editinfo', ensureAuth,  async  (req, res, next) =>
 route.post('/addStudent', ensureAuth, async (req, res, next) =>
 {
   
-  const { matricNo } =req.body;
+  const { matricNo } = req.body;
 
-console.log(req.session.user);
   try {
 
     const student = await STUDENT.findOne({ matricNo:matricNo }).lean()
@@ -184,9 +203,6 @@ console.log(req.session.user);
     })
 
  
-      const allstudents = await STUDENT.find({supervisorId: req.session.user._id}).lean()
-      console.log(allstudents);
-      
     
 
 
@@ -199,26 +215,54 @@ console.log(req.session.user);
 
 })
 
-
-
-route.get('/getall', async (req,res)=>{
-
-try {
-  const allstudents = await STUDENT.find({supervisorId: req.session.user._id}).lean()
-  res.json(allstudents);
-  
-} catch (error) {
-  res.json(error)
-}
-})
-
-
-route.get('/signout',(req, res, next) =>
+route.post('/manageExaminers',ensureAuth,  async (req, res, next) =>
 {
-  req.session.destroy(); 
-  res.render('login', {layout: 'mainSV'})
+
+
+  const { matricNo } = req.body;
+
+  try {
+
+    const student = await STUDENT.findOne({ matricNo:matricNo }).lean()
+
+    if(!student)
+    {
+      res.send("Matric was not found")
+    }
+
+  await STUDENT.findByIdAndUpdate(student._id, {supervisorId: req.session.user._id},  {new: true},
+
+    function (err, response) {
+      // Handle any possible database errors
+      if (err) {
+        console.log("we hit an error" + err);
+        res.json({
+          message: 'Database Update Failure'
+        });
+      }
+      console.log("This is the Response: " + response);
+     
+    })
+
+ 
+    
+
+
+     res.redirect('students')
+    
+  } catch (error) {
+    
+  }
+
+
 
 })
+
+
+
+
+
+
 
 
 function ensureAuth(req,res,next) {

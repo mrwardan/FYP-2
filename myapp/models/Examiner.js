@@ -2,19 +2,34 @@ const mongoose = require('mongoose')
 
 const UserSchema = new mongoose.Schema(
 	{
+		email:{
+			type: String,
+			unique: true
+
+
+		},
 		fullName: {
 			type: String,
 			required: true
-		},
-		postion: {
-			type: String,
-
 		},
 		staffNo: {
 			type: String,
 			required: true,
 			unique: true
 		},
+		phone: {
+			type: String,
+
+		},
+		examinerType: {
+			type: String,
+
+		}, 
+		postion: {
+			type: String,
+
+		}, 
+		
 		major: {
 			type: String,
 			required: true
@@ -24,10 +39,10 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 
 		},
-		phone: {
+	image: {
 			type: String,
-
-		},
+			default: 'wardan.jpg',
+		  },
 		createdAt: {
 			type: Date,
 			default: Date.now
