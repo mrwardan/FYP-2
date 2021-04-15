@@ -1,4 +1,9 @@
 <head>
+
+
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
 	<style>
 		body {
 			margin-top: 20px;
@@ -15,7 +20,7 @@
 
 		.user-list tbody td .user-link {
 			display: block;
-			font-size: 1.25em;
+			font-size: 0.8em;
 			padding-top: 3px;
 			margin-left: 60px;
 		}
@@ -218,71 +223,73 @@
 		#ADS {
 			margin-bottom: 2em;
 		}
+
 		.open-button {
-  background-color: rgb(172, 6, 6);
-  color: white;
-  padding: 5px 0px;
-  cursor: pointer;
-  opacity: 0.8;
-  
-  bottom: 23px;
-  right: 28px;
-  width: 150px;
-}
+			background-color: rgb(172, 6, 6);
+			color: white;
+			padding: 5px 0px;
+			cursor: pointer;
+			opacity: 0.8;
+
+			bottom: 23px;
+			right: 28px;
+			width: 150px;
+		}
 
 
-/* The popup form - hidden by default */
-.form-popup {
-  display: none;
-  position: fixed;
-  bottom: 5;
-  border: 3px solid #f1f1f1;
-}
+		/* The popup form - hidden by default */
+		.form-popup {
+			display: none;
+			position: fixed;
+			bottom: 5;
+			border: 3px solid #f1f1f1;
+		}
 
-/* Add styles to the form container */
-.form-container {
-  max-width: 300px;
-  padding: 10px;
-  background-color: rgb(0, 0, 0);
-}
+		/* Add styles to the form container */
+		.form-container {
+			max-width: 300px;
+			padding: 10px;
+			background-color: rgb(0, 0, 0);
+		}
 
-/* Full-width input fields */
-.form-container input[type=text], .form-container input[type=password] {
-  width: 100%;
-  padding: 15px;
-  margin: 5px 0 22px 0;
-  border: none;
-}
+		/* Full-width input fields */
+		.form-container input[type=text],
+		.form-container input[type=password] {
+			width: 100%;
+			padding: 15px;
+			margin: 5px 0 22px 0;
+			border: none;
+		}
 
-/* When the inputs get focus, do something */
-.form-container input[type=text]:focus, .form-container input[type=password]:focus {
-  background-color: #ddd;
-  outline: none;
-}
+		/* When the inputs get focus, do something */
+		.form-container input[type=text]:focus,
+		.form-container input[type=password]:focus {
+			background-color: #ddd;
+			outline: none;
+		}
 
-/* Set a style for the submit/login button */
-.form-container .btn {
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom:10px;
-  opacity: 0.8;
-}
+		/* Set a style for the submit/login button */
+		.form-container .btn {
+			color: white;
+			padding: 16px 20px;
+			border: none;
+			cursor: pointer;
+			width: 100%;
+			margin-bottom: 10px;
+			opacity: 0.8;
+		}
 
 
-/* Add some hover effects to buttons */
-.form-container .btn:hover, .open-button:hover {
-  opacity: 1;
-}
+		/* Add some hover effects to buttons */
+		.form-container .btn:hover,
+		.open-button:hover {
+			opacity: 1;
+		}
 	</style>
 </head>
 
 <body>
-
 	{{>slidebar_SV}}
-
 	<div class="main">
 
 		<div id="SP">
@@ -295,33 +302,35 @@
 
 		<div id="ADS">
 
-	<button type="button" class="btn btn-danger" onclick="openForm()">Add New Student</button>
+			<button type="button" class="btn btn-danger" onclick="openForm()">Add New Student</button>
 		</div>
 
-	
-
-<div class="form-popup" id="myForm">
-  <form action="addStudent" method="POST" class="form-container">
-    
-
-    <label for="text" style="color: white;"><b>Matric Card No:</b></label>
-    <input type="text" placeholder="Enter Matric Card" name="matricNo" required>
 
 
-    <button type="submit" class="btn" value="submit" style="color: rgb(0, 0, 0);">Add</button>
-    <button type="button" class="btn cancel" onclick="closeForm()" style="color: rgb(0, 0, 0);">Close</button>
-  </form>
-</div>
+		<div class="form-popup" id="myForm">
+			<form action="addStudent" method="POST" class="form-container">
 
-<script>
-function openForm() {
-  document.getElementById("myForm").style.display = "block";
-}
 
-function closeForm() {
-  document.getElementById("myForm").style.display = "none";
-}
-</script>
+
+				<label for="text" style="color: white;"><b>Matric Card No:</b></label>
+				<input type="text" placeholder="Enter Matric Card" name="matricNo" required>
+
+
+				<button type="submit" class="btn" value="submit" style="color: rgb(0, 0, 0);">Add</button>
+				<button type="button" class="btn cancel" onclick="closeForm()"
+					style="color: rgb(0, 0, 0);">Close</button>
+			</form>
+		</div>
+
+		<script>
+			function openForm() {
+				document.getElementById("myForm").style.display = "block";
+			}
+
+			function closeForm() {
+				document.getElementById("myForm").style.display = "none";
+			}
+		</script>
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 		<div class="container">
 			<div class="row">
@@ -332,16 +341,19 @@ function closeForm() {
 								<thead>
 									<tr>
 										<th><span>Name</span></th>
-										<th><span>Email</span></th>
-										<th><span>Major</span></th>
-										<th><span>Phone</span></th>
+										<th><span>Matric Number</span></th>
+										<th><span>Chairperson</span></th>
+										<th><span>Internal Examiner</span></th>
+										<th><span>External Examiner</span></th>
+										<th><span>Actions</span></th>
+
 										<th>&nbsp;</th>
 
 									</tr>
 								</thead>
 
 								<tbody>
-									
+
 									{{#each students}}
 									<tr>
 										<td>
@@ -349,25 +361,35 @@ function closeForm() {
 											<a href="#" class="user-link">{{fullName}}</a>
 										</td>
 										<td>
-											{{email}}
+											{{matricNo}}
 										</td>
 										<td class="text-center">
-											<span class="label label-default">{{major}}</span>
+											<span class="label label-default">{{internalExaminerId.fullName}}</span>
+
 										</td>
 										<td>
-											<a href="#">{{phone}}</a>
-										</td>
-										<td style="width: 20%;">
+											<a href="#">{{internalExaminerId.fullName}}</a>
 
-											<a href="#" class="table-link danger">
-												<span class="fa-stack">
-													<i class="fa fa-square fa-stack-2x"></i>
-													<i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
-												</span>
-											</a>
 										</td>
+
+
+										<td style="width: 20%;">
+											<a href="#">{{externalExaminerId.fullName}}</a>
+										</td>
+										<td>
+
+
+											<a href="/Supervisor/choose?id={{_id}}" class="edit"><i class="material-icons"
+													title="Edit">&#xE254;</i></a>
+											<a href="deleteStudent" class="delete"><i class="material-icons"
+													title="Delete">&#xE872;</i></a>
+
+
+										</td>
+
+
 									</tr>
-													{{/each}}
+									{{/each}}
 
 								</tbody>
 							</table>

@@ -10,7 +10,7 @@ const STUDENT = require('./models/Student');
 const EXAMINER = require('./models/Examiner');
 const multer = require('multer');
 const MongoStore = require("connect-mongo");
-
+const {ifEquals, select} = require('./helpers/hbs')
 
 
 const bcrypt = require('bcryptjs');
@@ -66,6 +66,7 @@ app.engine(
   "hbs",
   exphbs({
 
+    helpers: {ifEquals, select},
     defaultLayout: "main",
     extname: "hbs",
   })
@@ -198,7 +199,8 @@ app.post('/signup', async (req, res) => {
 
 
 app.post('/login', async (req, res) => {
-  console.log(req.body);
+
+  // console.log(req.body);
 
 
 const {email, password} = req.body;

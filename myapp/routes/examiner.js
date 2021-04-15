@@ -79,6 +79,24 @@ route.get('/editinfo',ensureAuth,  (req, res, next) =>
     res.render('Examiner/editinfo', {user: req.session.user, layout:'mainEx.hbs'})
 
 })
+route.get('/approve',ensureAuth, async (req, res, next) =>
+{
+
+  
+  try {
+    const students = await STUDENT.find({internalExaminerId: req.session.user._id}).lean()
+
+    res.json(students)
+
+  } catch (error) {
+
+res.json(error)
+    
+  }
+    //res.render('Examiner/Approve', {user: req.session.user, layout:'mainEx.hbs'})
+
+
+})
 route.get('/signout',(req, res, next) =>
 {
   req.session.destroy(); 

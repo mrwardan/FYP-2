@@ -1,0 +1,133 @@
+{{>slidebar_SV}}
+
+
+
+<br>
+<div class="main">
+
+    <br><br>
+
+
+    <div>
+        <strong>Welcome:</strong> {{user.fullName}}
+
+    </div>
+
+    <br> <br> <br>
+
+
+    <div class="container">
+
+        <form class="well form-horizontal" action="/Supervisor/choose" method="POST">
+            {{!-- {{log " Wardan:" students}} --}}
+            {{!-- {{log " Wardan2:" student}} // => undefined --}}
+
+            <input type="hidden" value="{{student.matricNo}}" name="matricNo">
+
+            <div>
+
+                <h4>Student Name: <strong>{{student.fullName}}</strong></h4>
+                <h4>Matric Card Number: <strong>{{student.matricNo}}</strong> </h4>
+
+            </div>
+
+            <hr>
+            <hr>
+            <fieldset>
+
+
+                <!-- Select Basic -->
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Choose a Chairperson:</label>
+                    <div class="col-md-4 selectContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+                            <select name="state" class="form-control selectpicker">
+
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- Select Basic -->
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Choose an external Examiner</label>
+                    <div class="col-md-4 selectContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+
+
+                            <select name="externalExaminer" class="form-control selectpicker">
+                                {{#select student.externalExaminerId._id }}
+                                <option value="null"selected>>unSelect</option>
+                                {{#each examiners}}
+
+                                {{#ifEquals examinerType "External Examiner" }}
+
+                                <option value="{{_id}}">{{fullName}} </option>
+
+
+                                {{/ifEquals}}
+
+
+
+                                {{/each}}
+                                {{/select}}
+
+
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Select Basic -->
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Choose an internal Examiner</label>
+                    <div class="col-md-4 selectContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+                            <select name="internalExaminer" class="form-control selectpicker">
+                                
+{{#select student.internalExaminerId._id }}
+                                <option value="null"selected>unSelect</option>
+
+                                {{#each examiners}}
+                       
+                                {{#ifEquals examinerType "Internal Examiner"}}
+
+                                <option {{#ifEquals _id ../student.internalExaminerId._id}} selected {{/ifEquals}}
+                                    value="{{_id}}">{{fullName}} </option>
+
+
+                                {{/ifEquals}}
+
+                                {{/each}}
+                                                                {{/select}}
+
+
+
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+
+                <br> <br>
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label"></label>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-warning" value="submit">Submit <span
+                                class="glyphicon glyphicon-send"></span></button>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</div><!-- /.container -->
+</div>

@@ -2,8 +2,10 @@ var express = require('express');
 const route = express.Router();
 const STUDENT = require('../models/Student');
 const SUPERVISOR = require('../models/Supervisor');
+const EXAMINER = require('../models/Examiner');
 const multer = require('multer');
-const path = require('path')
+const path = require('path');
+const { findById } = require('../models/Student');
 
 
 
@@ -52,6 +54,17 @@ function checkFileType(file, cb){
    
   }
 }
+route.get('/', ensureAuth, async (req, res, next) =>
+{
+  
+
+
+ res.render('Supervisor/Dashboard', {user: req.session.user,  layout: 'mainSV.hbs'})
+//res.json(req.session.user);
+
+//  console.log('User Name from session : ', user.fullName );
+
+})
 
 route.get('/dashboard', ensureAuth, async (req, res, next) =>
 {
@@ -80,8 +93,10 @@ route.get('/students',ensureAuth, async (req, res, next) =>
 {
   try {
     
-    const allstudents = await STUDENT.find({supervisorId: req.session.user._id}).lean()
-    console.log(allstudents);
+    const allstudents = await STUDENT.find({supervisorId: req.session.user._id}).lean().populate("internalExaminerId").populate("externalExaminerId")
+    //console.log(allstudents);
+    // console.log("THE STUDENT INFORMATION: ",allstudents);
+
     res.render('Supervisor/students', {students: allstudents, user: req.session.user, layout:'mainSV.hbs'})
     
   } catch (error) {
@@ -90,6 +105,8 @@ route.get('/students',ensureAuth, async (req, res, next) =>
    
 
 })
+
+
 route.get('/editinfo',ensureAuth,  (req, res, next) =>
 {
     res.render('Supervisor/editinfo', {user: req.session.user, layout:'mainSV.hbs'})
@@ -101,10 +118,49 @@ route.get('/addStudent',ensureAuth,  async (req, res, next) =>
   res.render('Supervisor/students', {user: req.session.user, students: students, layout:false})
 
 })
+
 route.get('/manageExaminers',ensureAuth,  async (req, res, next) =>
 {
   res.render('Supervisor/examinersSelection', {user: req.session.user, layout:'mainSV.hbs'})
 
+})
+
+
+
+
+//
+route.get('/choose',ensureAuth,  async (req, res, next) =>
+{ 
+  const {id} = req.query;
+ // const id = req.params.id;
+ 
+ 
+try {
+  
+  const student = await STUDENT.findById(id).lean().populate("internalExaminerId").populate("externalExaminerId");
+  //console.log("student");
+  const examiners = await EXAMINER.find({}).lean();
+ // console.log('The student is:', student);
+
+  if(student)
+  {
+     
+   
+    res.render('Supervisor/choose', {student: student, examiners:examiners, user: req.session.user, layout:'mainSV.hbs'})
+
+  }else{
+res.send('Not Found')  }
+
+
+  
+} catch (error) {
+
+  res.json(error)
+}
+
+//------
+
+ 
 })
 route.get('/signout',(req, res, next) =>
 {
@@ -215,22 +271,64 @@ route.post('/addStudent', ensureAuth, async (req, res, next) =>
 
 })
 
-route.post('/manageExaminers',ensureAuth,  async (req, res, next) =>
+
+
+
+route.post('/choose',ensureAuth,  async (req, res, next) =>
 {
 
 
-  const { matricNo } = req.body;
+  const { matricNo, externalExaminer, internalExaminer } = req.body;
+  const student = await STUDENT.findOne({ matricNo:matricNo  }).lean()
+  console.log("What info: ", student);
 
   try {
 
-    const student = await STUDENT.findOne({ matricNo:matricNo }).lean()
+  if(internalExaminer == 'null' )
+  {
+    await STUDENT.findByIdAndUpdate( student._id,
+        {new: true, $unset:{internalExaminerId:1} },
+  
+      function (err, response) {
+        // Handle any possible database errors
+        if (err) {
+          console.log("we hit an error" + err);
+          res.json({
+            message: 'Database Update Failure'
+          });
+        }
+       
+        console.log("This is the Response: " + response);
 
-    if(!student)
-    {
-      res.send("Matric was not found")
-    }
+        // res.redirect('students')
+      })
+  } else
+  {
+    await STUDENT.findByIdAndUpdate( student._id,
+      {
+        internalExaminerId:internalExaminer,internalExaminerApproved:false,
+       
+      },  {new: true},
+  
+      function (err, response) {
+        // Handle any possible database errors
+        if (err) {
+          console.log("we hit an error" + err);
+          res.json({
+            message: 'Database Update Failure'
+          });
+        }
+       
+        console.log("This is the Response: " + response);
 
-  await STUDENT.findByIdAndUpdate(student._id, {supervisorId: req.session.user._id},  {new: true},
+       
+      })
+
+  }
+   if( externalExaminer ==  'null')
+  {
+    await STUDENT.findByIdAndUpdate( student._id,
+      {new: true, $unset:{externalExaminerId:1} },
 
     function (err, response) {
       // Handle any possible database errors
@@ -240,17 +338,41 @@ route.post('/manageExaminers',ensureAuth,  async (req, res, next) =>
           message: 'Database Update Failure'
         });
       }
-      console.log("This is the Response: " + response);
      
+      console.log("This is the Response: " + response);
+
+      // res.redirect('students')
     })
 
- 
-    
+  }else
+  {
+    await STUDENT.findByIdAndUpdate( student._id,
+      {
+       
+        externalExaminerId:externalExaminer,externalExaminerApproved:false,
+      },  {new: true},
+  
+      function (err, response) {
+        // Handle any possible database errors
+        if (err) {
+          console.log("we hit an error" + err);
+          res.json({
+            message: 'Database Update Failure'
+          });
+        }
+       
+        console.log("This is the Response: " + response);
 
+      
+      })
 
-     res.redirect('students')
+  }
+   
+  res.redirect('students')
     
   } catch (error) {
+
+    res.json(error)
     
   }
 

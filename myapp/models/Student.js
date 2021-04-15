@@ -16,6 +16,10 @@ const UserSchema = new mongoose.Schema(
 			unique: true
 
 		},
+		phone: {
+			type: String,
+
+		},
 		faculty: {
 			type: String,
 		},
@@ -44,6 +48,12 @@ const UserSchema = new mongoose.Schema(
 		status: {
 			type: String,
 		},
+		internalExaminerApproved: {
+			type: Boolean,
+		},
+		externalExaminerApproved: {
+			type: Boolean,
+		},
 		chairPersonName: {
 			type: String,
 		},
@@ -56,6 +66,7 @@ const UserSchema = new mongoose.Schema(
 			
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'examiner'
+			 
 		},
 		createdAt: {
 			type: Date,
