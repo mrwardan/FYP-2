@@ -306,7 +306,7 @@ route.post('/choose',ensureAuth,  async (req, res, next) =>
   {
     await STUDENT.findByIdAndUpdate( student._id,
       {
-        internalExaminerId:internalExaminer,internalExaminerApproved:false,
+        internalExaminerId:internalExaminer,internalExaminerApproved:false, submittedDate: Date.now(),
        
       },  {new: true},
   
@@ -349,7 +349,7 @@ route.post('/choose',ensureAuth,  async (req, res, next) =>
     await STUDENT.findByIdAndUpdate( student._id,
       {
        
-        externalExaminerId:externalExaminer,externalExaminerApproved:false,
+        externalExaminerId:externalExaminer,externalExaminerApproved:false,submittedDate:Date.now(),
       },  {new: true},
   
       function (err, response) {

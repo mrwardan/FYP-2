@@ -1,6 +1,6 @@
 {{>slidebar_SV}}
 
-
+{{!-- //if i am in examiner page and i press submit on subervisor page there will be a conflict --}}
 
 <br>
 <div class="main">
@@ -61,7 +61,7 @@
 
                             <select name="externalExaminer" class="form-control selectpicker">
                                 {{#select student.externalExaminerId._id }}
-                                <option value="null"selected>>unSelect</option>
+                                <option value="null" selected>>unSelect</option>
                                 {{#each examiners}}
 
                                 {{#ifEquals examinerType "External Examiner" }}
@@ -91,12 +91,12 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
                             <select name="internalExaminer" class="form-control selectpicker">
-                                
-{{#select student.internalExaminerId._id }}
-                                <option value="null"selected>unSelect</option>
+
+                                {{#select student.internalExaminerId._id }}
+                                <option value="null" selected>unSelect</option>
 
                                 {{#each examiners}}
-                       
+
                                 {{#ifEquals examinerType "Internal Examiner"}}
 
                                 <option {{#ifEquals _id ../student.internalExaminerId._id}} selected {{/ifEquals}}
@@ -106,7 +106,7 @@
                                 {{/ifEquals}}
 
                                 {{/each}}
-                                                                {{/select}}
+                                {{/select}}
 
 
 

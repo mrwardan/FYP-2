@@ -55,13 +55,25 @@ function checkFileType(file, cb){
 }
 
 
-route.get('/dashboard', (req, res, next) =>
+route.get('/', ensureAuth, async (req, res, next) =>
 {
-  console.log(req.session.user);
-    res.render('Examiner/Dashboard' , {user: req.session.user, layout:'mainEx.hbs'})
+  
+
+
+ res.render('Examiner/Dashboard', {user: req.session.user,  layout: 'mainEX.hbs'})
 
 
 })
+route.get('/dashboard', ensureAuth, async (req, res, next) =>
+{
+  
+
+
+ res.render('Examiner/Dashboard', {user: req.session.user,  layout: 'mainEX.hbs'})
+
+
+})
+
 route.get('/home',ensureAuth, (req, res, next) =>
 {
     res.render('Examiner/Dashboard', {user: req.session.user, layout:'mainEx.hbs'})
@@ -84,16 +96,19 @@ route.get('/approve',ensureAuth, async (req, res, next) =>
 
   
   try {
-    const students = await STUDENT.find({internalExaminerId: req.session.user._id}).lean()
+    const students = await STUDENT.find({internalExaminerId: req.session.user._id}).lean().populate("supervisorId");
 
-    res.json(students)
+    //res.json(students)
+    console.log(students);
+    res.render('Examiner/Approve', {students: students, layout:'mainEx.hbs'})
+
 
   } catch (error) {
 
 res.json(error)
+
     
   }
-    //res.render('Examiner/Approve', {user: req.session.user, layout:'mainEx.hbs'})
 
 
 })

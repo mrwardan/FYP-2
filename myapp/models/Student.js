@@ -57,6 +57,11 @@ const UserSchema = new mongoose.Schema(
 		chairPersonName: {
 			type: String,
 		},
+		submittedDate: {
+			type: "date",
+			
+			
+		},
 		internalExaminerId: {
 			
 			type: mongoose.Schema.Types.ObjectId,
