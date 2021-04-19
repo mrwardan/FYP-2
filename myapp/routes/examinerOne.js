@@ -4,7 +4,9 @@ const EXAMINER = require('../models/Examiner');
 const STUDENT = require('../models/Student');
 const SUPERVISOR = require('../models/Supervisor');
 const multer = require('multer');
-const path = require('path')
+const path = require('path');
+const Swal = require('sweetalert2');
+
 
 
 
@@ -140,13 +142,46 @@ route.post('/profile', ensureAuth, upload.single('image') , async (req, res, nex
       console.log("This is the Response123: " + response);
     })
 })
+
+route.post('/submitApprove', ensureAuth , async (req, res, next) =>
+{
+  const {id} =req.body;
+
+  console.log("The user id: ", id);
+
+  
+    try {
+        
+     await STUDENT.findByIdAndUpdate(id, {internalExaminerApproved:true},  {new: true},
+  
+      function (err, response) {
+        // Handle any possible database errors
+        console.log('There is error and not able to retrieve the info');
+        if (err) {
+          console.log("we hit an error" + err);
+          res.json({
+            message: 'Database Update Failure'
+          });
+        }
+        
+
+         res.redirect('approve')
+        console.log("This is the Response: " , response);
+      })
+  
+  
+      
+    } catch (error) {
+      res.json(error)
+    }
+    })
 route.post('/editinfo', ensureAuth,  async  (req, res, next) =>
 {
   const { fullName, phone, postion, institute, major, examinerType} =req.body;
 
-  console.log("The user information: ", req.session.user);
-  console.log("The user information sesstion user id :", req.session.user._id);
-  console.log("The user information full name: ", req.session.user.fullName);
+  // console.log("The user information: ", req.session.user);
+  // console.log("The user information sesstion user id :", req.session.user._id);
+  // console.log("The user information full name: ", req.session.user.fullName);
   
     try {
         

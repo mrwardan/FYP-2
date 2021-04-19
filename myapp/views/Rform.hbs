@@ -8,98 +8,134 @@
 
     <div class="control-group">
 
-       <!-- Name -->
-      <label class="control-label"  for="fullName">Full Name</label>
+      <!-- Name -->
+      <label class="control-label" for="fullName">Full Name</label>
       <div class="controls">
         <input type="text" id="fullName" name="fullName" placeholder="Full Name" class="input-xlarge">
         <p class="help-block">Please provide your full name</p>
       </div>
-    
-    </div>
-     <div class="control-group">
 
-       <!-- Type -->
-      <label class="control-label"  for="fullName">Type:</label>
-         <div class="controls">
+    </div>
+    <div class="control-group">
+
+      <!-- Type -->
+      <label class="control-label" >Type:</label>
+      <div class="controls">
         <p class="help-block">Please choose your Type:</p>
         <select id="type" name="type" class="input-xlarge">
-          <option value="Student">Student</option>
           <option value="Supervisor">Supervisor</option>
+          <option value="Chairperson">Chairperson</option>
           <option value="Examiner">Examiner</option>
+          <option value="Student">Student</option>
+          <option value="Examiner">Examiner</option>
+
         </select>
       </div>
-    
+
     </div>
 
     <div class="control-group">
 
-       <!-- Major -->
-      <label class="control-label"  for="major">Major</label>
+      <!-- Major -->
+      <label class="control-label" for="major">Major</label>
       <div class="controls">
         <input type="text" id="major" name="major" placeholder="Major" class="input-xlarge">
-        
+
       </div>
-    
+
     </div>
 
     <div class="control-group">
 
-       <!-- phone -->
-      <label class="control-label"  for="phone">Phone</label>
+      <!-- phone -->
+      <label class="control-label" for="phone">Phone</label>
       <div class="controls">
         <input type="text" id="phone" name="phone" placeholder="Phone" class="input-xlarge">
-        
+
       </div>
-    
+
     </div>
 
 
-     <div class="control-group">
+    <div class="control-group">
 
-       <!-- Matric -->
-      <label class="control-label"  for="phone">Staff/Matric No:</label>
+      <!-- Matric -->
+      <label class="control-label" for="phone">Staff/Matric No:</label>
       <div class="controls">
         <input type="text" id="matric" name="matricNo" placeholder="Staff/Matric No" class="input-xlarge">
-      
-      </div>
-    
-    </div>
-    
 
-    
-    <div class="control-group">
+      </div>
+
+    </div>
 
 
-       
-   
- 
+
     <div class="control-group">
-      <!-- E-mail -->
-      <label class="control-label" for="email">E-mail</label>
-      <div class="controls">
-        <input type="text" id="email" name="email" placeholder="E-mail" class="input-xlarge">
-        <p class="help-block">Please provide your E-mail</p>
+
+
+
+
+
+      <div class="control-group">
+        <!-- E-mail -->
+        <label class="control-label" for="email">E-mail</label>
+        <div class="controls">
+          <input type="text" id="email" name="email" placeholder="E-mail" class="input-xlarge">
+          <p class="help-block">Please provide your E-mail</p>
+        </div>
       </div>
-    </div>
- 
-    <div class="control-group">
-      <!-- Password-->
-      <label class="control-label" for="password">Password</label>
-      <div class="controls">
-        <input type="password" id="password" name="password" placeholder="Password" class="input-xlarge">
-        <p class="help-block">Password should be at least 6 characters</p>
+
+      <div class="control-group">
+        <!-- Password-->
+        <label class="control-label" for="password">Password</label>
+        <div class="controls">
+          <input type="password" id="password" name="password" placeholder="Password" class="input-xlarge">
+          <p class="help-block">Password should be at least 6 characters</p>
+        </div>
       </div>
-    </div>
- 
- 
-    <div class="control-group">
-      <!-- Button -->
-      <div class="controls">
-        <button class="btn btn-success">Register</button>
+
+
+      <div class="control-group">
+        <!-- Button -->
+        <div class="controls">
+          <button class="btn btn-success" onclick="CreatedSucc()">Register</button>
+        </div>
       </div>
-    </div>
   </fieldset>
 </form>
 
+
+<script>
+  function CreatedSucc()
+  {
+    let timerInterval
+Swal.fire({
+  title: 'User Has been Created successfully',
+  html: 'redirecting in <b></b> milliseconds.',
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: () => {
+    Swal.showLoading()
+    timerInterval = setInterval(() => {
+      const content = Swal.getContent()
+      if (content) {
+        const b = content.querySelector('b')
+        if (b) {
+          b.textContent = Swal.getTimerLeft()
+        }
+      }
+    }, 300)
+  },
+  willClose: () => {
+    clearInterval(timerInterval)
+  }
+}).then((result) => {
+  /* Read more about handling dismissals below */
+  if (result.dismiss === Swal.DismissReason.timer) {
+    console.log('I was closed by the timer')
+  }
+})
+  }
+</script>
 
 {{!-- {{>footer}} --}}

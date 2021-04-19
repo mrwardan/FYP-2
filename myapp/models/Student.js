@@ -54,20 +54,22 @@ const UserSchema = new mongoose.Schema(
 		externalExaminerApproved: {
 			type: Boolean,
 		},
-		chairPersonName: {
-			type: String,
+		chairPersonId: {
+
+type: mongoose.Schema.Types.ObjectId,
+			ref: 'Chairperson'
 		},
 		submittedDate: {
 			type: "date",
 			
 			
 		},
-		internalExaminerId: {
+		ExaminerOneId: {
 			
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'examiner'
 		},
-		externalExaminerId: {
+		ExaminerTwoId: {
 			
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'examiner'

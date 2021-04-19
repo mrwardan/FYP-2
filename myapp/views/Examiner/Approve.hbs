@@ -1,8 +1,12 @@
 <head>
 
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check"
+        viewBox="0 0 16 16">
+        <path
+            d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
+    </svg>
 
     <style>
         body {
@@ -347,17 +351,23 @@
                                             {{#if internalExaminerApproved}}
 
                                             Approved
-                     
+
                                             {{else}}
 
-                                             <p>Not approved</p>
-                                            {{/if}} 
+                                            <p>Not approved</p>
+                                            {{/if}}
 
                                         </td>
                                         <td>
 
 
-                                            //here approve student
+
+                                            <button id="button-a">
+                                                <i class="bi bi-check" style="font-size: 70px;"
+                                                    onclick="approve('{{_id}}')"></i>
+
+
+                                            </button>
 
 
                                         </td>
@@ -376,7 +386,70 @@
         </div>
     </div>
 
+    <div class="form-popup" id="myForm">
+        <form action="/addStudent" method="post">
+            <div class="form-group">
+                <label>Matric No:</label>
+                <input type="text" id="matricNo" name="matricNo" class="form-control" required>
+            </div>
 
 
 
+            <div class="modal-footer">
+                <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                <input type="submit" class="btn btn-success" value="Add">
+            </div>
+        </form>
+    </div>
+
+
+    <script>
+
+        console.log('Wardan');
+
+
+        function approve(studentId){
+            
+       
+
+            Swal.fire({
+                title: 'Do you want to approve this selection and be the Examiner?',
+                showDenyButton: true,
+                confirmButtonText: `Submit`,
+                denyButtonText: `Cancel`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: 'submitApprove',
+                        type: 'post',
+                        data: { id: studentId },
+                        success: function (response) {
+
+
+
+                        }
+                    });
+
+                    Swal.fire('Saved!', '', 'success')
+
+                } else if (result.isDenied) {
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+            })
+
+
+ }
+
+
+
+
+
+      
+
+
+
+
+    </script>
 </body>

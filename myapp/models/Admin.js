@@ -2,23 +2,38 @@ const mongoose = require('mongoose')
 
 const UserSchema = new mongoose.Schema(
 	{
-		supervisorId: {
+		email:{
+			type: String,
+			unique: true
+
+
+		},
+		fullName: {
 			type: String,
 			required: true
 		},
-		examinerId: {
+		phone: {
 			type: String,
-			required: true
-		},
-		studentId: {
+
+		}, 
+		postion: {
 			type: String,
-			required: true
-		},
-		fileLink: {
+
+		}, 
+		
+		major: {
 			type: String,
 			required: true
 
 		},
+		institute: {
+			type: String,
+
+		},
+	image: {
+			type: String,
+			default: 'wardan.jpg',
+		  },
 		createdAt: {
 			type: Date,
 			default: Date.now
@@ -26,7 +41,7 @@ const UserSchema = new mongoose.Schema(
 	}
 )
 
-const model = mongoose.model('document', UserSchema)
+const model = mongoose.model('admin', UserSchema)
 
 module.exports = model
 

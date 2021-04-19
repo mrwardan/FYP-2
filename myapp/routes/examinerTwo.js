@@ -79,7 +79,7 @@ route.get('/editinfo',ensureAuth,  (req, res, next) =>
     res.render('Examiner/editinfo', {user: req.session.user, layout:'mainEx.hbs'})
 
 })
-route.get('/approve',ensureAuth,  (req, res, next) =>
+route.get('/approve',ensureAuth,  async (req, res, next) =>
 {
 
   

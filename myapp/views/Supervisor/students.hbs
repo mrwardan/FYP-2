@@ -330,6 +330,8 @@
 			function closeForm() {
 				document.getElementById("myForm").style.display = "none";
 			}
+
+			
 		</script>
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 		<div class="container">
@@ -378,15 +380,16 @@
 											<a href="#">{{externalExaminerId.fullName}}</a>
 										</td>
 										<td>
-											{{log "Time is:" Time}}
+											{{!-- {{log "Time is:" Time}} --}}
 											<a href="">{{date}}</a>
 										</td>
 										<td>
 
 
-											<a href="/Supervisor/choose?id={{_id}}" class="edit"><i class="material-icons"
-													title="Edit">&#xE254;</i></a>
-											<a href="deleteStudent" class="delete"><i class="material-icons"
+											<a href="/Supervisor/choose?id={{_id}}" class="edit"><i
+													class="material-icons" title="Edit">&#xE254;</i></a>
+
+											<a href="/Supervisor/deleteStudent" class="delete"><i class="material-icons"
 													title="Delete">&#xE872;</i></a>
 
 
@@ -434,4 +437,5 @@
 				</div>
 			</div>
 		</div>
+	
 </body>

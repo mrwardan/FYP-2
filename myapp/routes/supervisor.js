@@ -6,6 +6,8 @@ const EXAMINER = require('../models/Examiner');
 const multer = require('multer');
 const path = require('path');
 const { findById } = require('../models/Student');
+const Swal = require('sweetalert2');
+
 
 
 
@@ -106,7 +108,6 @@ route.get('/students',ensureAuth, async (req, res, next) =>
 
 })
 
-
 route.get('/editinfo',ensureAuth,  (req, res, next) =>
 {
     res.render('Supervisor/editinfo', {user: req.session.user, layout:'mainSV.hbs'})
@@ -118,6 +119,8 @@ route.get('/addStudent',ensureAuth,  async (req, res, next) =>
   res.render('Supervisor/students', {user: req.session.user, students: students, layout:false})
 
 })
+
+
 
 route.get('/manageExaminers',ensureAuth,  async (req, res, next) =>
 {
@@ -274,6 +277,10 @@ route.post('/addStudent', ensureAuth, async (req, res, next) =>
 
 
 
+
+
+
+    
 route.post('/choose',ensureAuth,  async (req, res, next) =>
 {
 

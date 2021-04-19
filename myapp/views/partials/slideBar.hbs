@@ -1,56 +1,29 @@
-<style>
-    	.sidenav {
-			height: 100%;
-			width: 260px;
-			position: fixed;
-			z-index: 1;
-			top: 0;
-			left: 0;
-			background-color: #111;
-			overflow-x: hidden;
-			padding-top: 20px;
-		}
+<!-- ======= Mobile nav toggle button ======= -->
+<i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
 
-		.sidenav a {
-			padding: 6px 8px 6px 16px;
-			text-decoration: none;
-			font-size: 18px;
-			color: #818181;
-			display: block;
-		}
+<!-- ======= Header ======= -->
+<header id="header">
+	<div class="d-flex flex-column">
 
-		.sidenav a:hover {
-			color: #f1f1f1;
-		}
+		<div class="profile">
+			<img src="/upload/images/{{user.image}}" alt="" class="img-fluid rounded-circle">
+			<h1 class="text-light"><a>{{user.fullName}}</a></h1>
 
-		.main {
-			margin-left: 160px;
-			/* Same as the width of the sidenav */
-			font-size: 18px;
-			/* Increased text to enable scrolling */
-			padding: 0px 10px;
-		}
+		</div>
 
-		@media screen and (max-height: 450px) {
-			.sidenav {
-				padding-top: 15px;
-			}
+		<nav id="navbar" class="nav-menu navbar">
+			<ul>
+				<li><a href="home" name="home" class="nav-link scrollto active"><i class="bx bx-home"></i>
+						<span>Home</span></a>
+				</li>
+				<li><a href="profile" name="profile" class="nav-link scrollto"><i class="bx bx-user"></i>
+						<span>Profile</span></a></li>
+				<li><a href="Manageusers" name="manageusers" class="nav-link scrollto"><i class="bx bx-user"></i>
+						<span>Manage Users</span></a></li>
 
-			.sidenav a {
-				font-size: 18px;
-			}
-		}
-</style>
-
-
-<div class="sidenav">
-		<a href="Home">Home</a>
-		<br>
-		<a href="about">About</a>
-		<br>
-		<a href="manageUsers">Manage Users</a>
-		<br>
-		<a href="signout">Sign Out</a>
-		<br>
-
+				<li><a href="signout" name="signout" class="nav-link scrollto"><i class="bx bx-server"></i> <span>Sign
+							Out</span></a></li>
+			</ul>
+		</nav><!-- .nav-menu -->
 	</div>
+</header><!-- End Header -->

@@ -1,43 +1,44 @@
-const express = require('express');
-const session = require('express-session')
-const path = require('path');
-const bodyParser = require('body-parser')
-const exphbs = require('express-handlebars');
-const mongoose = require('mongoose');
-const USER = require('./models/User');
-const SUPERVISOR = require('./models/Supervisor');
-const STUDENT = require('./models/Student');
-const EXAMINER = require('./models/Examiner');
-const multer = require('multer');
+const express = require("express");
+const session = require("express-session");
+const path = require("path");
+const bodyParser = require("body-parser");
+const exphbs = require("express-handlebars");
+const mongoose = require("mongoose");
+const USER = require("./models/User");
+const ADMIN = require("./models/Admin");
+const SUPERVISOR = require("./models/Supervisor");
+const STUDENT = require("./models/Student");
+const EXAMINER = require("./models/Examiner");
+const CHAIRPERSON = require("./models/Chairperson");
+const multer = require("multer");
 const MongoStore = require("connect-mongo");
-const {ifEquals, select} = require('./helpers/hbs')
+const { ifEquals, select } = require("./helpers/hbs");
+const Swal = require("sweetalert2");
 
-
-const bcrypt = require('bcryptjs');
+const bcrypt = require("bcryptjs");
 const app = express();
 const port = 9999;
-const DBurl = 'mongodb+srv://Mohammed:Mohammed1234$@viva.yvpma.mongodb.net/Viva?retryWrites=true&w=majority';
+const DBurl =
+  "mongodb+srv://Mohammed:Mohammed1234$@viva.yvpma.mongodb.net/Viva?retryWrites=true&w=majority";
 
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: DBurl,
+    }),
+    //saveUninitialized: true,
+    // cookie: { secure: true }
+  })
+);
 
-
-
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: DBurl
-})
-  //saveUninitialized: true,
- // cookie: { secure: true }
-}))
-
-app.use(express.static(path.join(__dirname, './public')));
-app.use('/', require('./routes/routes'));
+app.use(express.static(path.join(__dirname, "./public")));
+app.use("/", require("./routes/routes"));
 
 const connectDB = async () => {
   try {
-
     const conn = await mongoose.connect(DBurl, {
       // useNewUrlParser: true,
       // useUnifiedTopology: true,
@@ -45,18 +46,14 @@ const connectDB = async () => {
 
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useCreateIndex: true
-    })
+      useCreateIndex: true,
+    });
     console.log("MonogDB connected successfuly");
-
   } catch (error) {
     console.error(error);
-    process.exit(1)
-
+    process.exit(1);
   }
-}
-
-
+};
 
 // body parser
 app.use(express.urlencoded({ extended: false }));
@@ -65,222 +62,252 @@ app.use(express.json());
 app.engine(
   "hbs",
   exphbs({
-
-    helpers: {ifEquals, select},
+    helpers: { ifEquals, select },
     defaultLayout: "main",
     extname: "hbs",
   })
 );
 
+app.get("/", (req, res) => {
+  res.redirect("/login");
+});
+app.get("/signup", (req, res) => {
+  res.redirect("Rform", { layout: "main.hbs" });
+});
+app.get("/login", (req, res) => {
+  res.render("login", { layout: "main.hbs" });
+});
 
-app.get("/",(req,res)=>{
-  res.redirect("/login")
-})
-app.get("/signup",(req,res)=>{
-  res.redirect("Rform", {layout: 'main.hbs'})
-})
-app.post('/signup', async (req, res) => {
-  // console.log("req.body", req.body);
-  const { type, email, password: plainTextPassword, fullName, major, phone , matricNo} = req.body
+app.post("/signup", async (req, res) => {
+  console.log("req.body: ", req.body);
 
+  const {
+    type,
+    email,
+    password: plainTextPassword,
+    fullName,
+    major,
+    phone,
+    matricNo,
+  } = req.body;
 
-  let response_Supervisor = '';
-  let response_Student= '';
-  let response_Examiner = '';
+  let response_Supervisor = "";
+  let response_Student = "";
+  let response_Examiner = "";
+  let response_Chairperson = "";
+  let response_Admin = "";
 
-
-  const password = await bcrypt.hash(plainTextPassword, 7)
+  const password = await bcrypt.hash(plainTextPassword, 7);
 
   try {
+    console.log("inside try");
+    console.log("The type is :", type);
 
     switch (type) {
 
-       case "Supervisor":
+      case "Admin":
+
+      if(req.session.user.type === "Admin")
+      {
         let data = {
           fullName,
           major,
           phone,
           email,
-        
-        }
-        data.staffNo = matricNo;
-        response_Supervisor = await SUPERVISOR.create(data)
+        };
+        response_Admin= await ADMIN.create(data);
 
-         let user_Data = {
+        let admin_Data = {
           type,
           email,
           password,
+        };
 
-        }
+        admin_Data.userId = response_Admin._id;
+        response_Admin = await USER.create(admin_Data);
+       
+
+      }
+      break;
+       
+
+      case "Supervisor":
+        let data = {
+          fullName,
+          major,
+          phone,
+          email,
+        };
+        data.staffNo = matricNo;
+        response_Supervisor = await SUPERVISOR.create(data);
+
+        let user_Data = {
+          type,
+          email,
+          password,
+        };
 
         user_Data.userId = response_Supervisor._id;
         response_Supervisor = await USER.create(user_Data);
+        break;
 
-         
+      case "Chairperson":
+        console.log("inside case chair");
 
-         break;
-       case "Student":
+        let Chairdata = {
+          fullName,
+          major,
+          phone,
+          email,
+        };
+        Chairdata.staffNo = matricNo;
+        response_Chairperson = await CHAIRPERSON.create(Chairdata);
 
-       let studentData =
-       {
-        fullName,
-        major,
-        phone,
-        matricNo,
-        email,
+        let user_CData = {
+          type,
+          email,
+          password,
+        };
 
-       }
-       
-        response_Student = await STUDENT.create(studentData)
+        user_CData.userId = response_Chairperson._id;
+        response_Chairperson = await USER.create(user_CData);
 
-         let temp_data ={
+        console.log("user_CData", user_CData);
+
+        break;
+      case "Student":
+        let studentData = {
+          fullName,
+          major,
+          phone,
+          matricNo,
+          email,
+        };
+
+        response_Student = await STUDENT.create(studentData);
+
+        let temp_data = {
           email,
           password,
           type,
-          
-        }
+        };
         temp_data.userId = response_Student._id;
 
-         response_Student = await USER.create(temp_data);
-
+        response_Student = await USER.create(temp_data);
 
         break;
       case "Examiner":
-       
         let Ex_data = {
           fullName,
           major,
           phone,
           email,
-        
-        }
+        };
         Ex_data.staffNo = matricNo;
 
-        response_Examiner = await EXAMINER.create(Ex_data)
+        response_Examiner = await EXAMINER.create(Ex_data);
 
-         let Ex_user_Data = {
+        let Ex_user_Data = {
           type,
           email,
           password,
-
-
-        
-        }
+        };
 
         Ex_user_Data.userId = response_Examiner._id;
         response_Examiner = await USER.create(Ex_user_Data);
-
 
         break;
 
       default:
         break;
     }
-  
 
-
-    // console.log('User created successfully: ', response_Student)
-    // alert('User is created successfully')
+    console.log("User created successfully: ", response_Chairperson);
+    //alert('User is created successfully')
   } catch (error) {
     if (error.code === 11000) {
       // duplicate key
-      return res.json({ status: 'error', error: 'Username already in use' })
+      return res.json({ status: "error", error: "Email already in use" });
     }
-    throw error
+    throw error;
   }
+ if(req.session.user.type === "Admin")
+ {
 
-  res.render('login');
+  res.redirect(req.session.user.type + '/Manageusers')
+  
+ } else{
+  res.redirect("login");
 
-})
+ }
+});
 
-
-
-
-
-
-app.post('/login', async (req, res) => {
-
+app.post("/login", async (req, res) => {
   // console.log(req.body);
 
+  const { email, password } = req.body;
 
-const {email, password} = req.body;
-
-  const user = await USER.findOne({ email:email }).lean()
+  const user = await USER.findOne({ email: email }).lean();
   // console.log('The user email is: ',req.body.email);
 
-
-
   if (user) {
-
     if (await bcrypt.compare(password, user.password)) {
-      var userData_ST="";
-      var userData_SP="";
-      var userData_EX="";
-      
-     
-       switch (user.type) {
-         case "Student":
-          console.log('student');
+      var userData_ST = "";
+      var userData_SP = "";
+      var userData_EX = "";
+
+      switch (user.type) {
+        case "Student":
+          console.log("student");
           try {
-            userData_ST = await STUDENT.findById(user.userId)
-            req.session.user =userData_ST
+            userData_ST = await STUDENT.findById(user.userId);
+            req.session.user = userData_ST;
           } catch (error) {
             console.log(error);
-            
           }
-          
-           break;
-           case "Supervisor":
+
+          break;
+        case "Supervisor":
           // console.log(req.body);
-            try {
-              userData_SP = await SUPERVISOR.findById(user.userId)
+          try {
+            userData_SP = await SUPERVISOR.findById(user.userId);
 
+            req.session.user = userData_SP;
+            // console.log("Supervisor's userdata : ",userData);
 
-              req.session.user =userData_SP
-             // console.log("Supervisor's userdata : ",userData);
+            // console.log('The is the supervisor: ',supervisors);
+          } catch (error) {
+            console.log(error);
+          }
 
-              // console.log('The is the supervisor: ',supervisors);
-            } catch (error) {
-              console.log(error);
-              
-            }
-            
-            
-            break;
-       
-            case "Examiner":
-              try {
+          break;
 
-                userData_EX = await EXAMINER.findById(user.userId)
-                req.session.user =userData_EX;
+        case "Examiner":
+          try {
+            userData_EX = await EXAMINER.findById(user.userId);
+            req.session.user = userData_EX;
+          } catch (error) {
+            console.log(error);
+          }
 
-              } catch (error) {
-                console.log(error);
-                
-              }
-              
-              break;
-              case "Admin":
-                console.log("Admin");
-                req.session.user =user
-                break;
-       
-         default:
-           break;
-       }
-     
-       res.redirect(user.type + "/dashboard")
+          break;
+        case "Admin":
+          console.log("Admin");
+          req.session.user = user;
+          break;
+
+        default:
+          break;
+      }
+
+      res.redirect(user.type + "/dashboard");
       //  console.log('The User Type: ',user.type);
-
-      
-    }else{
-      res.send("pass is wrong or not fouynd")
+    } else {
+      res.send("pass is wrong or not fouynd");
     }
-  }
-  else{
-  console.log(user);
-  return res.status(400).send('Cannot find username')
-
+  } else {
+    console.log(user);
+    return res.status(400).send("Cannot find username");
   }
   //   try {
   //     if (user.type === 'admin') {
@@ -295,23 +322,18 @@ const {email, password} = req.body;
 
   //       if (await bcrypt.compare(req.body.password, user.password)) {
   //         req.session.user = user;
-      
 
   //          res.redirect('studentPage')
   //       }
 
- 
-        
-
   //       } else if(user.type == 'supervisor')
   //       {
-         
+
   //         if (await bcrypt.compare(req.body.password, user.password)) {
   //           req.session.user = user;
   //            res.redirect('student')
   //           // console.log('Nice', user)
   //         }
-
 
   //       } else if(user.type == 'examiner')
   //       {
@@ -320,7 +342,6 @@ const {email, password} = req.body;
   //            res.redirect('adminHome')
   //           // console.log('Nice', user)
   //         }
-
 
   //       } else {
   //         res.render('login', { fail: true })
@@ -333,32 +354,23 @@ const {email, password} = req.body;
   // } else {
   //   return res.status(400).send('Cannot find username')
 
-
-
   // }
+});
 
-})
-
-
-
-
-app.use('/Student', require('./routes/student'));
-app.use('/Supervisor', require('./routes/supervisor'));
-app.use('/Examiner', require('./routes/examiner'));
-app.use('/Admin', require('./routes/admin'));
+app.use("/Student", require("./routes/student"));
+app.use("/Supervisor", require("./routes/supervisor"));
+app.use("/ExaminerOne", require("./routes/examinerOne"));
+app.use("/ExaminerTwo", require("./routes/examinerTwo"));
+app.use("/Admin", require("./routes/admin"));
 // app.all('*', function(req, res) {
 //   res.status(404).render('login');
-
-
 
 // });
 
 app.set("view engine", "hbs");
 
-
-
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+  console.log(`Example app listening at http://localhost:${port}`);
+});
 
 connectDB();
