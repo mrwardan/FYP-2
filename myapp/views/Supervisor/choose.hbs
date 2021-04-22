@@ -19,7 +19,7 @@
     <div class="container">
 
         <form class="well form-horizontal" action="/Supervisor/choose" method="POST">
-            {{!-- {{log " Wardan:" students}} --}}
+           
             {{!-- {{log " Wardan2:" student}} // => undefined --}}
 
             <input type="hidden" value="{{student.matricNo}}" name="matricNo">
@@ -37,34 +37,85 @@
 
 
                 <!-- Select Basic -->
+                 {{log " chair:" student.chairPersonId }}
+               
+ 
 
                 <div class="form-group">
                     <label class="col-md-4 control-label">Choose a Chairperson:</label>
                     <div class="col-md-4 selectContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-                            <select name="state" class="form-control selectpicker">
+                            <select name="chairPersonId" class="form-control selectpicker">
+
+                                {{#select student.chairPersonId._id }}
+                                <option value="null" selected>>unSelect</option>
+                                {{#each chairpeople}}
+
+                                <option value="{{_id}}">{{fullName}} </option>
+
+                                {{/each}}
+                                {{/select}}
 
                             </select>
 
                         </div>
                     </div>
                 </div>
+
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Choose Examiner 1</label>
+                    <div class="col-md-4 selectContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+                            <select name="ExaminerOneId" class="form-control selectpicker">
+
+                                {{#select student.ExaminerOneId._id }}
+                                <option value="null" selected>unSelect</option>
+
+                                {{#each examiners}}
+
+                                {{#ifEquals examinerType "Examiner 1"}}
+
+                                <option {{#ifEquals _id ../student.ExaminerOneId._id}} selected {{/ifEquals}}
+                                    value="{{_id}}">{{fullName}} </option>
+
+
+                                {{/ifEquals}}
+
+                                {{/each}}
+                                {{/select}}
+
+
+
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
                 <!-- Select Basic -->
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label">Choose an external Examiner</label>
+                    <label class="col-md-4 control-label">Choose a Examiner 2</label>
                     <div class="col-md-4 selectContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
 
 
-                            <select name="externalExaminer" class="form-control selectpicker">
-                                {{#select student.externalExaminerId._id }}
+                            <select name="ExaminerTwoId" class="form-control selectpicker">
+                                {{#select student.ExaminerTwoId._id }}
                                 <option value="null" selected>>unSelect</option>
                                 {{#each examiners}}
 
-                                {{#ifEquals examinerType "External Examiner" }}
+                                {{#ifEquals examinerType "Examiner 2" }}
 
                                 <option value="{{_id}}">{{fullName}} </option>
 
@@ -85,36 +136,6 @@
 
                 <!-- Select Basic -->
 
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Choose an internal Examiner</label>
-                    <div class="col-md-4 selectContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-                            <select name="internalExaminer" class="form-control selectpicker">
-
-                                {{#select student.internalExaminerId._id }}
-                                <option value="null" selected>unSelect</option>
-
-                                {{#each examiners}}
-
-                                {{#ifEquals examinerType "Internal Examiner"}}
-
-                                <option {{#ifEquals _id ../student.internalExaminerId._id}} selected {{/ifEquals}}
-                                    value="{{_id}}">{{fullName}} </option>
-
-
-                                {{/ifEquals}}
-
-                                {{/each}}
-                                {{/select}}
-
-
-
-                            </select>
-
-                        </div>
-                    </div>
-                </div>
 
                 <br> <br>
                 <!-- Button -->

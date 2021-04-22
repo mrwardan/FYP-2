@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 			default: 'wardan.jpg',
 		  },
+		  Auth: {
+			type: String,
+		default: 'SupAuth_$'
+		  },
 		createdAt: {
 			type: Date,
 			default: Date.now
