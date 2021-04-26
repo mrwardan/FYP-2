@@ -359,9 +359,9 @@ app.post("/login", async (req, res) => {
 
 app.use("/Student", require("./routes/student"));
 app.use("/Supervisor", require("./routes/supervisor"));
-app.use("/ExaminerOne", require("./routes/examinerOne"));
-app.use("/ExaminerTwo", require("./routes/examinerTwo"));
+app.use("/Examiner", require("./routes/examiner"));
 app.use("/Admin", require("./routes/admin"));
+
 // app.all('*', function(req, res) {
 //   res.status(404).render('login');
 
