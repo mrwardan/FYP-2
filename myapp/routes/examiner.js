@@ -3,6 +3,7 @@ const route = express.Router();
 const EXAMINER = require('../models/Examiner');
 const STUDENT = require('../models/Student');
 const SUPERVISOR = require('../models/Supervisor');
+const CHAIRPERSON = require("../models/Chairperson");
 const multer = require('multer');
 const path = require('path');
 const Swal = require('sweetalert2');

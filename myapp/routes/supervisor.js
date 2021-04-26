@@ -3,15 +3,13 @@ const route = express.Router();
 const STUDENT = require("../models/Student");
 const SUPERVISOR = require("../models/Supervisor");
 const EXAMINER = require("../models/Examiner");
+const CHAIRPERSON = require("../models/Chairperson");
 const multer = require("multer");
 const path = require("path");
 const { findById } = require("../models/Student");
 const Swal = require("sweetalert2");
 const formidable = require("formidable");
 var fs = require("fs");
-
-
-
 
 //define storage for the images
 const storage = multer.diskStorage({
@@ -94,21 +92,31 @@ route.get("/profile", ensureAuth, ensureSupervisor, (req, res, next) => {
 
 route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
   try {
+   
+
     const allstudents = await STUDENT.find({
       supervisorId: req.session.user._id,
-    })
-      .lean()
-      .populate("internalExaminerId")
-      .populate("externalExaminerId");
+    }).lean().populate("ExaminerOneId").populate("ExaminerTwoId").populate("chairPersonId");
+
+    // i tried chairpeople it did work but gives the id instead of the name
+    
+
+  //  // await allstudents.populate("chairPersonId");
+  //   await allstudents.populate("ExaminerOneId").execPopulate();
+  //   await allstudents.populate("ExaminerTwoId").execPopulate();
+
+    console.log('asdfghjhgfdsa');
     //console.log(allstudents);
-    // console.log("THE STUDENT INFORMATION: ",allstudents);
+    console.log("THE STUDENT INFORMATION: ", allstudents);
 
     res.render("Supervisor/students", {
       students: allstudents,
       user: req.session.user,
       layout: "mainSV.hbs",
     });
-  } catch (error) {}
+  } catch (error) {
+    res.json(error);
+  }
 });
 
 route.get("/editinfo", ensureAuth, ensureSupervisor, (req, res, next) => {
@@ -130,7 +138,6 @@ route.get(
       layout: false,
     });
   }
-
 );
 
 route.get(
@@ -155,7 +162,6 @@ route.get(
       layout: "mainSV.hbs",
     });
   }
-
 );
 
 //
@@ -168,15 +174,20 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       .lean()
       .populate("ExaminerOneId")
       .populate("ExaminerTwoId")
-      .populate("chairPersonId")
+      .populate("chairpeople");
     //console.log("student");
     const examiners = await EXAMINER.find({}).lean();
-    // console.log('The student is:', student);
+    const chairperson = await CHAIRPERSON.find({}).lean();
+
+    // console.log("The student is:", student);
+    // console.log('EXAMINERS :',examiners);
+    // console.log('CHAIR :',chairperson);
 
     if (student) {
       res.render("Supervisor/choose", {
         student: student,
         examiners: examiners,
+        chairpeople: chairperson,
         user: req.session.user,
         layout: "mainSV.hbs",
       });
@@ -204,8 +215,6 @@ route.post("/documents", function (request, result) {
     });
   });
 });
-
-
 
 route.post(
   "/profile",
@@ -316,15 +325,15 @@ route.post(
 );
 
 route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
-  const { matricNo, externalExaminer, internalExaminer } = req.body;
+  const { matricNo, ExaminerOneId, ExaminerTwoId, chairPersonId } = req.body;
   const student = await STUDENT.findOne({ matricNo: matricNo }).lean();
   console.log("What info: ", student);
 
   try {
-    if (internalExaminer == "null") {
+    if (chairPersonId == "null") {
       await STUDENT.findByIdAndUpdate(
         student._id,
-        { new: true, $unset: { internalExaminerId: 1 } },
+        { new: true, $unset: { chairPersonId: 1 } },
 
         function (err, response) {
           // Handle any possible database errors
@@ -344,8 +353,8 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       await STUDENT.findByIdAndUpdate(
         student._id,
         {
-          internalExaminerId: internalExaminer,
-          internalExaminerApproved: false,
+          chairPersonId: chairPersonId,
+          chairPersonApproved: false,
           submittedDate: Date.now(),
         },
         { new: true },
@@ -363,10 +372,10 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
         }
       );
     }
-    if (externalExaminer == "null") {
+    if (ExaminerOneId == "null") {
       await STUDENT.findByIdAndUpdate(
         student._id,
-        { new: true, $unset: { externalExaminerId: 1 } },
+        { new: true, $unset: { ExaminerOneId: 1 } },
 
         function (err, response) {
           // Handle any possible database errors
@@ -386,8 +395,50 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       await STUDENT.findByIdAndUpdate(
         student._id,
         {
-          externalExaminerId: externalExaminer,
-          externalExaminerApproved: false,
+          ExaminerOneId: ExaminerOneId,
+          examinerOneApproved: false,
+          submittedDate: Date.now(),
+        },
+        { new: true },
+
+        function (err, response) {
+          // Handle any possible database errors
+          if (err) {
+            console.log("we hit an error" + err);
+            res.json({
+              message: "Database Update Failure",
+            });
+          }
+
+          console.log("This is the Response: " + response);
+        }
+      );
+    }
+    if (ExaminerTwoId == "null") {
+      await STUDENT.findByIdAndUpdate(
+        student._id,
+        { new: true, $unset: { ExaminerTwoId: 1 } },
+
+        function (err, response) {
+          // Handle any possible database errors
+          if (err) {
+            console.log("we hit an error" + err);
+            res.json({
+              message: "Database Update Failure",
+            });
+          }
+
+          console.log("This is the Response: " + response);
+
+          // res.redirect('students')
+        }
+      );
+    } else {
+      await STUDENT.findByIdAndUpdate(
+        student._id,
+        {
+          ExaminerTwoId: ExaminerTwoId,
+          examinerTowApproved: false,
           submittedDate: Date.now(),
         },
         { new: true },

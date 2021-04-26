@@ -14,10 +14,13 @@ const multer = require("multer");
 const MongoStore = require("connect-mongo");
 const { ifEquals, select } = require("./helpers/hbs");
 const Swal = require("sweetalert2");
+const { v4: uuidv4 } = require("uuid");
+var nodemailer = require('nodemailer');
+
 
 const bcrypt = require("bcryptjs");
 const app = express();
-const port = 9999;
+const port = process.env.PORT || 9999;
 const DBurl =
   "mongodb+srv://Mohammed:Mohammed1234$@viva.yvpma.mongodb.net/Viva?retryWrites=true&w=majority";
 
@@ -68,14 +71,173 @@ app.engine(
   })
 );
 
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+         user: 'documentvivasystem@gmail.com',
+         pass: 'M1234mras'
+     }
+ });
+
+ const mailOptions = {
+  from: 'documentvivasystem@gmail.com', // sender address
+  to: '', // list of receivers
+  subject: 'Use the link to change your password', // Subject line
+  html: ''// plain text body
+};
+
+
+
+
+
 app.get("/", (req, res) => {
   res.redirect("/login");
 });
 app.get("/signup", (req, res) => {
-  res.redirect("Rform", { layout: "main.hbs" });
+  res.redirect("Rform", { layout: false });
 });
+
 app.get("/login", (req, res) => {
-  res.render("login", { layout: "main.hbs" });
+  res.render("login", { layout: false });
+});
+
+app.get("/resetPassword", (req, res) => {
+  res.render("resetPassword", { layout: false });
+});
+app.get("/changePassword", (req, res) => {
+  // console.log(req.query);
+  const { code } = req.query;
+
+  res.render("changePassword", { layout: false, code: code });
+});
+
+app.post("/changePassword", async (req, res) => {
+  const { newPass1, newpass2, code } = req.body;
+  console.log(req.body);
+ 
+
+  var foundCode = await USER.findOne({ resetCode: code });
+
+  if (foundCode) {
+    console.log("foundcode: ", foundCode);
+    console.log("code:", code);
+
+    try {
+      console.log("redwan");
+      console.log('newPass1', newPass1);
+      console.log('newPass2', newpass2);
+
+
+      if (newPass1 === newpass2) {
+        console.log('wardan');
+
+        let hashPass = await bcrypt.hash(newpass2, 7);
+
+         console.log('hashPass:  ', hashPass);
+
+         try {
+
+          await USER.findByIdAndUpdate(
+            foundCode._id,
+            { password: hashPass, resetCode:'' },
+            { new: true },
+  
+            function (err, response) {
+              // Handle any possible database errors
+              if (err) {
+                console.log("we hit an error" + err);
+                res.json({
+                  message: "Database Update Failure",
+                });
+              }
+  
+              console.log("This is the Response with new password: " + response);
+              res.send("Password change you can login");
+            }
+          );
+           
+         } catch (error) {
+          res.json(error);
+           
+         }
+
+
+       
+      }
+    } catch (error) {
+      res.json(error);
+    }
+  }
+});
+
+app.post("/resetPassword", async (req, res) => {
+  const { email } = req.body;
+  console.log(email);
+
+  try {
+    var foundeEmail = await USER.findOne({ email: email });
+
+    console.log("email in databse", foundeEmail);
+
+    if (foundeEmail) {
+      var link = "";
+      let hash = uuidv4();
+      console.log("Hash: ", hash);
+
+      await USER.findByIdAndUpdate(
+        foundeEmail._id,
+        { resetCode: hash },
+        { new: true },
+
+        function (err, response) {
+          // Handle any possible database errors
+          if (err) {
+            console.log("we hit an error" + err);
+            res.json({
+              message: "Database Update Failure",
+            });
+          }
+
+          // res.send("Go to your mail")
+          link = `http://localhost:9999/changePassword?code=${hash}`;
+          console.log(link);
+
+          res.render("resetPassword", { layout: false, msg:' If an account exists for that email address, we will email you instructions for resetting your password. ' });
+
+          
+
+          
+
+
+
+
+          console.log("This is the Response: " + response);
+          mailOptions.to=email;
+          mailOptions.html = ` 
+          <a href="${link}"> Click here to reset your password</a>
+          `
+
+
+          transporter.sendMail(mailOptions, function (err, info) {
+            if(err)
+              console.log(err)
+            else
+              console.log(info);
+         });
+
+
+
+        }
+      );
+    } else
+    {
+
+      res.render("resetPassword", { layout: false, msg:' If an account exists for that email address, we will email you instructions for resetting your password. ' });
+
+    }
+  } catch (error) {
+    res.json(error);
+  }
 });
 
 app.post("/signup", async (req, res) => {
@@ -104,32 +266,26 @@ app.post("/signup", async (req, res) => {
     console.log("The type is :", type);
 
     switch (type) {
-
       case "Admin":
+        if (req.session.user.type === "Admin") {
+          let data = {
+            fullName,
+            major,
+            phone,
+            email,
+          };
+          response_Admin = await ADMIN.create(data);
 
-      if(req.session.user.type === "Admin")
-      {
-        let data = {
-          fullName,
-          major,
-          phone,
-          email,
-        };
-        response_Admin= await ADMIN.create(data);
+          let admin_Data = {
+            type,
+            email,
+            password,
+          };
 
-        let admin_Data = {
-          type,
-          email,
-          password,
-        };
-
-        admin_Data.userId = response_Admin._id;
-        response_Admin = await USER.create(admin_Data);
-       
-
-      }
-      break;
-       
+          admin_Data.userId = response_Admin._id;
+          response_Admin = await USER.create(admin_Data);
+        }
+        break;
 
       case "Supervisor":
         let data = {
@@ -231,15 +387,18 @@ app.post("/signup", async (req, res) => {
     }
     throw error;
   }
- if(req.session.user.type === "Admin")
- {
+  if (req.session.user_id === undefined)
+  {
+    res.redirect("login");
+  } else
+  {
+    if (req.session.user.type === "Admin") {
+      res.redirect(req.session.user.type + "/Manageusers");
+    }
+  }
 
-  res.redirect(req.session.user.type + '/Manageusers')
-  
- } else{
-  res.redirect("login");
+   
 
- }
 });
 
 app.post("/login", async (req, res) => {
@@ -257,8 +416,19 @@ app.post("/login", async (req, res) => {
       var userData_EX = "";
 
       switch (user.type) {
+        case "Chairperson":
+          console.log(user);
+          try {
+            userData_ST = await CHAIRPERSON.findById(user.userId);
+            req.session.user = userData_ST;
+          } catch (error) {
+            console.log(error);
+          }
+
+          break;
+
         case "Student":
-          console.log("student");
+          console.log(user);
           try {
             userData_ST = await STUDENT.findById(user.userId);
             req.session.user = userData_ST;
@@ -303,11 +473,19 @@ app.post("/login", async (req, res) => {
       res.redirect(user.type + "/dashboard");
       //  console.log('The User Type: ',user.type);
     } else {
-      res.send("pass is wrong or not fouynd");
+      res.render("login", {
+        layout: false,
+        wrongPass: "Wrong email or password",
+      });
     }
   } else {
     console.log(user);
-    return res.status(400).send("Cannot find username");
+    res.render("login", {
+      layout: false,
+      wrongPass: "Wrong email or password",
+    });
+
+    //return res.status(400).send("Cannot find username");
   }
   //   try {
   //     if (user.type === 'admin') {
