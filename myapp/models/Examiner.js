@@ -21,10 +21,6 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 
 		},
-		examinerType: {
-			type: String,
-
-		}, 
 		postion: {
 			type: String,
 

@@ -9,6 +9,8 @@ const ADMIN = require("../models/Admin");
 const multer = require("multer");
 const path = require("path");
 const Swal = require("sweetalert2");
+const {ensureAuth}=require('../middleware/auth')
+
 
 //define storage for the images
 
@@ -246,13 +248,7 @@ route.post("/editinfo", ensureAuth, ensureAdmin, async (req, res, next) => {
   }
 });
 
-function ensureAuth(req, res, next) {
-  if (req.session.user) {
-    next();
-  } else {
-    res.redirect("/login");
-  }
-}
+
 function ensureAdmin(req, res, next) {
   if (req.session.user.type === "Admin") {
     next();

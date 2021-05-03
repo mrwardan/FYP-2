@@ -5,13 +5,14 @@ const STUDENT = require("../models/Student");
 const SUPERVISOR = require("../models/Supervisor");
 const EXAMINER = require("../models/Examiner");
 const CHAIRPERSON = require("../models/Chairperson");
-
+const {ensureAuth}=require('../middleware/auth')
 const multer = require("multer");
 const path = require("path");
 const { findById } = require("../models/Student");
 const Swal = require("sweetalert2");
 const formidable = require("formidable");
 var fs = require("fs");
+
 
 
 
@@ -123,13 +124,7 @@ route.post(
 
 
 
-function ensureAuth(req, res, next) {
-  if (req.session.user) {
-    next();
-  } else {
-    res.redirect("/login");
-  }
-}
+
 function ensureStudent(req, res, next) {
   const secret = req.session.user.Auth;
   if (secret === "SupAuth_$") {

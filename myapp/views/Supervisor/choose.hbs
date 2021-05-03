@@ -77,13 +77,13 @@
 
                                 {{#each examiners}}
 
-                                {{#ifEquals examinerType "Examiner 1"}}
+                     
 
-                                <option {{#ifEquals _id ../student.ExaminerOneId._id}} selected {{/ifEquals}}
+                                <option 
                                     value="{{_id}}">{{fullName}} </option>
 
 
-                                {{/ifEquals}}
+                           
 
                                 {{/each}}
                                 {{/select}}
@@ -116,12 +116,12 @@
                                 <option value="null" selected>>unSelect</option>
                                 {{#each examiners}}
 
-                                {{#ifEquals examinerType "Examiner 2" }}
+                                
 
                                 <option value="{{_id}}">{{fullName}} </option>
 
 
-                                {{/ifEquals}}
+                               
 
 
 

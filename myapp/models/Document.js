@@ -12,13 +12,8 @@ const UserSchema = new mongoose.Schema(
 
 
 		},
-		document: {
+		documentName: {
 			type: String,
-
-		},
-		fileLink: {
-			type: String,
-			required: true
 
 		},
 		createdAt: {

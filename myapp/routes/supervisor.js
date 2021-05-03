@@ -10,6 +10,8 @@ const { findById } = require("../models/Student");
 const Swal = require("sweetalert2");
 const formidable = require("formidable");
 var fs = require("fs");
+const {ensureAuth}=require('../middleware/auth')
+
 
 //define storage for the images
 const storage = multer.diskStorage({
@@ -99,7 +101,7 @@ route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
     }).lean().populate("ExaminerOneId").populate("ExaminerTwoId").populate("chairPersonId");
 
     // i tried chairpeople it did work but gives the id instead of the name
-    
+
 
   //  // await allstudents.populate("chairPersonId");
   //   await allstudents.populate("ExaminerOneId").execPopulate();
@@ -202,7 +204,7 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
 });
 route.get("/signout", (req, res, next) => {
   req.session.destroy();
-  res.render("login", { layout: "mainSV" });
+  res.render("login", { layout: false });
 });
 
 route.post("/documents", function (request, result) {
@@ -425,12 +427,15 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
             console.log("we hit an error" + err);
             res.json({
               message: "Database Update Failure",
+              
             });
+
           }
 
           console.log("This is the Response: " + response);
 
           // res.redirect('students')
+
         }
       );
     } else {
@@ -463,13 +468,7 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
   }
 });
 
-function ensureAuth(req, res, next) {
-  if (req.session.user) {
-    next();
-  } else {
-    res.redirect("/login");
-  }
-}
+
 function ensureSupervisor(req, res, next) {
   const secret = req.session.user.Auth;
   if (secret === "SupAuth_$") {

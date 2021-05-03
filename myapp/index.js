@@ -16,6 +16,9 @@ const { ifEquals, select } = require("./helpers/hbs");
 const Swal = require("sweetalert2");
 const { v4: uuidv4 } = require("uuid");
 var nodemailer = require('nodemailer');
+const cors = require('cors');
+const fileUpload = require('express-fileupload');
+
 
 
 const bcrypt = require("bcryptjs");
@@ -37,8 +40,14 @@ app.use(
   })
 );
 
+
+
+
+
+
 app.use(express.static(path.join(__dirname, "./public")));
-app.use("/", require("./routes/routes"));
+
+
 
 const connectDB = async () => {
   try {
@@ -61,15 +70,16 @@ const connectDB = async () => {
 // body parser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-//view engine
+
 app.engine(
   "hbs",
   exphbs({
-    helpers: { ifEquals, select },
-    defaultLayout: "main",
+    helpers: { ifEquals, select},
+    defaultLayout: false,
     extname: "hbs",
   })
 );
+app.set("view engine", "hbs");
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -86,7 +96,8 @@ var transporter = nodemailer.createTransport({
   html: ''// plain text body
 };
 
-
+// The render render a hbs file
+// redirect redirect to a route 
 
 
 
@@ -94,11 +105,16 @@ app.get("/", (req, res) => {
   res.redirect("/login");
 });
 app.get("/signup", (req, res) => {
-  res.redirect("Rform", { layout: false });
+  res.render("Rform", {layout:'main'});
 });
 
 app.get("/login", (req, res) => {
-  res.render("login", { layout: false });
+  res.render("login");
+});
+
+app.get("/signout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/login");
 });
 
 app.get("/resetPassword", (req, res) => {
@@ -402,6 +418,9 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
+
+  //the input should be whitelisted.
+  
   // console.log(req.body);
 
   const { email, password } = req.body;
@@ -414,6 +433,7 @@ app.post("/login", async (req, res) => {
       var userData_ST = "";
       var userData_SP = "";
       var userData_EX = "";
+      var userData_AD = "";
 
       switch (user.type) {
         case "Chairperson":
@@ -462,11 +482,16 @@ app.post("/login", async (req, res) => {
 
           break;
         case "Admin":
-          console.log("Admin");
-          req.session.user = user;
+          try {
+            userData_AD = await ADMIN.findById(user.userId);
+            req.session.user = userData_AD;
+          } catch (error) {
+            console.log(error);
+          }
           break;
 
         default:
+          res.redirect("/login");
           break;
       }
 
@@ -474,65 +499,18 @@ app.post("/login", async (req, res) => {
       //  console.log('The User Type: ',user.type);
     } else {
       res.render("login", {
-        layout: false,
         wrongPass: "Wrong email or password",
       });
     }
   } else {
-    console.log(user);
+    console.log('IS it null?',user);
     res.render("login", {
-      layout: false,
       wrongPass: "Wrong email or password",
     });
 
     //return res.status(400).send("Cannot find username");
   }
-  //   try {
-  //     if (user.type === 'admin') {
-
-  //       if (await bcrypt.compare(req.body.password, user.password)) {
-  //         req.session.user = user;
-  //          res.redirect('adminHome')
-  //         // console.log('Nice', user)
-  //       }
-
-  //     }else if(user.type === 'student') {
-
-  //       if (await bcrypt.compare(req.body.password, user.password)) {
-  //         req.session.user = user;
-
-  //          res.redirect('studentPage')
-  //       }
-
-  //       } else if(user.type == 'supervisor')
-  //       {
-
-  //         if (await bcrypt.compare(req.body.password, user.password)) {
-  //           req.session.user = user;
-  //            res.redirect('student')
-  //           // console.log('Nice', user)
-  //         }
-
-  //       } else if(user.type == 'examiner')
-  //       {
-  //         if (await bcrypt.compare(req.body.password, user.password)) {
-  //           req.session.user = user;
-  //            res.redirect('adminHome')
-  //           // console.log('Nice', user)
-  //         }
-
-  //       } else {
-  //         res.render('login', { fail: true })
-  //         res.send('pass is wrong')
-  //       }
-  //     } catch {
-  //     res.status(500).send()
-  //   }
-
-  // } else {
-  //   return res.status(400).send('Cannot find username')
-
-  // }
+  
 });
 
 app.use("/Student", require("./routes/student"));
@@ -545,7 +523,7 @@ app.use("/Admin", require("./routes/admin"));
 
 // });
 
-app.set("view engine", "hbs");
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

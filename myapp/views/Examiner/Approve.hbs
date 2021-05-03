@@ -348,14 +348,26 @@
 
 
                                         <td style="width: 20%;">
-                                            {{#if internalExaminerApproved}}
-
-                                            Approved
+                                            
+                                          {{#ifEquals user._id  examinerOneId}}
+                                                {{#if examinerOneApproved}}
+                                            <p> Approved</p>
+                                                
+                                                {{else}}
+                                                <p> Not Approved</p>
+                                                {{/if}}
 
                                             {{else}}
 
-                                            <p>Not approved</p>
-                                            {{/if}}
+                                               {{#if examinerTwoApproved}}
+                                            <p> Approved</p>
+                                                
+                                                {{else}}
+                                                <p> Not Approved</p>
+                                                {{/if}}
+
+
+                                              {{/ifEquals}}
 
                                         </td>
                                         <td>

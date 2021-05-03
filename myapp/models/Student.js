@@ -49,21 +49,21 @@ const UserSchema = new mongoose.Schema({
   chairPersonApproved: {
     type: Boolean,
   },
-  examinerTowApproved: {
+  examinerTwoApproved: {
     type: Boolean,
   },
   chairPersonId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Chairperson",
+    ref: "chairperson",
   },
   submittedDate: {
     type: "date",
   },
-  ExaminerOneId: {
+  examinerOneId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "examiner",
   },
-  ExaminerTwoId: {
+  examinerTwoId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "examiner",
   },
