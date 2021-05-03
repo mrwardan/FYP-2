@@ -117,6 +117,8 @@ app.get("/signout", (req, res) => {
   res.redirect("/login");
 });
 
+// wardan is king
+
 app.get("/resetPassword", (req, res) => {
   res.render("resetPassword", { layout: false });
 });
