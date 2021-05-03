@@ -468,7 +468,6 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
   }
 });
 
-
 function ensureSupervisor(req, res, next) {
   const secret = req.session.user.Auth;
   if (secret === "SupAuth_$") {

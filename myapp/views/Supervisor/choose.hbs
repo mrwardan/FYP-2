@@ -38,7 +38,10 @@
 
                 <!-- Select Basic -->
                  {{log " chair:" student.chairPersonId }}
+<<<<<<< HEAD
                  {{log " ex1:" student.ExaminerOneId }}
+=======
+>>>>>>> ea3f96259be5ce2faec98fb3b0fded629c6f0aab
                
  
 
@@ -77,14 +80,25 @@
 
                                 {{#each examiners}}
 
+<<<<<<< HEAD
                      
+=======
+                                {{#ifEquals examinerType "Examiner 1"}}
+
+                                <option {{#ifEquals _id ../student.ExaminerOneId._id}} selected {{/ifEquals}}
+                                    value="{{_id}}">{{fullName}} </option>
+
+>>>>>>> ea3f96259be5ce2faec98fb3b0fded629c6f0aab
 
                                 <option 
                                     value="{{_id}}">{{fullName}} </option>
 
+<<<<<<< HEAD
 
                            
 
+=======
+>>>>>>> ea3f96259be5ce2faec98fb3b0fded629c6f0aab
                                 {{/each}}
                                 {{/select}}
 
@@ -116,12 +130,20 @@
                                 <option value="null" selected>>unSelect</option>
                                 {{#each examiners}}
 
+<<<<<<< HEAD
                                 
 
                                 <option value="{{_id}}">{{fullName}} </option>
 
 
                                
+=======
+                                {{#ifEquals examinerType "Examiner 2" }}
+
+                                <option value="{{_id}}">{{fullName}} </option>
+>>>>>>> ea3f96259be5ce2faec98fb3b0fded629c6f0aab
+
+
 
 
 

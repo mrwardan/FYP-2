@@ -232,12 +232,15 @@ route.post("/editinfo", ensureAuth, ensureAdmin, async (req, res, next) => {
           });
         } else {
 
-
        
         console.log("This is the Response: " + response);
        
         res.redirect("profile");
 
+       
+        console.log("This is the Response: " + response);
+       
+        res.redirect("profile");
 
         }
         req.session.user = response;
