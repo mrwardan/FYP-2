@@ -10,6 +10,8 @@ const multer = require("multer");
 const path = require("path");
 const Swal = require("sweetalert2");
 const {ensureAuth}=require('../middleware/auth')
+const {ensureAdmin}=require('../middleware/auth')
+
 
 
 //define storage for the images
@@ -53,8 +55,12 @@ function checkFileType(file, cb) {
     cb("Error: Images Only!");
   }
 }
+route.get("/adminHome", ensureAuth, ensureAdmin, (req, res) => {
+  res.render("adminHome", { user: req.session.user });
+});
 
 route.get("/dashboard", ensureAuth, ensureAdmin, async(req, res, next) => {
+  console.log();
   let adminid = req.session.user.userId;
   const admin = await ADMIN.findById(adminid).lean();
   res.render("Admin/adminHome", {  user: admin,layout: "mainAdmin" });
@@ -75,7 +81,7 @@ route.get("/editinfo", ensureAuth, ensureAdmin, (req, res, next) => {
   res.render("Admin/editinfo", { user: req.session.user, layout: "mainAdmin" });
 });
 
-route.get("/manageUsers", ensureAuth, ensureAdmin, async (req, res) => {
+route.get("/manageUsers",  async (req, res) => {
   const admins = await ADMIN.find({}).lean();
   const examiners = await EXAMINER.find({}).lean();
   const students = await STUDENT.find({}).lean();
@@ -168,9 +174,7 @@ route.get("/signout", (req, res) => {
   res.redirect("/login");
 });
 
-route.get("/adminHome", ensureAuth, ensureAdmin, (req, res) => {
-  res.render("adminHome", { user: req.session.user });
-});
+
 
 route.post(
   "/profile",
@@ -208,8 +212,9 @@ route.post(
 route.post("/editinfo", ensureAuth, ensureAdmin, async (req, res, next) => {
   const { fullName, phone, postion, institute, major } = req.body;
 
-  //console.log("The request file:", req.file);
+  console.log("The request :", req.body);
   var admin_id = req.session.user.userId;
+  
 
   try {
     await ADMIN.findByIdAndUpdate(
@@ -252,12 +257,6 @@ route.post("/editinfo", ensureAuth, ensureAdmin, async (req, res, next) => {
 });
 
 
-function ensureAdmin(req, res, next) {
-  if (req.session.user.type === "Admin") {
-    next();
-  } else {
-    res.redirect(req.get("referer"));
-  }
-}
+
 
 module.exports = route;

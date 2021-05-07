@@ -109,6 +109,7 @@ app.get("/signup", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
+  console.log('hmm',req.body);
   res.render("login");
 });
 
@@ -484,6 +485,7 @@ app.post("/login", async (req, res) => {
 
           break;
         case "Admin":
+          console.log('fmm',req.body);
           try {
             userData_AD = await ADMIN.findById(user.userId);
             req.session.user = userData_AD;
@@ -498,7 +500,7 @@ app.post("/login", async (req, res) => {
       }
 
       res.redirect(user.type + "/dashboard");
-      //  console.log('The User Type: ',user.type);
+        console.log('The User Type: ',user.type);
     } else {
       res.render("login", {
         wrongPass: "Wrong email or password",

@@ -1,98 +1,93 @@
-
-  {{>slideBar}}
-  <div class="main">
-
-
-<form class="form-horizontal"  method="POST" action="/Admin/editinfo">
-  <fieldset>
+{{>slideBar}}
+<div class="main">
+  <header>
+    <br>
     <div id="legend">
-      <legend class="">Edit Your Information</legend>
+      <span class=" text-left bg-light">
+        <h2>Edit Information</h2>
+      </span>
     </div>
-  
- 
-     <div class="control-group">
-      <!-- Username -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>Email:</strong> <span>{{user.email}}</span>
 
+  </header>
+  <hr>
+  <br>
+  <form class="form-horizontal" method="POST" action="/Admin/editinfo">
+    <div class="cotainer">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">Edit Info</div>
+            <div class="card-body">
+              <form class="form-horizontal" action='' method="POST">
+
+
+                <div class="form-group row">
+                  <label for="email_address" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
+                  <div class="col-md-6">
+                    <input type="text" id="email_address" class="form-control" name="email" value="{{user.email}}"
+                      disabled>
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label for="full_name" class="col-md-4 col-form-label text-md-right">Full Name</label>
+                  <div class="col-md-6">
+                    <input type="text" id="full_name" class="form-control" name="fullName" value="{{user.fullName}}">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="phone_number" class="col-md-4 col-form-label text-md-right">Institute</label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" name="institute" value="{{user.institute}}">
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label for="phone_number" class="col-md-4 col-form-label text-md-right">Postion</label>
+                  <div class="col-md-6">
+                    <input type="text" id="postion" name="postion" value="{{user.postion}}" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label for="phone_number" class="col-md-4 col-form-label text-md-right">Phone Number</label>
+                  <div class="col-md-6">
+                    <input type="text" name="phone" value="{{user.phone}}" class="form-control">
+                  </div>
+                </div>
+
+
+                <div class="form-group row">
+                  <label for="permanent_address" class="col-md-4 col-form-label text-md-right">Major
+                    No:</label>
+                  <div class="col-md-6">
+                    <input type="text" id="major" name="major" value="{{user.major}}" class="form-control">
+                  </div>
+                </div>
+                <br>
+
+
+
+                <div class="control-group">
+
+                  <div class="col-md-6 offset-md-4">
+                    <button type="submit" value="submit" class="btn btn-primary">
+                      Submit
+                    </button>
+                  </div>
+
+
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-     <div class="control-group">
-      <!-- Username -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>staffNo:</strong> <span>{{user.staffNo}}</span>
-
-      </div>
-    </div>
 
 
-
-      <div class="control-group">
-      <!-- Username -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>Full Name:</strong> <span></span>
-
-        <input type="text" id="fullName" name="fullName" value="{{user.fullName}}" class="input-xlarge">
-      </div>
-    </div>
-
-  <div class="control-group">
-      <!-- institute -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong> Institute:</strong> <span></span>
-
-        <input type="text" id="institute" name="institute"  value="{{user.institute}}" class="input-xlarge">
-      </div>
-    </div>
-
-      <div class="control-group">
-      <!-- postion -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>Postion:</strong> <span></span>
-
-        <input type="text" id="postion" name="postion" value="{{user.postion}}" class="input-xlarge">
-      </div>
-    </div>
-    
+  </form>
 
 
-      <div class="control-group">
-      <!-- Username -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>Phone:</strong> <span></span>
-
-        <input type="text" id="phone" name="phone"  value="{{user.phone}}"  class="input-xlarge">
-      </div>
-    </div>
-
-       <div class="control-group">
-      <!-- Username -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>Major:</strong> <span></span>
-
-        <input type="text" id="major" name="major" value="{{user.major}}"  class="input-xlarge">
-      </div>
-    </div>
-
-    
- 
-   
- 
-    <div class="control-group">
-      <!-- Button -->
-      <div class="controls">
-        <button class="btn btn-success" value="submit">Submit</button>
-      </div>
-    </div>
-  </fieldset>
-</form>
-
-  </div>
+</div>
