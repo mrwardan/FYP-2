@@ -1,0 +1,199 @@
+{{>slidebar_SV}}
+
+
+<!-- Modal -->
+
+
+
+<div class="main">
+
+    <div class="pagetitle">
+        <br>
+
+        Student's Viva Documents
+
+    </div>
+    <hr>
+
+
+    <div class="" id="proposal">
+
+        <div class="card">
+            <h5 class="card-header h5">The proposal</h5>
+            <div class="card-body">
+                <h5 class="card-title">{{stu.fullName}}'s proposal</h5>
+
+
+
+
+                {{#each doc}}
+
+
+                {{#ifEquals fileType "proposal"}}
+
+                <p class="card-text">The file uploaded by the student is: {{#toSplitFile documentName}}
+                    {{/toSplitFile}}</p>
+
+
+
+
+
+
+
+
+
+            </div>
+
+            <div class="text-center">
+
+                 <a href="/upload/images/{{documentName}}"  class=" text-center btn btn-primary " type="submit"
+                    value="Download">
+
+                    Preview
+
+                </a>
+
+
+
+                <a href="/upload/images/{{documentName}}" download class=" text-center btn btn-primary " type="submit"
+                    value="Download">
+
+                    Download
+
+                </a>
+
+            </div>
+
+
+            {{/ifEquals}}
+            {{/each}}
+
+            <br>
+
+
+
+
+        </div>
+
+    </div>
+    <br>
+    <hr>
+
+    <div class="" id="proposal">
+
+        <div class="card">
+            <h5 class="card-header h5">The Presentation Slides</h5>
+            <div class="card-body">
+                <h5 class="card-title">{{stu.fullName}}'s Presentation Slides</h5>
+
+                {{#each doc}}
+
+
+                {{#ifEquals fileType "Presentation"}}
+
+                <p class="card-text">The file uploaded by the student is: {{#toSplitFile documentName}}
+                    {{/toSplitFile}}</p>
+
+
+            </div>
+
+            <div class="text-center">
+
+
+                <a href="/upload/images/{{documentName}}"  class=" text-center btn btn-primary " type="submit"
+                    value="Download">
+
+                    Preview
+
+                </a>
+
+                <a href="/upload/images/{{documentName}}" download class=" text-center btn btn-primary " type="submit"
+                    value="Download">
+
+                    Download
+
+                </a>
+
+            </div>
+            {{/ifEquals}}
+            {{/each}}
+            <br>
+        </div>
+    </div>
+
+    <br>
+    <hr>
+
+
+
+    <div class="" id="proposal">
+
+        <div class="card">
+            <h5 class="card-header h5">Thesis</h5>
+            <div class="card-body">
+                <h5 class="card-title">{{stu.fullName}}'s thesis</h5>
+
+                {{#each doc}}
+
+
+                {{#ifEquals fileType "thesis"}}
+
+                <p class="card-text">The file uploaded by the student is: {{#toSplitFile documentName}}
+                    {{/toSplitFile}}</p>
+
+
+
+            </div>
+
+              <div class="text-center">
+
+                   <a href="/upload/images/{{documentName}}"  class=" text-center btn btn-primary " type="submit"
+                    value="Download">
+
+                    Preview
+
+                </a>
+
+
+                <a href="/upload/images/{{documentName}}" download class=" text-center btn btn-primary " type="submit"
+                    value="Download">
+
+                    Download
+
+                </a>
+
+            </div>
+<br>
+
+
+            {{/ifEquals}}
+
+
+            {{/each}}
+        </div>
+
+
+
+    </div>
+    <br>
+    <hr>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<br>
+<hr>
+
+
+
+
+
+</div>

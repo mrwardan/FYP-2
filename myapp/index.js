@@ -12,16 +12,17 @@ const EXAMINER = require("./models/Examiner");
 const CHAIRPERSON = require("./models/Chairperson");
 const multer = require("multer");
 const MongoStore = require("connect-mongo");
-const { ifEquals, select } = require("./helpers/hbs");
+const { ifEquals, select, ifIn,toSplitFile } = require("./helpers/hbs");
 const Swal = require("sweetalert2");
 const { v4: uuidv4 } = require("uuid");
-var nodemailer = require('nodemailer');
-const cors = require('cors');
-const fileUpload = require('express-fileupload');
-
-
+var nodemailer = require("nodemailer");
+const cors = require("cors");
+const fileUpload = require("express-fileupload");
+const logger = require("./middleware/logger");
 
 const bcrypt = require("bcryptjs");
+const { getLogger } = require("nodemailer/lib/shared");
+const { nextTick } = require("process");
 const app = express();
 const port = process.env.PORT || 9999;
 const DBurl =
@@ -40,14 +41,7 @@ app.use(
   })
 );
 
-
-
-
-
-
 app.use(express.static(path.join(__dirname, "./public")));
-
-
 
 const connectDB = async () => {
   try {
@@ -70,11 +64,13 @@ const connectDB = async () => {
 // body parser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+//initilize middelware
+app.use(logger)
 
 app.engine(
   "hbs",
   exphbs({
-    helpers: { ifEquals, select},
+    helpers: { ifEquals, select, ifIn, toSplitFile},
     defaultLayout: false,
     extname: "hbs",
   })
@@ -82,34 +78,33 @@ app.engine(
 app.set("view engine", "hbs");
 
 var transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
-         user: 'documentvivasystem@gmail.com',
-         pass: 'M1234mras'
-     }
- });
+    user: "documentvivasystem@gmail.com",
+    pass: "M1234mras",
+  },
+});
 
- const mailOptions = {
-  from: 'documentvivasystem@gmail.com', // sender address
-  to: '', // list of receivers
-  subject: 'Use the link to change your password', // Subject line
-  html: ''// plain text body
+const mailOptions = {
+  from: "documentvivasystem@gmail.com", // sender address
+  to: "", // list of receivers
+  subject: "Use the link to change your password", // Subject line
+  html: "", // plain text body
 };
 
+
 // The render render a hbs file
-// redirect redirect to a route 
-
-
+// redirect redirect to a route
 
 app.get("/", (req, res) => {
   res.redirect("/login");
 });
 app.get("/signup", (req, res) => {
-  res.render("Rform", {layout:'main'});
+  res.render("Rform", { layout: "main" });
 });
 
 app.get("/login", (req, res) => {
-  console.log('hmm',req.body);
+ // console.log("hmm", req.body);
   res.render("login");
 });
 
@@ -133,7 +128,6 @@ app.get("/changePassword", (req, res) => {
 app.post("/changePassword", async (req, res) => {
   const { newPass1, newpass2, code } = req.body;
   console.log(req.body);
- 
 
   var foundCode = await USER.findOne({ resetCode: code });
 
@@ -143,24 +137,22 @@ app.post("/changePassword", async (req, res) => {
 
     try {
       console.log("redwan");
-      console.log('newPass1', newPass1);
-      console.log('newPass2', newpass2);
-
+      console.log("newPass1", newPass1);
+      console.log("newPass2", newpass2);
 
       if (newPass1 === newpass2) {
-        console.log('wardan');
+        console.log("wardan");
 
         let hashPass = await bcrypt.hash(newpass2, 7);
 
-         console.log('hashPass:  ', hashPass);
+        console.log("hashPass:  ", hashPass);
 
-         try {
-
+        try {
           await USER.findByIdAndUpdate(
             foundCode._id,
-            { password: hashPass, resetCode:'' },
+            { password: hashPass, resetCode: "" },
             { new: true },
-  
+
             function (err, response) {
               // Handle any possible database errors
               if (err) {
@@ -169,19 +161,16 @@ app.post("/changePassword", async (req, res) => {
                   message: "Database Update Failure",
                 });
               }
-  
-              console.log("This is the Response with new password: " + response);
+
+              console.log(
+                "This is the Response with new password: " + response
+              );
               res.send("Password change you can login");
             }
           );
-           
-         } catch (error) {
+        } catch (error) {
           res.json(error);
-           
-         }
-
-
-       
+        }
       }
     } catch (error) {
       res.json(error);
@@ -221,38 +210,30 @@ app.post("/resetPassword", async (req, res) => {
           link = `http://localhost:9999/changePassword?code=${hash}`;
           console.log(link);
 
-          res.render("resetPassword", { layout: false, msg:' If an account exists for that email address, we will email you instructions for resetting your password. ' });
-
-          
-
-          
-
-
-
+          res.render("resetPassword", {
+            layout: false,
+            msg:
+              " If an account exists for that email address, we will email you instructions for resetting your password. ",
+          });
 
           console.log("This is the Response: " + response);
-          mailOptions.to=email;
+          mailOptions.to = email;
           mailOptions.html = ` 
           <a href="${link}"> Click here to reset your password</a>
-          `
-
+          `;
 
           transporter.sendMail(mailOptions, function (err, info) {
-            if(err)
-              console.log(err)
-            else
-              console.log(info);
-         });
-
-
-
+            if (err) console.log(err);
+            else console.log(info);
+          });
         }
       );
-    } else
-    {
-
-      res.render("resetPassword", { layout: false, msg:' If an account exists for that email address, we will email you instructions for resetting your password. ' });
-
+    } else {
+      res.render("resetPassword", {
+        layout: false,
+        msg:
+          " If an account exists for that email address, we will email you instructions for resetting your password. ",
+      });
     }
   } catch (error) {
     res.json(error);
@@ -406,24 +387,18 @@ app.post("/signup", async (req, res) => {
     }
     throw error;
   }
-  if (req.session.user_id === undefined)
-  {
+  if (req.session.user_id === undefined) {
     res.redirect("login");
-  } else
-  {
+  } else {
     if (req.session.user.type === "Admin") {
       res.redirect(req.session.user.type + "/Manageusers");
     }
   }
-
-   
-
 });
 
 app.post("/login", async (req, res) => {
-
   //the input should be whitelisted.
-  
+
   // console.log(req.body);
 
   const { email, password } = req.body;
@@ -485,9 +460,12 @@ app.post("/login", async (req, res) => {
 
           break;
         case "Admin":
-          console.log('fmm',req.body);
+          console.log("fmm", req.body);
           try {
-            userData_AD = await ADMIN.findById(user.userId);
+            console.log("User ::: ", user);
+            userData_AD = await ADMIN.findById(user.userId).lean();
+            userData_AD.type = user.type;
+            console.log("admin is" + userData_AD);
             req.session.user = userData_AD;
           } catch (error) {
             console.log(error);
@@ -500,21 +478,20 @@ app.post("/login", async (req, res) => {
       }
 
       res.redirect(user.type + "/dashboard");
-        console.log('The User Type: ',user.type);
+      console.log("The User Type: ", user.type);
     } else {
       res.render("login", {
         wrongPass: "Wrong email or password",
       });
     }
   } else {
-    console.log('IS it null?',user);
+    console.log("IS it null?", user);
     res.render("login", {
       wrongPass: "Wrong email or password",
     });
 
     //return res.status(400).send("Cannot find username");
   }
-  
 });
 
 app.use("/Student", require("./routes/student"));
@@ -526,8 +503,6 @@ app.use("/Admin", require("./routes/admin"));
 //   res.status(404).render('login');
 
 // });
-
-
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

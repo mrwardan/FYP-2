@@ -4,14 +4,14 @@ const STUDENT = require("../models/Student");
 const SUPERVISOR = require("../models/Supervisor");
 const EXAMINER = require("../models/Examiner");
 const CHAIRPERSON = require("../models/Chairperson");
+const DOCUMENT = require("../models/Document");
 const multer = require("multer");
 const path = require("path");
 const { findById } = require("../models/Student");
 const Swal = require("sweetalert2");
 const formidable = require("formidable");
 var fs = require("fs");
-const {ensureAuth}=require('../middleware/auth')
-
+const { ensureAuth } = require("../middleware/auth");
 
 //define storage for the images
 const storage = multer.diskStorage({
@@ -54,6 +54,7 @@ function checkFileType(file, cb) {
   }
 }
 
+//dashboard-no route
 route.get("/", ensureAuth, ensureSupervisor, async (req, res, next) => {
   res.render("Supervisor/Dashboard", {
     user: req.session.user,
@@ -63,7 +64,7 @@ route.get("/", ensureAuth, ensureSupervisor, async (req, res, next) => {
 
   //  console.log('User Name from session : ', user.fullName );
 });
-
+//dashboard
 route.get(
   "/dashboard",
   ensureAuth,
@@ -78,36 +79,38 @@ route.get(
     //  console.log('User Name from session : ', user.fullName );
   }
 );
-
+//home page
 route.get("/home", ensureAuth, ensureSupervisor, (req, res, next) => {
   res.render("Supervisor/Dashboard", {
     user: req.session.user,
     layout: "mainSV.hbs",
   });
 });
+//profile page
 route.get("/profile", ensureAuth, ensureSupervisor, (req, res, next) => {
   res.render("Supervisor/profile", {
     user: req.session.user,
     layout: "mainSV.hbs",
   });
 });
-
+//students page
 route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
   try {
-   
-
     const allstudents = await STUDENT.find({
       supervisorId: req.session.user._id,
-    }).lean().populate("ExaminerOneId").populate("ExaminerTwoId").populate("chairPersonId");
+    })
+      .lean()
+      .populate("ExaminerOneId")
+      .populate("ExaminerTwoId")
+      .populate("chairPersonId");
 
     // i tried chairpeople it did work but gives the id instead of the name
 
+    //  // await allstudents.populate("chairPersonId");
+    //   await allstudents.populate("ExaminerOneId").execPopulate();
+    //   await allstudents.populate("ExaminerTwoId").execPopulate();
 
-  //  // await allstudents.populate("chairPersonId");
-  //   await allstudents.populate("ExaminerOneId").execPopulate();
-  //   await allstudents.populate("ExaminerTwoId").execPopulate();
-
-    console.log('asdfghjhgfdsa');
+    //console.log('asdfghjhgfdsa');
     //console.log(allstudents);
     console.log("THE STUDENT INFORMATION: ", allstudents);
 
@@ -120,14 +123,14 @@ route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
     res.json(error);
   }
 });
-
+//edit info page
 route.get("/editinfo", ensureAuth, ensureSupervisor, (req, res, next) => {
   res.render("Supervisor/editinfo", {
     user: req.session.user,
     layout: "mainSV.hbs",
   });
 });
-
+//add student
 route.get(
   "/addStudent",
   ensureAuth,
@@ -141,7 +144,7 @@ route.get(
     });
   }
 );
-
+//manage examiners
 route.get(
   "/manageExaminers",
   ensureAuth,
@@ -153,20 +156,77 @@ route.get(
     });
   }
 );
+//students documents
+route.get("/studentDoc", ensureAuth, ensureSupervisor, async (req, res, next) => {
 
-route.get(
-  "/studentDocuments",
-  ensureAuth,
-  ensureSupervisor,
-  async (req, res, next) => {
-    res.render("Supervisor/documents", {
-      user: req.session.user,
-      layout: "mainSV.hbs",
-    });
+    try {
+      var allstudents = await STUDENT.find({ supervisorId: req.session.user._id,}).lean();
+      //var doc = await DOCUMENT.findOne({ studentId: allstudents._id }).lean();
+
+      //console.log("doc it is", doc);
+
+      console.log("THE STUDENT INFORMATION: ", allstudents);
+
+      res.render("Supervisor/document", {
+        students: allstudents,
+        user: req.session.user,
+        layout: "mainSV.hbs",
+      });
+    } catch (error) {
+      res.json(error);
+    }
   }
 );
 
-//
+//show students documents
+route.get("/showDocument/:id", ensureAuth, ensureSupervisor, async (req, res, next) => {
+
+  console.log("id:", req.params.id);
+
+    try {
+     const  stu = await STUDENT.findOne({ _id: req.params.id }).lean();
+     const  doc = await DOCUMENT.find({studentId: stu._id}).lean();
+      console.log("The student is: ", stu.fullName);
+      console.log("The doc is: ", doc);
+
+      res.render("Supervisor/showDocument", {
+      
+        user: req.session.user,  stu, doc,
+        layout: "mainSV.hbs",
+      });
+
+    } catch (error) {
+      res.json(error);
+    }
+    
+}
+);
+
+
+
+
+
+route.post(
+  "/studentDoc",
+  ensureAuth,
+  ensureSupervisor,
+  async (req, res, next) => {
+    var student = await STUDENT.findOne({ matricNo: req.body.matricNo }).lean();
+    // console.log("The student is: ", student);
+    //console.log("The student Id is: ", student);
+
+    try {
+      var doc = await DOCUMENT.findOne({ studentId: student._id }).lean();
+      //console.log('doc:', doc.documentName);
+    } catch (error) {
+      res.json(error);
+    }
+    //  re.json(doc)
+    // res.redirect("studentDocuments");
+  }
+);
+
+//chose
 route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
   const { id } = req.query;
   // const id = req.params.id;
@@ -202,11 +262,38 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
 
   //------
 });
+//sign out
 route.get("/signout", (req, res, next) => {
   req.session.destroy();
   res.render("login", { layout: false });
 });
 
+//delete student
+route.get(
+  "/deleteStudent/:id",
+  ensureAuth,
+  ensureSupervisor,
+  async (req, res, next) => {
+    console.log("id:", req.params.id);
+
+    try {
+      stu = await STUDENT.find({ _id: req.params.id }).lean();
+
+      await STUDENT.updateOne(
+        { _id: req.params.id },
+        { $set: { supervisorId: null } }
+      );
+    } catch (error) {
+      res.json(error);
+    }
+
+    // console.log(stu);
+    //if()
+    // res.json(stu);
+    res.redirect("/Supervisor/students");
+  }
+);
+//student's viva documents
 route.post("/documents", function (request, result) {
   var formData = new formidable.IncomingForm();
   formData.parse(request, function (error, fields, files) {
@@ -217,7 +304,7 @@ route.post("/documents", function (request, result) {
     });
   });
 });
-
+//profile page
 route.post(
   "/profile",
   ensureAuth,
@@ -247,7 +334,7 @@ route.post(
     );
   }
 );
-
+//edit info post
 route.post(
   "/editinfo",
   ensureAuth,
@@ -289,7 +376,7 @@ route.post(
     }
   }
 );
-
+//add student post
 route.post(
   "/addStudent",
   ensureAuth,
@@ -325,7 +412,7 @@ route.post(
     } catch (error) {}
   }
 );
-
+//choose post
 route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
   const { matricNo, ExaminerOneId, ExaminerTwoId, chairPersonId } = req.body;
   const student = await STUDENT.findOne({ matricNo: matricNo }).lean();
@@ -427,15 +514,12 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
             console.log("we hit an error" + err);
             res.json({
               message: "Database Update Failure",
-              
             });
-
           }
 
           console.log("This is the Response: " + response);
 
           // res.redirect('students')
-
         }
       );
     } else {

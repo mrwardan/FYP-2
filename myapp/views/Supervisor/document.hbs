@@ -1,0 +1,57 @@
+
+
+{{>slidebar_SV}}
+
+<div class="main">
+
+
+  <head>
+    <h3>Student's Documents</h3>
+    <br>
+  </head>
+  <div>
+
+
+
+  
+    <table class="table" border="1">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Name</th>
+     
+    </tr>
+  </thead>
+  <tbody>
+     {{#each students}}
+    <tr>
+      <th scope="row" onclick="idynamic()"></th>
+
+      <td> 
+
+       <a href="/Supervisor/showDocument/{{_id}}">{{fullName}}</a> 
+
+      </td>
+
+  
+    </tr>
+    {{/each}}
+  
+  </tbody>
+</table>
+
+    </table>
+  </div>
+</div>
+
+
+<script>
+ var table = document.getElementsByTagName('table')[0],
+  rows = table.getElementsByTagName('tr'),
+  text = 'textContent' in document ? 'textContent' : 'innerText';
+
+for (var i = 0, len = rows.length; i < len; i++) {
+  rows[i].children[0][text] = i + ' ' + rows[i].children[0][text];
+}
+
+</script>

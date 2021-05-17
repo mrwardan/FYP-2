@@ -56,25 +56,25 @@ function checkFileType(file, cb) {
   }
 }
 route.get("/adminHome", ensureAuth, ensureAdmin, (req, res) => {
+  
   res.render("adminHome", { user: req.session.user });
 });
 
 route.get("/dashboard", ensureAuth, ensureAdmin, async(req, res, next) => {
-  console.log();
-  let adminid = req.session.user.userId;
-  const admin = await ADMIN.findById(adminid).lean();
+
+  let admin = req.session.user;
+
   res.render("Admin/adminHome", {  user: admin,layout: "mainAdmin" });
 });
 route.get("/Home", ensureAuth, ensureAdmin,async (req, res, next) => {
-  let adminid = req.session.user.userId;
-  const admin = await ADMIN.findById(adminid).lean();
+  let admin = req.session.user;
+
   res.render("Admin/adminHome", {  user: admin,layout: "mainAdmin" });
 });
 route.get("/profile", ensureAuth, ensureAdmin,async (req, res, next) => {
-  //console.log("The session user: ",req.session.user);
-  let adminid = req.session.user.userId;
-  const admin = await ADMIN.findById(adminid).lean();
-  //console.log('admin: ',admin);
+  let admin = req.session.user;
+  console.log(admin);
+ 
   res.render("Admin/profile", { user: admin,layout: "mainAdmin" });
 });
 route.get("/editinfo", ensureAuth, ensureAdmin, (req, res, next) => {
@@ -186,7 +186,7 @@ route.post(
      console.log('The req body : ',req.body);
 
     await ADMIN.findByIdAndUpdate(
-      req.session.user.userId,
+      req.session.user._id,
       { image: req.file.filename },
       { new: true },
 
@@ -199,6 +199,7 @@ route.post(
           });
         } else{
           console.log("This is the Response: " + response);
+          response.type=req.session.user.type;
           req.session.user = response;
         }
        
@@ -212,8 +213,9 @@ route.post(
 route.post("/editinfo", ensureAuth, ensureAdmin, async (req, res, next) => {
   const { fullName, phone, postion, institute, major } = req.body;
 
-  console.log("The request :", req.body);
-  var admin_id = req.session.user.userId;
+  //console.log("The request :", req.body);
+  var admin_id = req.session.user._id;
+  console.log('admin_id: ', admin_id);
   
 
   try {
@@ -239,16 +241,13 @@ route.post("/editinfo", ensureAuth, ensureAdmin, async (req, res, next) => {
 
        
         console.log("This is the Response: " + response);
-       
-        res.redirect("profile");
-
-       
-        console.log("This is the Response: " + response);
-       
-        res.redirect("profile");
+        response.type=req.session.user.type;
+        req.session.user = response;
+   
 
         }
-        req.session.user = response;
+        res.redirect("profile");
+        
       }
     );
   } catch (error) {

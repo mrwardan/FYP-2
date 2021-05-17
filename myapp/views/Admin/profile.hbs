@@ -2,7 +2,7 @@
 
 <div class="main">
 
-  <form action="/Admin/profile"  method="POST"  enctype="multipart/form-data" >
+  <form action="/Admin/profile" method="POST" enctype="multipart/form-data">
 
     <!-- ======= About Section ======= -->
     <section id="about" class="about">
@@ -18,7 +18,10 @@
 
         <div class="row">
           <div class="col-lg-4" data-aos="fade-right">
-            <img src="/upload/images/{{user.image}}" alt="no image"  class="rounded-circle" width="200" height="200" >
+            <img src="/upload/images/{{user.image}}" alt="no image" class="rounded-circle" width="200" height="200">
+
+            {{log 'Image: ' user.image}}
+
           </div>
           <div class="col-lg-8 pt-4 pt-lg-0 content" data-aos="fade-left">
             <h3> {{user.fullName}}</h3>
@@ -56,25 +59,25 @@
       </a>
 
 
- <div class="form-group">
+      <div class="form-group">
 
-     
+
         <label for="image" class="text-white">Upload image</label>
-         <i class="bi bi-card-image"></i>
+        <i class="bi bi-card-image"></i>
         <input type="file" name="image" id="image" class="form-control-file text-white">
-      </i>
+        </i>
       </div>
-   
-    
-   <div class="control-group">
-      <!-- Button -->
-      <div class="controls">
-        <button class="btn btn-success" value="submit">Submit</button>
-      </div>
-    </div>
-    
 
-    
+
+      <div class="control-group">
+        <!-- Button -->
+        <div class="controls">
+          <button class="btn btn-success" value="submit">Submit</button>
+        </div>
+      </div>
+
+
+
 
     </div>
   </form>

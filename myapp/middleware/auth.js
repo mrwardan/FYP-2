@@ -8,8 +8,8 @@ module.exports = {
             res.redirect("/login");
           }
   }, ensureAdmin: function (req, res, next) {
-    
-    if (req.session.user.type === "Admin") {
+    console.log('User Type: ',req.session.user.type);
+    if (req.session.user.type == "Admin") {
       next();
     } else {
       //res.send('love')

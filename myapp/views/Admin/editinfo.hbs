@@ -18,29 +18,33 @@
           <div class="card">
             <div class="card-header">Edit Info</div>
             <div class="card-body">
-              <form class="form-horizontal" action='' method="POST">
+              <div class="form-horizontal" >
 
 
-                <div class="form-group row">
+
+                  <div class="form-group row">
                   <label for="email_address" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
                   <div class="col-md-6">
                     <input type="text" id="email_address" class="form-control" name="email" value="{{user.email}}"
                       disabled>
                   </div>
                 </div>
-
+                <br>
                 <div class="form-group row">
                   <label for="full_name" class="col-md-4 col-form-label text-md-right">Full Name</label>
                   <div class="col-md-6">
                     <input type="text" id="full_name" class="form-control" name="fullName" value="{{user.fullName}}">
                   </div>
                 </div>
+                <br>
+
                 <div class="form-group row">
                   <label for="phone_number" class="col-md-4 col-form-label text-md-right">Institute</label>
                   <div class="col-md-6">
                     <input type="text" class="form-control" name="institute" value="{{user.institute}}">
                   </div>
                 </div>
+                <br>
 
                 <div class="form-group row">
                   <label for="phone_number" class="col-md-4 col-form-label text-md-right">Postion</label>
@@ -48,6 +52,7 @@
                     <input type="text" id="postion" name="postion" value="{{user.postion}}" class="form-control">
                   </div>
                 </div>
+                <br>
 
                 <div class="form-group row">
                   <label for="phone_number" class="col-md-4 col-form-label text-md-right">Phone Number</label>
@@ -55,7 +60,8 @@
                     <input type="text" name="phone" value="{{user.phone}}" class="form-control">
                   </div>
                 </div>
-
+                <br>
+              
 
                 <div class="form-group row">
                   <label for="permanent_address" class="col-md-4 col-form-label text-md-right">Major
@@ -78,7 +84,7 @@
 
 
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>

@@ -14,12 +14,19 @@ const UserSchema = new mongoose.Schema(
 		},
 		documentName: {
 			type: String,
+			required: true
+
+		},
+		fileType: {
+			type: String,
+			required: true
 
 		},
 		createdAt: {
 			type: Date,
 			default: Date.now
 		},
+
 	}
 )
 
