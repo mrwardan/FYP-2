@@ -387,8 +387,11 @@ app.post("/signup", async (req, res) => {
     }
     throw error;
   }
+
   if (req.session.user_id === undefined) {
+
     res.redirect("login");
+
   } else {
     if (req.session.user.type === "Admin") {
       res.redirect(req.session.user.type + "/Manageusers");

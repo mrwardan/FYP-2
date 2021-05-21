@@ -230,6 +230,7 @@ route.post(
 route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
   const { id } = req.query;
   // const id = req.params.id;
+  console.log('wardan');
 
   try {
     const student = await STUDENT.findById(id)
@@ -237,7 +238,7 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       .populate("ExaminerOneId")
       .populate("ExaminerTwoId")
       .populate("chairpeople");
-    //console.log("student");
+    console.log("student is: ?", student);
     const examiners = await EXAMINER.find({}).lean();
     const chairperson = await CHAIRPERSON.find({}).lean();
 

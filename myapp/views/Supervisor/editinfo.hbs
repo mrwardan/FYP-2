@@ -1,99 +1,120 @@
+{{>slidebar_SV}}
+<header class="header_foredit">
+
+  <h3>Edit Your Information</h3>
+  <hr>
+
+</header>
+<div class="main">
 
 
-  {{>slidebar_SV}}
-  <div class="main">
+
+  <div class=" editInfo_table text-left">
 
 
-<form class="form-horizontal"  method="POST" action="/Supervisor/editinfo">
-  <fieldset>
-    <div id="legend">
-      <legend class="">Edit Your Information</legend>
-    </div>
-  
- 
-     <div class="control-group">
-      <!-- Username -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>Email:</strong> <span>{{user.email}}</span>
+
+    <form class="form-horizontal " method="POST" action="/Supervisor/editinfo">
+
+
+
+
+
+
+
+      <div class="form-group row">
+        <!-- Username -->
+        <label for="inputEmail3" class="col-sm-2 col-form-label">Email:</label>
+        <div class="col-sm-10">
+
+          <span class="bg-success" style="color: white;">{{user.email}}</span>
+
+        </div>
+      </div>
+      <br>
+
+      <div class="form-group row">
+        <!-- Username -->
+        <label class="col-sm-2 col-form-label">StaffNo:</label>
+        <div class="col-sm-10">
+
+          <span class="bg-success" style="color: white;">{{user.staffNo}}</span>
+
+        </div>
+      </div>
+      <br>
+
+      <div class="form-group row">
+        <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+        <div class="col-sm-10">
+          <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+        </div>
 
       </div>
-    </div>
+      <br>
 
-     <div class="control-group">
-      <!-- Username -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>staffNo:</strong> <span>{{user.staffNo}}</span>
 
+
+
+
+      <div class="form-group row">
+        <!-- Username -->
+        <label class="col-sm-2 col-form-label">Name:</label>
+        <div class="col-sm-10">
+
+          <input type="text" id="inputEmail3" name="fullName" value="{{user.fullName}}" class="form-control">
+        </div>
       </div>
-    </div>
+      <br>
 
-
-
-      <div class="control-group">
-      <!-- Username -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>Full Name:</strong> <span></span>
-
-        <input type="text" id="fullName" name="fullName" value="{{user.fullName}}" class="input-xlarge">
+      <div class="form-group row">
+        <!-- institute -->
+        <label class="col-sm-2 col-form-label">Institute:</label>
+        <div class="col-sm-10">
+          <input type="text" id="inputEmail3" name="institute" value="{{user.institute}}" class="form-control">
+        </div>
       </div>
-    </div>
+      <br>
 
-  <div class="control-group">
-      <!-- institute -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong> Institute:</strong> <span></span>
+      <div class="form-group row">
+        <!-- postion -->
+        <label class="col-sm-2 col-form-label">Postion:</label>
+        <div class="col-sm-10">
 
-        <input type="text" id="institute" name="institute"  value="{{user.institute}}" class="input-xlarge">
+          <input type="text" id="inputEmail3" name="postion" value="{{user.postion}}" class="form-control">
+        </div>
       </div>
-    </div>
+      <br>
 
-      <div class="control-group">
-      <!-- postion -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>Postion:</strong> <span></span>
 
-        <input type="text" id="postion" name="postion" value="{{user.postion}}" class="input-xlarge">
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Phone:</label>
+        <div class="col-sm-10">
+          <input type="text" id="inputEmail3" name="phone" value="{{user.phone}}" class="form-control">
+        </div>
       </div>
-    </div>
-    
+      <br>
 
-
-      <div class="control-group">
-      <!-- Username -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>Phone:</strong> <span></span>
-
-        <input type="text" id="phone" name="phone"  value="{{user.phone}}"  class="input-xlarge">
+       <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Major:</label>
+        <div class="col-sm-10">
+          <input type="text" id="inputEmail3" name="major" value="{{user.major}}" class="form-control">
+        </div>
       </div>
-    </div>
+      <br>
 
-       <div class="control-group">
-      <!-- Username -->
-      <label class="control-label" ></label>
-      <div class="controls">
-                <i class="bi bi-chevron-right"></i> <strong>Major:</strong> <span></span>
 
-        <input type="text" id="major" name="major" value="{{user.major}}"  class="input-xlarge">
+      <div class="control-group text-center">
+        <!-- Button -->
+        <div class="controls">
+          <button class="btn btn-primary" value="submit">Submit</button>
+        </div>
       </div>
-    </div>
 
-    
- 
-   
- 
-    <div class="control-group">
-      <!-- Button -->
-      <div class="controls">
-        <button class="btn btn-success" value="submit">Submit</button>
-      </div>
-    </div>
-  </fieldset>
-</form>
+
+    </form>
 
   </div>
+
+
+</div>

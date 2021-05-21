@@ -9,10 +9,9 @@ const ADMIN = require("../models/Admin");
 const multer = require("multer");
 const path = require("path");
 const Swal = require("sweetalert2");
-const {ensureAuth}=require('../middleware/auth')
-const {ensureAdmin}=require('../middleware/auth')
-
-
+const { ensureAuth } = require("../middleware/auth");
+const { ensureAdmin } = require("../middleware/auth");
+const bcrypt = require("bcryptjs");
 
 //define storage for the images
 
@@ -56,32 +55,30 @@ function checkFileType(file, cb) {
   }
 }
 route.get("/adminHome", ensureAuth, ensureAdmin, (req, res) => {
-  
   res.render("adminHome", { user: req.session.user });
 });
 
-route.get("/dashboard", ensureAuth, ensureAdmin, async(req, res, next) => {
-
+route.get("/dashboard", ensureAuth, ensureAdmin, async (req, res, next) => {
   let admin = req.session.user;
 
-  res.render("Admin/adminHome", {  user: admin,layout: "mainAdmin" });
+  res.render("Admin/adminHome", { user: admin, layout: "mainAdmin" });
 });
-route.get("/Home", ensureAuth, ensureAdmin,async (req, res, next) => {
+route.get("/Home", ensureAuth, ensureAdmin, async (req, res, next) => {
   let admin = req.session.user;
 
-  res.render("Admin/adminHome", {  user: admin,layout: "mainAdmin" });
+  res.render("Admin/adminHome", { user: admin, layout: "mainAdmin" });
 });
-route.get("/profile", ensureAuth, ensureAdmin,async (req, res, next) => {
+route.get("/profile", ensureAuth, ensureAdmin, async (req, res, next) => {
   let admin = req.session.user;
   console.log(admin);
- 
-  res.render("Admin/profile", { user: admin,layout: "mainAdmin" });
+
+  res.render("Admin/profile", { user: admin, layout: "mainAdmin" });
 });
 route.get("/editinfo", ensureAuth, ensureAdmin, (req, res, next) => {
   res.render("Admin/editinfo", { user: req.session.user, layout: "mainAdmin" });
 });
 
-route.get("/manageUsers",  async (req, res) => {
+route.get("/manageUsers", async (req, res) => {
   const admins = await ADMIN.find({}).lean();
   const examiners = await EXAMINER.find({}).lean();
   const students = await STUDENT.find({}).lean();
@@ -89,8 +86,15 @@ route.get("/manageUsers",  async (req, res) => {
   const chairpeople = await CHAIRPERSON.find({}).lean();
 
   //res.json(users);
+  let totalSupervisors;
+  let totalStudents;
+  let totalExaminers;
+
+  console.log('Num of Supervisors: ',supervisors.length );
+  
 
   res.render("Admin/Dashboard", {
+    user: req.session.user,
     supervisors: supervisors,
     students: students,
     examiners: examiners,
@@ -106,6 +110,7 @@ route.get("/delete/:id", ensureAuth, ensureAdmin, async (req, res) => {
   const user2 = await CHAIRPERSON.findOne({ _id: req.params.id });
   const user3 = await SUPERVISOR.findOne({ _id: req.params.id });
   const user4 = await ADMIN.findOne({ _id: req.params.id });
+  const user5 = await STUDENT.findOne({ _id: req.params.id });
 
   switch (user.type) {
     case "Admin":
@@ -120,6 +125,13 @@ route.get("/delete/:id", ensureAuth, ensureAdmin, async (req, res) => {
         console.log("great");
 
         await SUPERVISOR.findByIdAndDelete(user3);
+      }
+      break;
+    case "Student":
+      if (user5) {
+        console.log("great");
+
+        await STUDENT.findByIdAndDelete(user5);
       }
       break;
     case "Examiner":
@@ -145,10 +157,11 @@ route.get("/delete/:id", ensureAuth, ensureAdmin, async (req, res) => {
     await USER.findByIdAndDelete(user);
   }
 
-  res.redirect("Admin/Dashboard");
+  res.redirect("/Admin/Manageusers");
 });
 
 route.get("/view/:id", ensureAuth, ensureAdmin, async (req, res) => {
+
   console.log("id: ", req.params.id);
 
   const { id } = req.params;
@@ -159,7 +172,9 @@ route.get("/view/:id", ensureAuth, ensureAdmin, async (req, res) => {
     console.log(user);
 
     if (user) {
-      res.json(user);
+
+      res.redirect("/Admin/Manageusers");
+
     } else {
       res.send("info not find");
     }
@@ -174,16 +189,172 @@ route.get("/signout", (req, res) => {
   res.redirect("/login");
 });
 
+route.get("/AdminSignup", (req, res) => {
+  res.redirect("/Admin/Manageusers");
+});
+route.post("/AdminSignup", ensureAuth, ensureAdmin, async (req, res) => {
+  const {
+    type,
+    email,
+    password: plainTextPassword,
+    fullName,
+    major,
+    phone,
+    matricNo,
+  } = req.body;
 
+  let response_Supervisor = "";
+  let response_Student = "";
+  let response_Examiner = "";
+  let response_Chairperson = "";
+  let response_Admin = "";
 
+  const password = await bcrypt.hash(plainTextPassword, 7);
+
+  try {
+    console.log("inside try");
+    console.log("The type is :", type);
+
+    switch (type) {
+      case "Admin":
+        if (req.session.user.type === "Admin") {
+          let data = {
+            fullName,
+            major,
+            phone,
+            email,
+          };
+          response_Admin = await ADMIN.create(data);
+
+          let admin_Data = {
+            type,
+            email,
+            password,
+          };
+
+          admin_Data.userId = response_Admin._id;
+          response_Admin = await USER.create(admin_Data);
+        }
+        break;
+
+      case "Supervisor":
+        let data = {
+          fullName,
+          major,
+          phone,
+          email,
+        };
+        data.staffNo = matricNo;
+        response_Supervisor = await SUPERVISOR.create(data);
+
+        let user_Data = {
+          type,
+          email,
+          password,
+        };
+
+        user_Data.userId = response_Supervisor._id;
+        response_Supervisor = await USER.create(user_Data);
+        break;
+
+      case "Chairperson":
+        console.log("inside case chair");
+
+        let Chairdata = {
+          fullName,
+          major,
+          phone,
+          email,
+        };
+        Chairdata.staffNo = matricNo;
+        response_Chairperson = await CHAIRPERSON.create(Chairdata);
+
+        let user_CData = {
+          type,
+          email,
+          password,
+        };
+
+        user_CData.userId = response_Chairperson._id;
+        response_Chairperson = await USER.create(user_CData);
+
+        console.log("user_CData", user_CData);
+
+        break;
+      case "Student":
+        let studentData = {
+          fullName,
+          major,
+          phone,
+          matricNo,
+          email,
+        };
+
+        response_Student = await STUDENT.create(studentData);
+
+        let temp_data = {
+          email,
+          password,
+          type,
+        };
+        temp_data.userId = response_Student._id;
+
+        response_Student = await USER.create(temp_data);
+
+        break;
+      case "Examiner":
+        let Ex_data = {
+          fullName,
+          major,
+          phone,
+          email,
+        };
+        Ex_data.staffNo = matricNo;
+
+        response_Examiner = await EXAMINER.create(Ex_data);
+
+        let Ex_user_Data = {
+          type,
+          email,
+          password,
+        };
+
+        Ex_user_Data.userId = response_Examiner._id;
+        response_Examiner = await USER.create(Ex_user_Data);
+
+        break;
+
+      default:
+        break;
+    }
+
+    console.log("User created successfully: ", response_Chairperson);
+    //alert('User is created successfully')
+  } catch (error) {
+    if (error.code === 11000) {
+      // duplicate key
+      return res.json({ status: "error", error: "Email already in use" });
+    }
+    throw error;
+  }
+  if (req.session.user.type === "Admin") {
+    res.redirect("/Admin/Manageusers");
+  } else {
+    {
+      console.log("req.session.user_id: ?", req.session.user);
+
+      res.redirect("login");
+    }
+  }
+});
 route.post(
   "/profile",
   ensureAuth,
   ensureAdmin,
   upload.single("image"),
   async (req, res, next) => {
-     console.log('The req file : ',req.file);
-     console.log('The req body : ',req.body);
+    console.log("The req file : ", req.file);
+    console.log("The req body : ", req.body);
 
     await ADMIN.findByIdAndUpdate(
       req.session.user._id,
@@ -197,13 +368,12 @@ route.post(
           res.json({
             message: "Database Update Failure",
           });
-        } else{
+        } else {
           console.log("This is the Response: " + response);
-          response.type=req.session.user.type;
+          response.type = req.session.user.type;
           req.session.user = response;
         }
-       
-       
+
         res.redirect("profile");
       }
     );
@@ -215,8 +385,7 @@ route.post("/editinfo", ensureAuth, ensureAdmin, async (req, res, next) => {
 
   //console.log("The request :", req.body);
   var admin_id = req.session.user._id;
-  console.log('admin_id: ', admin_id);
-  
+  console.log("admin_id: ", admin_id);
 
   try {
     await ADMIN.findByIdAndUpdate(
@@ -238,24 +407,16 @@ route.post("/editinfo", ensureAuth, ensureAdmin, async (req, res, next) => {
             message: "Database Update Failure",
           });
         } else {
-
-       
-        console.log("This is the Response: " + response);
-        response.type=req.session.user.type;
-        req.session.user = response;
-   
-
+          console.log("This is the Response: " + response);
+          response.type = req.session.user.type;
+          req.session.user = response;
         }
         res.redirect("profile");
-        
       }
     );
   } catch (error) {
     res.json(error);
   }
 });
-
-
-
 
 module.exports = route;
