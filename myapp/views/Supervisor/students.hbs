@@ -47,11 +47,6 @@
 	
 
 
-
-
-
-
-
 		#SP {
 			margin-bottom: 5em;
 		}
@@ -60,54 +55,6 @@
 			margin-bottom: 2em;
 		}
 
-
-		/* The popup form - hidden by default */
-		.form-popup {
-			display: none;
-			position: fixed;
-			border: 3px solid #f1f1f1;
-		}
-
-		/* Add styles to the form container */
-		.form-container {
-			max-width: 300px;
-			margin-left: 600px;
-			padding: 10px;
-			background-color: rgb(0, 0, 0);
-		}
-
-		/* Full-width input fields */
-		.form-container input[type=text],
-		.form-container input[type=password] {
-			width: 100%;
-			padding: 15px;
-			margin: 5px 0 45px 0;
-		}
-
-		/* When the inputs get focus, do something */
-		.form-container input[type=text]:focus,
-		.form-container input[type=password]:focus {
-			background-color: rgb(224, 212, 212);
-			outline: none;
-		}
-
-		/* Set a style for the submit/login button */
-		.form-container .btn {
-			color: white;
-			padding: 16px 20px;
-			border: solid white;
-			cursor: pointer;
-			width: 100%;
-			margin-bottom: 10px;
-			opacity: 0.8;
-		}
-
-
-		/* Add some hover effects to buttons */
-		.form-container .btn:hover,
-		.open-button:hover {
-			opacity: 1;
-		}
 	</style>
 </head>
 
@@ -130,25 +77,10 @@
 	<hr>
 
 
-	<div id="ADS" class="text-center">
-
-		<button type="button" class="btn btn-danger" onclick="openForm()">Add New Student?</button>
-
-	</div>
 
 
 
-	<div class="form-popup" id="myForm">
-
-		<form action="addStudent" method="POST" class="form-container">
-
-			<label for="text" style="color: white;"><b>Matric Card No:</b></label>
-			<input type="text" placeholder="Enter Matric Card" name="matricNo" required>
-			<button type="submit" class="btn" value="submit">Add</button>
-			<button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-
-		</form>
-	</div>
+	
 
 
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
@@ -193,13 +125,16 @@
 
 								</td>
 								<td>
-									<a href="#">{{ExaminerOneId.fullName}}</a>
+
+									<a href="#">{{examinerOneId.fullName}}</a>
 
 								</td>
 
 
 								<td style="width: 20%;">
-									<a href="#">{{ExaminerTwoId.fullName}}</a>
+
+									<a href="#">{{examinerTwoId.fullName}}</a>
+
 								</td>
 								<td>
 
@@ -232,45 +167,7 @@
 
 
 
-<div id="addStudent" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-	aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-
-			<div class="modal-header">
-				<h4 class="modal-title">Add Student</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			</div>
-			<div class="modal-body">
-				<form action="/addStudent" method="post">
-					<div class="form-group">
-						<label>Matric No:</label>
-						<input type="text" id="matricNo" name="matricNo" class="form-control" required>
-					</div>
 
 
 
-					<div class="modal-footer">
-						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-						<input type="submit" class="btn btn-success" value="Add">
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
 
-
-
-<script>
-
-	function openForm() {
-		document.getElementById("myForm").style.display = "block";
-	}
-
-	function closeForm() {
-		document.getElementById("myForm").style.display = "none";
-	}
-
-
-</script>

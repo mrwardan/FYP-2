@@ -100,8 +100,8 @@ route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
       supervisorId: req.session.user._id,
     })
       .lean()
-      .populate("ExaminerOneId")
-      .populate("ExaminerTwoId")
+      .populate("examinerOneId")
+      .populate("examinerTwoId")
       .populate("chairPersonId");
 
     // i tried chairpeople it did work but gives the id instead of the name
@@ -235,8 +235,8 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
   try {
     const student = await STUDENT.findById(id)
       .lean()
-      .populate("ExaminerOneId")
-      .populate("ExaminerTwoId")
+      .populate("examinerOneId")
+      .populate("examinerTwoId")
       .populate("chairpeople");
     console.log("student is: ?", student);
     const examiners = await EXAMINER.find({}).lean();
@@ -415,7 +415,7 @@ route.post(
 );
 //choose post
 route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
-  const { matricNo, ExaminerOneId, ExaminerTwoId, chairPersonId } = req.body;
+  const { matricNo, examinerOneId, examinerTwoId, chairPersonId } = req.body;
   const student = await STUDENT.findOne({ matricNo: matricNo }).lean();
   console.log("What info: ", student);
 
@@ -462,10 +462,10 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
         }
       );
     }
-    if (ExaminerOneId == "null") {
+    if (examinerOneId == "null") {
       await STUDENT.findByIdAndUpdate(
         student._id,
-        { new: true, $unset: { ExaminerOneId: 1 } },
+        { new: true, $unset: { examinerOneId: 1 } },
 
         function (err, response) {
           // Handle any possible database errors
@@ -485,7 +485,7 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       await STUDENT.findByIdAndUpdate(
         student._id,
         {
-          ExaminerOneId: ExaminerOneId,
+          examinerOneId: examinerOneId,
           examinerOneApproved: false,
           submittedDate: Date.now(),
         },
@@ -504,10 +504,10 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
         }
       );
     }
-    if (ExaminerTwoId == "null") {
+    if (examinerTwoId == "null") {
       await STUDENT.findByIdAndUpdate(
         student._id,
-        { new: true, $unset: { ExaminerTwoId: 1 } },
+        { new: true, $unset: { examinerTwoId: 1 } },
 
         function (err, response) {
           // Handle any possible database errors
@@ -527,8 +527,8 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       await STUDENT.findByIdAndUpdate(
         student._id,
         {
-          ExaminerTwoId: ExaminerTwoId,
-          examinerTowApproved: false,
+          examinerTwoId: examinerTwoId,
+          examinerTwoApproved: false,
           submittedDate: Date.now(),
         },
         { new: true },
@@ -547,6 +547,8 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       );
     }
 
+   
+   
     res.redirect("students");
   } catch (error) {
     res.json(error);

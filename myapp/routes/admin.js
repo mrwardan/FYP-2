@@ -90,8 +90,7 @@ route.get("/manageUsers", async (req, res) => {
   let totalStudents;
   let totalExaminers;
 
-  console.log('Num of Supervisors: ',supervisors.length );
-  
+  console.log("Num of Supervisors: ", supervisors.length);
 
   res.render("Admin/Dashboard", {
     user: req.session.user,
@@ -161,7 +160,6 @@ route.get("/delete/:id", ensureAuth, ensureAdmin, async (req, res) => {
 });
 
 route.get("/view/:id", ensureAuth, ensureAdmin, async (req, res) => {
-
   console.log("id: ", req.params.id);
 
   const { id } = req.params;
@@ -172,9 +170,7 @@ route.get("/view/:id", ensureAuth, ensureAdmin, async (req, res) => {
     console.log(user);
 
     if (user) {
-
       res.redirect("/Admin/Manageusers");
-
     } else {
       res.send("info not find");
     }
@@ -192,6 +188,26 @@ route.get("/signout", (req, res) => {
 route.get("/AdminSignup", (req, res) => {
   res.redirect("/Admin/Manageusers");
 });
+
+//add student
+route.get(
+  "/AssignStudents",
+  ensureAuth,
+  ensureAdmin,
+  async (req, res, next) => {
+    const allSupervisors = await SUPERVISOR.find({}).lean();
+    const allStudents = await STUDENT.find({}).lean();
+    console.log("allStudents", allStudents);
+
+    res.render("Admin/AssignStudents", {
+      user: req.session.user,
+      allSupervisors,
+      allStudents,
+      layout: "mainAdmin",
+    });
+  }
+);
+
 route.post("/AdminSignup", ensureAuth, ensureAdmin, async (req, res) => {
   const {
     type,
@@ -418,5 +434,54 @@ route.post("/editinfo", ensureAuth, ensureAdmin, async (req, res, next) => {
     res.json(error);
   }
 });
+
+//add student post
+route.post(
+  "/assignStudents",
+  ensureAuth,
+  ensureAdmin,
+  async (req, res, next) => {
+    const allSupervisors = await SUPERVISOR.find({}).lean();
+    const allStudents = await STUDENT.find({}).lean();
+    selectedInPage = req.body;
+
+    console.log("selectedInPage", selectedInPage);
+    console.log("selectedStudent: ", selectedInPage.supervisor);
+    console.log("selectedSuperviso: ", selectedInPage.student);
+
+    try {
+      allStudents.forEach(async function (stu) {
+        console.log("stu._id  ", stu._id );
+        console.log("selectedInPage.student ", selectedInPage.student);
+
+        if (stu._id == selectedInPage.student) {
+          console.log('wardan');
+          console.log("i choose this:", stu.matricNo);
+
+          await STUDENT.findByIdAndUpdate(
+            selectedInPage.student,
+            { supervisorId: selectedInPage.supervisor },
+            { new: true },
+
+            function (err, response) {
+              // Handle any possible database errors
+              if (err) {
+                console.log("we hit an error" + err);
+                res.json({
+                  message: "Database Update Failure",
+                });
+              }
+              console.log("This is the Response: " + response);
+            }
+          );
+        }
+      });
+
+      res.redirect("assignStudents");
+    } catch (error) {
+      res.json(error)
+    }
+  }
+);
 
 module.exports = route;

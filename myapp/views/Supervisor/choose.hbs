@@ -51,7 +51,8 @@
                                 <option value="null" selected>>unSelect</option>
                                 {{#each chairpeople}}
 
-                                <option value="{{_id}}">{{fullName}} </option>
+                                 <option {{#ifEquals _id ../student.chairPersonId._id}} selected {{/ifEquals}}
+                                    value="{{_id}}">{{fullName}} </option>
 
                                 {{/each}}
                                 {{/select}}
@@ -68,15 +69,15 @@
                     <div class="col-md-4 selectContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-                            <select name="ExaminerOneId" class="form-control selectpicker">
+                            <select name="examinerOneId" class="form-control selectpicker">
 
-                                {{#select student.ExaminerOneId._id }}
+                                {{#select student.examinerOneId._id }}
                                 <option value="null" selected>unSelect</option>
 
                                 {{#each examiners}}
 
 
-                                <option {{#ifEquals _id ../student.ExaminerOneId._id}} selected {{/ifEquals}}
+                                <option {{#ifEquals _id ../student.examinerOneId._id}} selected {{/ifEquals}}
                                     value="{{_id}}">{{fullName}} </option>
 
 
@@ -107,14 +108,14 @@
                             <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
 
 
-                            <select name="ExaminerTwoId" class="form-control selectpicker">
-                                {{#select student.ExaminerTwoId._id }}
+                            <select name="examinerTwoId" class="form-control selectpicker">
+                                {{#select student.examinerTwoId._id }}
                                 <option value="null" selected>>unSelect</option>
                                 {{#each examiners}}
 
 
 
-                                <option {{#ifEquals _id ../student.ExaminerTwoId._id}} selected {{/ifEquals}}
+                                <option {{#ifEquals _id ../student.examinerTwoId._id}} selected {{/ifEquals}}
                                     value="{{_id}}">{{fullName}} </option>
 
 

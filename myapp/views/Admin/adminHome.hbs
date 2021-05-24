@@ -1,34 +1,21 @@
-{{>slideBar}}
 
-
-
-<div class="main bg-white">
-
-  <header>
-    <br>
-    <div class="text-left">
-      <h2>Home</h2>
-    </div>
+ <header class="main-header">
+    <nav class="nav main-nav">
+      <ul>
+        <li> <a href="">Home</a> </li>
+        <li> <a href="">Profile</a> </li>
+        <li> <a href="">Manage Users</a> </li>
+      </ul>
+    </nav>
+    <h1 class="main-name">Document Management System for Oral Examination</h1>
   </header>
 
 
-
-  <hr>
-  <div class="text-center">
-    <h3> Welcome {{user.fullName}}</h3>
-  </div>
-
-  <div class="bg-light">
-
-    <br>
-    <div>
-      <div class="text-left">
-        <h4>Abstract</h4>
-
-      </div>
-      <br>
-      <p>
-        Viva oral examination is a process whereby postgraduate students need to present their research or project
+{{>slideBar}}
+<section class="content-section container">
+  <h2 class="section-header">Abstract</h2>
+   <h3> Welcome {{user.fullName}}</h3>
+  <p> Viva oral examination is a process whereby postgraduate students need to present their research or project
         result findings in front of examiners through oral presentation. Specific for the postgraduate students under
         the Master of Computer Science (MCS) program in the School of Computing,Universiti Teknologi Malaysia (UTM),
         their research viva is the result of the student’s dissertation project. Commonly, the viva oral examination's
@@ -40,10 +27,7 @@
         documents, presentation slides, selecting examiners. On the other hand, this project will conduct the viva's
         procedures to be online. Online Document Management System for Oral Examination will assist in the documentation
         submission and examiners selection processes. This proposed system will develop the processes of the viva's
-        methods of giving the necessary files to overcome the current COVID-19 pandemic challenges.
-      </p>
-      <hr>
-    </div>
+        methods of giving the necessary files to overcome the current COVID-19 pandemic challenges.</p>
 
-  </div>
-</div>
+</section>
+
