@@ -7,11 +7,15 @@ const CHAIRPERSON = require("../models/Chairperson");
 const DOCUMENT = require("../models/Document");
 const multer = require("multer");
 const path = require("path");
-const { findById } = require("../models/Student");
+const {
+  findById
+} = require("../models/Student");
 const Swal = require("sweetalert2");
 const formidable = require("formidable");
 var fs = require("fs");
-const { ensureAuth } = require("../middleware/auth");
+const {
+  ensureAuth
+} = require("../middleware/auth");
 
 //define storage for the images
 const storage = multer.diskStorage({
@@ -97,8 +101,8 @@ route.get("/profile", ensureAuth, ensureSupervisor, (req, res, next) => {
 route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
   try {
     const allstudents = await STUDENT.find({
-      supervisorId: req.session.user._id,
-    })
+        supervisorId: req.session.user._id,
+      })
       .lean()
       .populate("examinerOneId")
       .populate("examinerTwoId")
@@ -159,48 +163,54 @@ route.get(
 //students documents
 route.get("/studentDoc", ensureAuth, ensureSupervisor, async (req, res, next) => {
 
-    try {
-      var allstudents = await STUDENT.find({ supervisorId: req.session.user._id,}).lean();
-      //var doc = await DOCUMENT.findOne({ studentId: allstudents._id }).lean();
+  try {
+    var allstudents = await STUDENT.find({
+      supervisorId: req.session.user._id,
+    }).lean();
+    //var doc = await DOCUMENT.findOne({ studentId: allstudents._id }).lean();
 
-      //console.log("doc it is", doc);
+    //console.log("doc it is", doc);
 
-      console.log("THE STUDENT INFORMATION: ", allstudents);
+    console.log("THE STUDENT INFORMATION: ", allstudents);
 
-      res.render("Supervisor/document", {
-        students: allstudents,
-        user: req.session.user,
-        layout: "mainSV.hbs",
-      });
-    } catch (error) {
-      res.json(error);
-    }
+    res.render("Supervisor/document", {
+      students: allstudents,
+      user: req.session.user,
+      layout: "mainSV.hbs",
+    });
+  } catch (error) {
+    res.json(error);
   }
-);
+});
 
 //show students documents
 route.get("/showDocument/:id", ensureAuth, ensureSupervisor, async (req, res, next) => {
 
   console.log("id:", req.params.id);
 
-    try {
-     const  stu = await STUDENT.findOne({ _id: req.params.id }).lean();
-     const  doc = await DOCUMENT.find({studentId: stu._id}).lean();
-      console.log("The student is: ", stu.fullName);
-      console.log("The doc is: ", doc);
+  try {
+    const stu = await STUDENT.findOne({
+      _id: req.params.id
+    }).lean();
+    const doc = await DOCUMENT.find({
+      studentId: stu._id
+    }).lean();
+    console.log("The student is: ", stu.fullName);
+    console.log("The doc is: ", doc);
 
-      res.render("Supervisor/showDocument", {
-      
-        user: req.session.user,  stu, doc,
-        layout: "mainSV.hbs",
-      });
+    res.render("Supervisor/showDocument", {
 
-    } catch (error) {
-      res.json(error);
-    }
-    
-}
-);
+      user: req.session.user,
+      stu,
+      doc,
+      layout: "mainSV.hbs",
+    });
+
+  } catch (error) {
+    res.json(error);
+  }
+
+});
 
 
 
@@ -211,12 +221,16 @@ route.post(
   ensureAuth,
   ensureSupervisor,
   async (req, res, next) => {
-    var student = await STUDENT.findOne({ matricNo: req.body.matricNo }).lean();
+    var student = await STUDENT.findOne({
+      matricNo: req.body.matricNo
+    }).lean();
     // console.log("The student is: ", student);
     //console.log("The student Id is: ", student);
 
     try {
-      var doc = await DOCUMENT.findOne({ studentId: student._id }).lean();
+      var doc = await DOCUMENT.findOne({
+        studentId: student._id
+      }).lean();
       //console.log('doc:', doc.documentName);
     } catch (error) {
       res.json(error);
@@ -228,7 +242,9 @@ route.post(
 
 //chose
 route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
-  const { id } = req.query;
+  const {
+    id
+  } = req.query;
   // const id = req.params.id;
   console.log('wardan');
 
@@ -266,7 +282,9 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
 //sign out
 route.get("/signout", (req, res, next) => {
   req.session.destroy();
-  res.render("login", { layout: false });
+  res.render("login", {
+    layout: false
+  });
 });
 
 //delete student
@@ -278,12 +296,17 @@ route.get(
     console.log("id:", req.params.id);
 
     try {
-      stu = await STUDENT.find({ _id: req.params.id }).lean();
+      stu = await STUDENT.find({
+        _id: req.params.id
+      }).lean();
 
-      await STUDENT.updateOne(
-        { _id: req.params.id },
-        { $set: { supervisorId: null } }
-      );
+      await STUDENT.updateOne({
+        _id: req.params.id
+      }, {
+        $set: {
+          supervisorId: null
+        }
+      });
     } catch (error) {
       res.json(error);
     }
@@ -294,6 +317,7 @@ route.get(
     res.redirect("/Supervisor/students");
   }
 );
+
 //student's viva documents
 route.post("/documents", function (request, result) {
   var formData = new formidable.IncomingForm();
@@ -305,6 +329,7 @@ route.post("/documents", function (request, result) {
     });
   });
 });
+
 //profile page
 route.post(
   "/profile",
@@ -316,9 +341,11 @@ route.post(
     // console.log(req.body);
 
     await SUPERVISOR.findByIdAndUpdate(
-      req.session.user._id,
-      { image: req.file.filename },
-      { new: true },
+      req.session.user._id, {
+        image: req.file.filename
+      }, {
+        new: true
+      },
 
       function (err, response) {
         // Handle any possible database errors
@@ -341,22 +368,28 @@ route.post(
   ensureAuth,
   ensureSupervisor,
   async (req, res, next) => {
-    const { fullName, phone, postion, institute, major } = req.body;
+    const {
+      fullName,
+      phone,
+      postion,
+      institute,
+      major
+    } = req.body;
 
     // console.log("The user information: "+req.session.user);
     console.log("The request file:", req.file);
 
     try {
       await SUPERVISOR.findByIdAndUpdate(
-        req.session.user._id,
-        {
+        req.session.user._id, {
           fullName: fullName,
           phone: phone,
           postion: postion,
           institute: institute,
           major: major,
+        }, {
+          new: true
         },
-        { new: true },
 
         function (err, response) {
           // Handle any possible database errors
@@ -383,19 +416,25 @@ route.post(
   ensureAuth,
   ensureSupervisor,
   async (req, res, next) => {
-    const { matricNo } = req.body;
+    const {
+      matricNo
+    } = req.body;
 
     try {
-      const student = await STUDENT.findOne({ matricNo: matricNo }).lean();
+      const student = await STUDENT.findOne({
+        matricNo: matricNo
+      }).lean();
 
       if (!student) {
         res.send("Matric was not found");
       }
 
       await STUDENT.findByIdAndUpdate(
-        student._id,
-        { supervisorId: req.session.user._id },
-        { new: true },
+        student._id, {
+          supervisorId: req.session.user._id
+        }, {
+          new: true
+        },
 
         function (err, response) {
           // Handle any possible database errors
@@ -415,15 +454,26 @@ route.post(
 );
 //choose post
 route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
-  const { matricNo, examinerOneId, examinerTwoId, chairPersonId } = req.body;
-  const student = await STUDENT.findOne({ matricNo: matricNo }).lean();
+  const {
+    matricNo,
+    examinerOneId,
+    examinerTwoId,
+    chairPersonId
+  } = req.body;
+  const student = await STUDENT.findOne({
+    matricNo: matricNo
+  }).lean();
   console.log("What info: ", student);
 
   try {
     if (chairPersonId == "null") {
       await STUDENT.findByIdAndUpdate(
-        student._id,
-        { new: true, $unset: { chairPersonId: 1 } },
+        student._id, {
+          new: true,
+          $unset: {
+            chairPersonId: 1
+          }
+        },
 
         function (err, response) {
           // Handle any possible database errors
@@ -441,13 +491,13 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       );
     } else {
       await STUDENT.findByIdAndUpdate(
-        student._id,
-        {
+        student._id, {
           chairPersonId: chairPersonId,
           chairPersonApproved: false,
           submittedDate: Date.now(),
+        }, {
+          new: true
         },
-        { new: true },
 
         function (err, response) {
           // Handle any possible database errors
@@ -464,8 +514,12 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
     }
     if (examinerOneId == "null") {
       await STUDENT.findByIdAndUpdate(
-        student._id,
-        { new: true, $unset: { examinerOneId: 1 } },
+        student._id, {
+          new: true,
+          $unset: {
+            examinerOneId: 1
+          }
+        },
 
         function (err, response) {
           // Handle any possible database errors
@@ -483,13 +537,13 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       );
     } else {
       await STUDENT.findByIdAndUpdate(
-        student._id,
-        {
+        student._id, {
           examinerOneId: examinerOneId,
           examinerOneApproved: false,
           submittedDate: Date.now(),
+        }, {
+          new: true
         },
-        { new: true },
 
         function (err, response) {
           // Handle any possible database errors
@@ -506,8 +560,12 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
     }
     if (examinerTwoId == "null") {
       await STUDENT.findByIdAndUpdate(
-        student._id,
-        { new: true, $unset: { examinerTwoId: 1 } },
+        student._id, {
+          new: true,
+          $unset: {
+            examinerTwoId: 1
+          }
+        },
 
         function (err, response) {
           // Handle any possible database errors
@@ -525,13 +583,13 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       );
     } else {
       await STUDENT.findByIdAndUpdate(
-        student._id,
-        {
+        student._id, {
           examinerTwoId: examinerTwoId,
           examinerTwoApproved: false,
           submittedDate: Date.now(),
+        }, {
+          new: true
         },
-        { new: true },
 
         function (err, response) {
           // Handle any possible database errors
@@ -547,8 +605,8 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       );
     }
 
-   
-   
+
+
     res.redirect("students");
   } catch (error) {
     res.json(error);

@@ -8,7 +8,7 @@ module.exports = {
             res.redirect("/login");
           }
   }, ensureAdmin: function (req, res, next) {
-    console.log('User Type: ',req.session.user.type);
+     console.log('Auth: User Type: ',req.session.user.type);
     if (req.session.user.type == "Admin") {
       next();
     } else {

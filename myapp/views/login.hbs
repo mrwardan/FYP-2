@@ -11,12 +11,15 @@
   <!------ Include the above in your HEAD tag ---------->
   <style>
     html {
-      background-color: #56baed;
+      background-color: rgb(92, 0, 30);
+      margin: 0;
+      padding:0;
     }
 
     body {
+      background-color: rgb(92, 0, 30);
       font-family: "Poppins", sans-serif;
-      height: 100vh;
+      height: 91vh;
     }
 
     a {
@@ -45,9 +48,7 @@
       align-items: center;
       flex-direction: column;
       justify-content: center;
-      width: 100%;
-      min-height: 100%;
-      padding: 20px;
+      padding: 40px;
     }
 
     #formContent {
@@ -307,15 +308,98 @@
     .wrongpass {
       padding: 10px;
     }
+
+    .utm-1 {
+
+      background-color: rgba(0, 0, 0, 0.03);
+      border-bottom: 1px solid white;
+      padding-top: 2%;
+    }
+
+    .Sys-name {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+      ;
+      color: white;
+    }
+
+    .Sys-cont {
+      display: flex;
+      justify-content: center;
+      background-color: white;
+    }
+
+    footer {
+      background-color: white;
+    }
+
+    .sys-ul {}
+
+    .Sys-nav ul {
+      margin: 0;
+      background-color: white;
+
+
+
+    }
+
+    .Sys-nav li {
+      display: inline;
+
+    }
+
+    .Sys-nav a {
+      display: inline-block;
+      padding: .5em;
+      color: rgb(92, 0, 30);
+      text-decoration: none;
+
+    }
+
+    .sys-main-nav {
+      text-align: left;
+      font-weight: lighter;
+    }
+  
   </style>
 
 </head>
 
 <body>
+  <header>
+    <nav class="Sys-nav sys-main-nav">
+      <ul class="Sys-ul">
+        <span class="Sys-span">
+          <li >
+            <img src="UTM.jpg" alt="">
+          </li>
+          <li>
+            <a href="https://engineering.utm.my/computing/"> UTM FC</a>
 
+          </li>
+          <li>
+            <a href="https://www.utm.my/">UTM-Home</a>
+          </li>
+          <li>
+            <a href="contact">Contact us</a>
+          </li>
+        </span>
+
+      </ul>
+    </nav>
+
+  </header>
 
 
   <div class="wrapper fadeInDown">
+
+
+    <div class="Sys-name">
+      <span>
+        <h2>Online Document Management System for Oral Examination</h2>
+      </span>
+    </div>
     <div id="formContent">
       <!-- Tabs Titles -->
 
@@ -324,11 +408,15 @@
         {{!-- user icon --}}
       </div>
 
-
       <!-- Login Form -->
       <form action="/login" method="POST">
-      <br>
-        <input type="text" id="login" class="fadeIn second" name="email" placeholder="login">
+        <div class="utm-1">
+
+          <img src="utm-1.png" width="150px" alt="Italian Trulli">
+
+        </div>
+
+        <input type="text" id="login" class="fadeIn second" name="email" placeholder="username">
         <input type="text" id="password" class="fadeIn third" name="password" placeholder="password">
         <input type="submit" class="fadeIn fourth" value="Log In">
         {{#if wrongPass}}
@@ -337,10 +425,10 @@
           <span class="bg-danger text-white wrongpass">{{wrongPass}}</span>
         </p>
         {{/if}}
-    
+
       </form>
       <div class="bg-light">
-        
+
         <div>
           <a class="underlineHover" href="/resetPassword">Forgot Password?</a>
         </div>
@@ -357,7 +445,9 @@
 
     </div>
   </div>
-
+  <footer>
+    Copyright © 2021-2022 School of Computing, Faculty of Engineering, Universiti Teknologi Malaysia.
+  </footer>
 </body>
 
 </html>

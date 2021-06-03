@@ -264,6 +264,7 @@ app.post("/signup", async (req, res) => {
   try {
     console.log("inside try");
     console.log("The type is :", type);
+    
 
     switch (type) {
       case "Admin":

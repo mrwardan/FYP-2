@@ -54,98 +54,64 @@
 
 
 
-  <title>Supervisor</title>
+  <title>Admin</title>
   <style>
     * {
-      box-sizing: border-box;
-      color: #777;
+      margin: 0;
+      padding: 0;
     }
 
     html,
     body {
       margin: 0;
       padding: 0;
+      background-color: #800000;
+      font-family: "Poppins", sans-serif;
     }
 
-    .main-header {
-      background-color: rgba(0, 0, 0, .6);
-      background-image: url("/aaa.jpg");
-      background-blend-mode: multiply;
-      background-size: cover;
-      margin-left: 240px;
-      padding-bottom: 30px;
+    .content-section {
+      background-color: lightgray;
+      margin: 2em;
+      margin-left: 20%;
+      padding: 1em;
     }
 
-    .nav ul {
-      margin: 0;
+    .container-dashboard {
+      position: flex;
+      justify-content: center;
+      max-width: 600px;
+      margin-left: 30%;
+      padding: 0 1.5em;
+      padding-bottom: 2em;
+      background-color: rgb(248, 247, 247);
+      box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
     }
 
-    .nav li {
-      display: inline;
-    }
-
-    .nav a {
-      display: inline-block;
-      padding: .5em;
-      color: white;
-      text-decoration: none;
-
-    }
-
-    .main-nav {
-      text-align: center;
-      font-size: 1.1em;
-      font-weight: lighter;
-      border-bottom: 1px solid rgb(255, 255, 255, .3);
-    }
-
-    .main-nav li {
-
-      padding: 0 5%;
-    }
-
-    .nav a:hover {
-      background-color: rgb(255, 255, 255, .3);
-    }
-
-    .main-name {
-      padding-top: .5em;
-      text-align: center;
-      margin: 0;
-      font-size: 3em;
-      color: white;
-      font-weight: normal;
-
-    }
-
-    .content-section{
-     margin: 2em;
-     margin-left: 240;
-    }
-
-    .container{
+    .container-dashboard {
       max-width: 900px;
       margin: 0 auto;
       padding: 0 1.5em;
 
 
+
     }
 
-    .section-header{
+
+    .section-header {
       font-weight: normal;
       color: #333;
       text-align: center;
-      font-size: 2.5em;
+      font-size: 2em;
 
-    
+
     }
 
     /*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
-    #header {
+    #SlideBar-header {
       position: fixed;
-      top: 0;
+      top: 84.5px;
       left: 0;
       bottom: 0;
       width: 240px;
@@ -153,18 +119,19 @@
       z-index: 9997;
       transition: all 0.5s;
       padding: 0 15px;
-      background: #040b14;
+      background: white;
       overflow-y: auto;
     }
 
-    #header .profile img {
+    #SlideBar-header .profile img {
       margin: 15px auto;
       display: block;
-      width: 120px;
-      border: 8px solid #2c2f3f;
+      width: 100px;
+      height: 100px;
+
     }
 
-    #header .profile h1 {
+    #SlideBar-header .profile h1 {
       font-size: 24px;
       margin: 0;
       padding: 0;
@@ -172,19 +139,21 @@
       -moz-text-align-last: center;
       text-align-last: center;
       font-family: "Poppins", sans-serif;
+      color: white;
+
     }
 
     #header .profile h1 a,
     #header .profile h1 a:hover {
-      color: #fff;
       text-decoration: none;
+
     }
 
-    #header .profile .social-links a {
+    #SlideBar-header .profile .social-links a {
       font-size: 18px;
       display: inline-block;
       background: #212431;
-      color: #fff;
+      color: white;
       line-height: 1;
       padding: 8px 0;
       margin-right: 4px;
@@ -195,38 +164,74 @@
       transition: 0.3s;
     }
 
-    #header .profile .social-links a:hover {
+    #SlideBar-header .profile .social-links a:hover {
       background: #149ddd;
-      color: #fff;
       text-decoration: none;
+      color: white;
     }
 
     #centerForm {
       text-align: center;
 
+
+
     }
 
     .main {
-      background-color: lightgray;
-      margin-left: 250px;
+      width: 100%;
+      margin: 0 auto;
+      background-color: #800000;
     }
+
+
+
+    .main-profile {
+      padding-top: 10%;
+      background-color: #800000;
+      margin-left: 18%;
+    }
+
+    .section-title {}
 
     @media (max-width: 1199px) {
       #header {
         left: -300px;
       }
 
-      #main {
-        margin-left: 0;
-      }
+
     }
 
     /*--------------------------------------------------------------
 # Navigation Menu
 --------------------------------------------------------------*/
-    /* Desktop Navigation */
+
+
+    a,
+    a:hover,
+    a:focus,
+    a:active {
+      text-decoration: none;
+      color: white;
+    }
+
+    .nav-header {
+
+      position: relative;
+      left: 35%;
+
+    }
+
+    .rounded-circle {
+      border-radius: 50%;
+
+    }
+
     .nav-menu {
-      padding: 30px 0 0 0;
+      color: #800000;
+
+      padding: 3px 0 0 0;
+      text-decoration: none;
+
     }
 
     .nav-menu * {
@@ -238,36 +243,31 @@
     .nav-menu>ul>li {
       position: relative;
       white-space: nowrap;
+
     }
 
     .nav-menu a {
       display: flex;
       align-items: center;
-      color: #a8a9b4;
       padding: 12px 15px;
       margin-bottom: 8px;
       transition: 0.3s;
       font-size: 15px;
+      color: #800000;
     }
 
     .nav-menu a i {
       font-size: 24px;
       padding-right: 8px;
-      color: #6f7180;
     }
 
     .nav-menu a:hover,
     .nav-menu .active,
     .nav-menu li:hover>a {
       text-decoration: none;
-      color: #fff;
+      color: white;
     }
 
-    .nav-menu a:hover i,
-    .nav-menu .active i,
-    .nav-menu li:hover>a i {
-      color: #149ddd;
-    }
 
     /* Mobile Navigation */
     .mobile-nav-toggle {
@@ -289,6 +289,7 @@
       line-height: 0;
       border-radius: 50px;
       cursor: pointer;
+
     }
 
     .mobile-nav-active {
@@ -299,65 +300,46 @@
       left: 0;
     }
 
+    /* Grow */
+    .hvr-grow {
+      display: inline-block;
+      vertical-align: middle;
+      -webkit-transform: perspective(1px) translateZ(0);
+      transform: perspective(1px) translateZ(0);
+      box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+      -webkit-transition-duration: 0.3s;
+      transition-duration: 0.3s;
+      -webkit-transition-property: transform;
+      transition-property: transform;
+
+    }
+
+    .hvr-grow:hover,
+    .hvr-grow:focus,
+    .hvr-grow:active {
+      -webkit-transform: scale(1.1);
+      transform: scale(1.1);
+      background-color: #800000;
+    }
+
     /*--
 
 /*--------------------------------------------------------------
 # About
 --------------------------------------------------------------*/
-    .about .content h3 {
-      font-weight: 700;
-      font-size: 26px;
-      color: #173b6c;
-    }
-
-    .about .content ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .about .content ul li {
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-    }
-
-    .about .content ul strong {
-      margin-right: 10px;
-    }
-
-    .about .content ul i {
-      font-size: 16px;
-      margin-right: 5px;
-      color: #149ddd;
-      line-height: 0;
-    }
-
-    .about .content p:last-child {
-      margin-bottom: 0;
-    }
-
-    #space1 {
-
-      margin-right: 20%;
-    }
-
-    #space2 {
-
-      margin-right: 20%;
-    }
-
 
 
     .circle-tile {
+      margin-left: 100%;
       margin-bottom: 55px;
       text-align: center;
-      margin: 50px;
-      width: 400px;
+      margin: 40px;
+      width: 300px;
     }
 
     .circle-tile_user {
       text-align: center;
-      width: 1400px;
+      width: 1000px;
     }
 
     .circle-tile-heading {
@@ -377,7 +359,7 @@
       margin: 0 auto -90px;
       position: flex;
       transition: all 0.3s ease-in-out 0s;
-      width: 1100px;
+      width: 500px;
       top: 0;
       left: 0;
       opacity: 0.8;
@@ -527,14 +509,124 @@
     }
 
     .UserData {
-      background-color: light-gray;
-      padding-bottom: 3em;
-      position: relative;
+      margin-left: 250px;
+      margin-right: 250px;
 
     }
 
     .AddUser {
       padding-top: 2em;
+
+    }
+
+    .adduser-color {
+      color: white;
+    }
+
+    /*
+    *************************************
+                           Profile page 
+    ************************************* */
+    .center-profile-info {
+      display: flex;
+      justify-content: center;
+    }
+
+
+    .info-img-container {
+      background-color: rgb(224, 222, 222);
+      width: 50%;
+      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    }
+
+    .profile-img {
+      padding: 2%;
+      display: flex;
+      justify-content: center;
+      width: 20%;
+      height: 20%;
+      transform: translate(10%, 15%);
+
+    }
+
+    .profile-img>img {
+
+      width: 150px;
+      height: 100px;
+      box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+    }
+
+    .profile-content {
+      margin-left: 7%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .col-lg-6>ul {
+      position: relative;
+      left: 25%;
+    }
+
+    .edit-info {
+      display: flex;
+      justify-content: center;
+      background-color: lightgray;
+      padding: 20px;
+      margin-left:25%;
+      margin-right:25%;
+
+    }
+    .edit_inf {
+      text-align: center;
+      vertical-align: middle;
+      padding: .67em;
+      cursor: pointer;
+
+    }
+
+
+    .image-upload {
+      display: overflow;
+      width: 5%;
+      height: 10%;
+
+    }
+
+    .admin-img-upload {
+      position: absolute;
+      display: overflow;
+      left: 45%;
+      bottom: 70%;
+      width: 25px;
+      height: 25px;
+
+    }
+
+    .image-upload>input {
+      display: none;
+    }
+
+    #space1 {
+
+      position: relative;
+      left: -140px;
+    }
+
+    #space2 {
+
+      position: relative;
+      left: 50px;
+    }
+
+    #space3 {
+
+      position: relative;
+      left: 280px;
+    }
+    .editInformationPage-main{
+      margin-left: 10%;
+      padding-top: 2%;
+      background-color:#800000;
     }
   </style>
 

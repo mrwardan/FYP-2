@@ -55,27 +55,42 @@ function checkFileType(file, cb) {
   }
 }
 route.get("/adminHome", ensureAuth, ensureAdmin, (req, res) => {
-  res.render("adminHome", { user: req.session.user });
+  res.render("adminHome", {
+    user: req.session.user,
+  });
 });
 
 route.get("/dashboard", ensureAuth, ensureAdmin, async (req, res, next) => {
-  let admin = req.session.user;
+  console.log("The uadmin session info: ", req.session.user);
 
-  res.render("Admin/adminHome", { user: admin, layout: "mainAdmin" });
+  res.render("Admin/adminHome", {
+    user: req.session.user,
+    layout: "mainAdmin",
+  });
 });
 route.get("/Home", ensureAuth, ensureAdmin, async (req, res, next) => {
   let admin = req.session.user;
 
-  res.render("Admin/adminHome", { user: admin, layout: "mainAdmin" });
+  res.render("Admin/adminHome", {
+    user: admin,
+    layout: "mainAdmin",
+  });
 });
 route.get("/profile", ensureAuth, ensureAdmin, async (req, res, next) => {
-  let admin = req.session.user;
-  console.log(admin);
+  const { ...rest } = req.session.user;
+  console.log("rest", rest);
 
-  res.render("Admin/profile", { user: admin, layout: "mainAdmin" });
+  console.log("req.file", req.file);
+  res.render("Admin/profile", {
+    user: req.session.user,
+    layout: "mainAdmin",
+  });
 });
 route.get("/editinfo", ensureAuth, ensureAdmin, (req, res, next) => {
-  res.render("Admin/editinfo", { user: req.session.user, layout: "mainAdmin" });
+  res.render("Admin/editinfo", {
+    user: req.session.user,
+    layout: "mainAdmin",
+  });
 });
 
 route.get("/manageUsers", async (req, res) => {
@@ -104,12 +119,24 @@ route.get("/manageUsers", async (req, res) => {
 });
 
 route.get("/delete/:id", ensureAuth, ensureAdmin, async (req, res) => {
-  const user = await USER.findOne({ userId: req.params.id });
-  const user1 = await EXAMINER.findOne({ _id: req.params.id });
-  const user2 = await CHAIRPERSON.findOne({ _id: req.params.id });
-  const user3 = await SUPERVISOR.findOne({ _id: req.params.id });
-  const user4 = await ADMIN.findOne({ _id: req.params.id });
-  const user5 = await STUDENT.findOne({ _id: req.params.id });
+  const user = await USER.findOne({
+    userId: req.params.id,
+  });
+  const user1 = await EXAMINER.findOne({
+    _id: req.params.id,
+  });
+  const user2 = await CHAIRPERSON.findOne({
+    _id: req.params.id,
+  });
+  const user3 = await SUPERVISOR.findOne({
+    _id: req.params.id,
+  });
+  const user4 = await ADMIN.findOne({
+    _id: req.params.id,
+  });
+  const user5 = await STUDENT.findOne({
+    _id: req.params.id,
+  });
 
   switch (user.type) {
     case "Admin":
@@ -166,11 +193,13 @@ route.get("/view/:id", ensureAuth, ensureAdmin, async (req, res) => {
   console.log("log", id);
 
   try {
-    var user = await USER.findOne({ userId: id });
+    var user = await USER.findOne({
+      userId: id,
+    });
     console.log(user);
 
     if (user) {
-      res.redirect("/Admin/Manageusers");
+      res.json(user);
     } else {
       res.send("info not find");
     }
@@ -208,6 +237,21 @@ route.get(
   }
 );
 
+route.get("/issueExam", ensureAuth, ensureAdmin, async (req, res, next) => {
+  const allSupervisors = await SUPERVISOR.find({}).lean();
+  const allStudents = await STUDENT.find({}).lean();
+  const allexaminers = await EXAMINER.find({}).lean();
+  const chairpeople = await CHAIRPERSON.find({}).lean();
+
+  res.render("Admin/registerExam", {
+    user: req.session.user,
+    allSupervisors,
+    allStudents,
+    allexaminers,
+    chairpeople,
+    layout: "mainAdmin",
+  });
+});
 route.post("/AdminSignup", ensureAuth, ensureAdmin, async (req, res) => {
   const {
     type,
@@ -229,7 +273,7 @@ route.post("/AdminSignup", ensureAuth, ensureAdmin, async (req, res) => {
 
   try {
     console.log("inside try");
-    console.log("The type is :", type);
+    console.log("The type is ??? :", type);
 
     switch (type) {
       case "Admin":
@@ -349,7 +393,10 @@ route.post("/AdminSignup", ensureAuth, ensureAdmin, async (req, res) => {
   } catch (error) {
     if (error.code === 11000) {
       // duplicate key
-      return res.json({ status: "error", error: "Email already in use" });
+      return res.json({
+        status: "error",
+        error: "Email already in use",
+      });
     }
     throw error;
   }
@@ -363,36 +410,39 @@ route.post("/AdminSignup", ensureAuth, ensureAdmin, async (req, res) => {
     }
   }
 });
+
 route.post(
   "/profile",
   ensureAuth,
   ensureAdmin,
   upload.single("image"),
   async (req, res, next) => {
-    console.log("The req file : ", req.file);
-    console.log("The req body : ", req.body);
+    try {
+      await ADMIN.findByIdAndUpdate(
+        req.session.user._id,
+        {
+          image: req.file.filename,
+        },
+        {
+          new: true,
+        },
 
-    await ADMIN.findByIdAndUpdate(
-      req.session.user._id,
-      { image: req.file.filename },
-      { new: true },
+        function (err, response) {
+          // Handle any possible database errors
+          if (err) {
+            console.log("we hit an error" + err);
+            res.json({
+              message: "Database Update Failure",
+            });
+          }
 
-      function (err, response) {
-        // Handle any possible database errors
-        if (err) {
-          console.log("we hit an error" + err);
-          res.json({
-            message: "Database Update Failure",
-          });
-        } else {
-          console.log("This is the Response: " + response);
-          response.type = req.session.user.type;
           req.session.user = response;
+          res.redirect("profile");
         }
-
-        res.redirect("profile");
-      }
-    );
+      );
+    } catch (error) {
+      res.json(error);
+    }
   }
 );
 
@@ -413,7 +463,9 @@ route.post("/editinfo", ensureAuth, ensureAdmin, async (req, res, next) => {
         institute: institute,
         major: major,
       },
-      { new: true },
+      {
+        new: true,
+      },
 
       function (err, response) {
         // Handle any possible database errors
@@ -451,17 +503,21 @@ route.post(
 
     try {
       allStudents.forEach(async function (stu) {
-        console.log("stu._id  ", stu._id );
+        console.log("stu._id  ", stu._id);
         console.log("selectedInPage.student ", selectedInPage.student);
 
         if (stu._id == selectedInPage.student) {
-          console.log('wardan');
+          console.log("wardan");
           console.log("i choose this:", stu.matricNo);
 
           await STUDENT.findByIdAndUpdate(
             selectedInPage.student,
-            { supervisorId: selectedInPage.supervisor },
-            { new: true },
+            {
+              supervisorId: selectedInPage.supervisor,
+            },
+            {
+              new: true,
+            },
 
             function (err, response) {
               // Handle any possible database errors
@@ -479,9 +535,46 @@ route.post(
 
       res.redirect("assignStudents");
     } catch (error) {
-      res.json(error)
+      res.json(error);
     }
   }
 );
+
+route.post("/issueExam", ensureAuth, ensureAdmin, async (req, res, next) => {
+  const supervisor = await SUPERVISOR.findOne({}).lean();
+
+  const Student = await STUDENT.find({}).lean();
+  const examiner = await EXAMINER.find({}).lean();
+  const chair = await CHAIRPERSON.find({}).lean();
+
+  selectedInPage = req.body;
+
+  console.log("selectedInPage", selectedInPage);
+  console.log("selected SV: ", selectedInPage.supervisor);
+  console.log("selected ST: ", selectedInPage.student);
+  console.log("selected EX1: ", selectedInPage.examiner1);
+  console.log("selected Ex2: ", selectedInPage.examiner2);
+  console.log("selected ChR: ", selectedInPage.chairperson);
+  console.log("Exam date: ", selectedInPage.date);
+  console.log("Time  : ", selectedInPage.time);
+  console.log("Venue  : ", selectedInPage.venue);
+  console.log("selected ST 1: ", selectedInPage.student.examinerOneApproved);
+  console.log("selected ST 2: ", selectedInPage.student.examinerTwoApproved);
+  console.log("selected ST CH: ", selectedInPage.student.chairPersonApproved);
+
+
+
+
+
+
+  try { 
+
+    //if examiners & chair are approved
+    
+    
+  } catch (error) {
+    
+  }
+});
 
 module.exports = route;

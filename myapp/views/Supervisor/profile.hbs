@@ -17,16 +17,18 @@
       <div class="row proBox">
         <div class="col-lg-5 imgBox " data-aos="fade-right">
 
-          <img src="/upload/images/{{user.image}}" style="height: 150px; width: 150px;" alt="no image">
+       <div class="image-container">
 
-
-          <label for="file">
-            <i class="bi bi-card-image">
+          <label for="file" >
+            <i class="img-postion bi bi-card-image">
               <input type="file" name="image" id="file" style="display: none" class="form-control-file"
                 accept="image/gif,image/jpeg,image/jpg,image/png" multiple="" data-original-title="upload photos">
             </i>
 
           </label>
+          <img src="/upload/images/{{user.image}}" style="height: 150px; width: 150px;" alt="no image">
+          </div>
+
 
 
 
@@ -38,7 +40,7 @@
         </div>
         <div class="col-lg-8 pt-4 pt-lg-0 content" data-aos="fade-left">
           <h3> {{user.fullName}}</h3>
-
+<hr>
 
           <div class="row">
             <div class="col-lg-6">

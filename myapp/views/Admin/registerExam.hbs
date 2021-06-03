@@ -1,0 +1,225 @@
+{{>header}}
+{{>slideBar}}
+
+<head>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <style>
+
+        body{
+            background-color:#800000;
+        }
+        .The-container {
+            background-color:#800000;
+            margin: 0;
+            padding: 0;
+            margin-left: 18%;
+     
+
+        }
+
+        .form {
+            padding-top: 3%;
+            width: 600px;
+            position: relative;
+            right: -20%;
+        }
+           #he-img {
+            position: relative;
+            bottom: -5px;
+            left: -90px;
+
+        }
+        #he-title{
+            position: relative;
+            top: 12px;
+        }
+
+        #he-user {
+            position: relative;
+            top: 12px;
+            font-size: 2em;
+        }
+    </style>
+</head>
+
+
+<div class="The-container">
+
+ 
+
+    <div class="form">
+        <main>
+
+            <div class="card">
+                <div class="card-header">Issue Oral Examination Date</div>
+                <div class="card-body">
+
+                    <form class="form-horizontal" action='issueExam' method="POST">
+
+                        <div class="form-group row">
+
+                            <!-- Type -->
+                            <label class="col-md-4 col-form-label text-md-right">Supervisor:</label>
+                            <div class="col-md-6">
+                                <p class="help-block">Please choose the Supervisor:</p>
+                                <select name="supervisor" class="form-control">
+
+                                    {{#each allSupervisors}}
+
+                                    <option value="{{_id}}">{{fullName}}</option>
+
+                                    {{/each}}
+
+
+
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <br>
+                        <div class="form-group row">
+
+                            <!-- Type -->
+                            <label class="col-md-4 col-form-label text-md-right">Examiner 1:</label>
+                            <div class="col-md-6">
+                                <p class="help-block">Please choose the Examiner 1:</p>
+                                <select name="examiner1" class="form-control">
+
+                                    {{#each allexaminers}}
+
+                                    <option value="{{_id}}">{{fullName}}</option>
+
+                                    {{/each}}
+
+
+
+                                </select>
+
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group row">
+
+                            <!-- Type -->
+                            <label class="col-md-4 col-form-label text-md-right">Examiner 2:</label>
+                            <div class="col-md-6">
+                                <p class="help-block">Please choose Examiner 2:</p>
+                                <select name="examiner2" class="form-control">
+
+                                    {{#each allexaminers}}
+
+                                    <option value="{{_id}}">{{fullName}}</option>
+
+                                    {{/each}}
+
+
+
+                                </select>
+
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group row">
+
+                            <!-- Type -->
+                            <label class="col-md-4 col-form-label text-md-right">Chairperson:</label>
+                            <div class="col-md-6">
+                                <p class="help-block">Please choose the Chairperson:</p>
+                                <select name="chairperson" class="form-control">
+
+                                    {{#each chairpeople}}
+
+                                    <option value="{{_id}}">{{fullName}}</option>
+
+                                    {{/each}}
+
+
+
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+
+                            <!-- Type -->
+                            <label class="col-md-4 col-form-label text-md-right">Student:</label>
+                            <div class="col-md-6">
+                                <p class="help-block">Please choose the Student:</p>
+                                <select name="student" class="form-control">
+                                    {{#each allStudents}}
+
+                                    <option value="{{_id}}">{{fullName}}</option>
+
+
+
+                                    {{/each}}
+                                </select>
+
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="form-group row">
+
+                            <!-- Type -->
+                            <label class="col-md-4 col-form-label text-md-right">Exam date:</label>
+                            <div class="col-md-6">
+                                <p class="help-block">Please enter the exam date:</p>
+                               <input type="date" name="date" class="form-control"  min="2021-05-27">
+
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="form-group row">
+
+                            <!-- Type -->
+                            <label class="col-md-4 col-form-label text-md-right">Time:</label>
+                            <div class="col-md-6">
+                                <p class="help-block">Please enter the exam time:</p>
+                                <input type="time" name="time">
+
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="form-group row">
+
+                            <!-- Type -->
+                            <label class="col-md-4 col-form-label text-md-right">Venue:</label>
+                            <div class="col-md-6">
+                                <p class="help-block">Please enter the venue:</p>
+                                <input type="text" name="venue">
+
+                            </div>
+                        </div>
+                        <br>
+
+
+
+
+                        <div class="control-group">
+
+                            <div class="col-md-6 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+
+        </main>
+    </div>
+
+
+
+</div>

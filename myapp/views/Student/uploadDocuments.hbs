@@ -4,9 +4,9 @@
 
 </div>
 <hr>
+
+
 {{>slidebar_S}}
-
-
 
 
 
@@ -34,7 +34,7 @@
 
             {{#each documents}}
 
-         
+
 
 
             {{#ifEquals fileType "proposal"}}
@@ -42,17 +42,53 @@
             <p> <span class="bg-success text-white card-text"> {{#toSplitFile documentName}}
                     {{/toSplitFile}} is Uploaded</span> </p>
 
+            <div class="text-center">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#proposal">Upload</button>
 
 
-                    <div>
 
+
+
+
+                <a href="/upload/images/{{documentName}}" class=" text-center btn btn-primary " type="submit"
+                    value="Download">
+
+                    Preview
+
+                </a>
+
+
+
+
+
+
+
+
+
+
+                {{/ifEquals}}
+
+
+
+
+
+                {{/each}}
+
+
+
+
+                {{else}}
+
+                <span> <strong>Please upload a file</strong></span>
+                <br>
                 <div class="text-center">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#proposal">Upload</button>
 
-                     
 
-                    
+
+
 
 
                     <a href="/upload/images/{{documentName}}" class=" text-center btn btn-primary " type="submit"
@@ -62,78 +98,92 @@
 
                     </a>
 
-                      
-                        
+
+
+
+
+
+
+
+
+                    {{/if}}
+
+
+
+
+
+
+
+
                 </div>
 
 
-            {{/ifEquals}}
 
 
 
-            
+            </div>
+            <div class="card-footer text-muted">
 
-            {{/each}}
-
-
-            {{else}}
-
-
-
-
-            <span> <strong>Please upload a file</strong></span>
-
-
-
-            {{/if}}
-
-
-
-
-
-
-            
+                {{documents.createdAt}}
 
             </div>
 
 
 
-
-
-        </div>
-        <div class="card-footer text-muted">
-         
-         {{documents.createdAt}}
-
         </div>
 
 
+        {{!-- The presentation slides --}}
 
-    </div>
+        <div class="card text-center">
+            <div class="card-header">
+                <p> Presentation Slides</p>
 
-
-    {{!-- The presentation slides --}}
-
-    <div class="card text-center">
-        <div class="card-header">
-            <p> Presentation Slides</p>
-
-        </div>
-        <div class="card-body">
-            <h5 class="card-title"></h5>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title"></h5>
 
 
-            {{#if isPre}}
+                {{#if isPre}}
 
-            {{#each documents}}
+                {{#each documents}}
 
 
-            {{#ifEquals fileType "Presentation"}}
+                {{#ifEquals fileType "Presentation"}}
 
-            <p> <span class="bg-success text-white card-text"> {{#toSplitFile documentName}}
-                    {{/toSplitFile}} is Uploaded</span> </p>
+                <p> <span class="bg-success text-white card-text"> {{#toSplitFile documentName}}
+                        {{/toSplitFile}} is Uploaded</span> </p>
 
-                      <div>
+                <div>
+
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#presentationSlides">Upload</button>
+
+
+
+
+                        <a href="/upload/images/{{documentName}}" class=" text-center btn btn-primary " type="submit"
+                            value="Download">
+
+                            Preview
+
+                        </a>
+                    </div>
+
+
+                </div>
+
+
+                {{/ifEquals}}
+
+                {{/each}}
+
+                {{else}}
+
+
+                <span> <strong>Please upload a file</strong></span>
+                <br>
 
                 <div class="text-center">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -150,57 +200,75 @@
                     </a>
                 </div>
 
+                {{/if}}
+
+
+
+
+
+
+
+
 
             </div>
 
-
-            {{/ifEquals}}
-
-            {{/each}}
-
-            {{else}}
-
-            <span> <strong>Please upload a file</strong></span>
-
-
-
-            {{/if}}
-
-
-          
-
-
-
-
-
-
-    </div>
-
-    {{!-- The thesis --}}
-
-    <div class="card text-center">
-        <div class="card-header">
-            <p> Thesis </p>
-
         </div>
-        <div class="card-body">
-            <h5 class="card-title"></h5>
+
+        {{!-- The thesis --}}
+
+        <div class="card text-center">
+            <div class="card-header">
+                <p> Thesis </p>
+
+            </div>
+            <div class="card-body">
+                <h5 class="card-title"></h5>
 
 
 
-            {{#if isThesis}}
+                {{#if isThesis}}
 
-            {{#each documents}}
-
-
-            {{#ifEquals fileType "thesis"}}
-
-            <p> <span class="bg-success text-white card-text"> {{#toSplitFile documentName}}
-                    {{/toSplitFile}} is Uploaded</span> </p>
+                {{#each documents}}
 
 
-                     <div>
+                {{#ifEquals fileType "thesis"}}
 
+                <p> <span class="bg-success text-white card-text"> {{#toSplitFile documentName}}
+                        {{/toSplitFile}} is Uploaded</span> </p>
+
+
+                <div>
+
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#thesis">Upload</button>
+
+
+
+
+                        <a href="/upload/images/{{documentName}}" class=" text-center btn btn-primary " type="submit"
+                            value="Download">
+
+                            Preview
+
+                        </a>
+                    </div>
+
+
+                </div>
+
+
+                {{/ifEquals}}
+
+
+
+                {{/each}}
+
+
+                {{else}}
+
+                <span> <strong>Please upload a file</strong></span>
+                <br>
                 <div class="text-center">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#thesis">Upload</button>
@@ -217,31 +285,18 @@
                 </div>
 
 
+                {{/if}}
+
+
+
+
+
+
+
+
             </div>
 
 
-            {{/ifEquals}}
-
-
-
-            {{/each}}
-
-
-            {{else}}
-
-            <span> <strong>Please upload a file</strong></span>
-
-
-            {{/if}}
-
-          
-
-
-
-
-
-
-    </div>
 
 
 
@@ -252,99 +307,97 @@
 
 
 
+            {{!-- for proposal --}}
+
+            <div class="modal fade" id="proposal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">The proposal</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
 
 
-    {{!-- for proposal --}}
 
-    <div class="modal fade" id="proposal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+                        <form action="submitDoc" method="POST" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <input type="file" name="document">
+                                <input type="hidden" name="fileType" value="proposal">
+                            </div>
 
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">The proposal</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+
+                    </div>
                 </div>
-
-
-
-                <form action="submitDoc" method="POST" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <input type="file" name="document">
-                        <input type="hidden" name="fileType" value="proposal">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-
             </div>
-        </div>
-    </div>
 
 
-    {{!-- for presentation Slides --}}
+            {{!-- for presentation Slides --}}
 
-    <div class="modal fade" id="presentationSlides" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal fade" id="presentationSlides" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
 
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Presentation Slides</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Presentation Slides</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+
+
+                        <form action="submitPresentationSlides" method="POST" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <input type="file" name="document">
+                                <input type="hidden" name="fileType" value="Presentation">
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+
+                    </div>
                 </div>
-
-
-
-                <form action="submitPresentationSlides" method="POST" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <input type="file" name="document">
-                        <input type="hidden" name="fileType" value="Presentation">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-
             </div>
-        </div>
-    </div>
 
-    {{!-- for Thesis --}}
+            {{!-- for Thesis --}}
 
-    <div class="modal fade" id="thesis" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal fade" id="thesis" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
 
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Thesis</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Thesis</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+
+
+                        <form action="submitThesis" method="POST" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <input type="file" name="document">
+                                <input type="hidden" name="fileType" value="thesis">
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+
+                    </div>
                 </div>
-
-
-
-                <form action="submitThesis" method="POST" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <input type="file" name="document">
-                        <input type="hidden" name="fileType" value="thesis">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-
             </div>
+
+
+
+
+
         </div>
-    </div>
-
-
-
-
-
-</div>

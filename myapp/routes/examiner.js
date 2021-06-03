@@ -98,7 +98,7 @@ route.get('/approve',ensureAuth, async (req, res, next) =>
 
   
   try {
-    const students = await STUDENT.find({internalExaminerId: req.session.user._id}).lean().populate("supervisorId");
+    const students = await STUDENT.find({examinerOneId: req.session.user._id}).lean().populate("supervisorId");
 
     //res.json(students)
     console.log(students);
@@ -145,14 +145,16 @@ route.post('/profile', ensureAuth, upload.single('image') , async (req, res, nex
 
 route.post('/submitApprove', ensureAuth , async (req, res, next) =>
 {
-  const {id} =req.body;
+  const {id} = req.body;
 
   console.log("The user id: ", id);
+
+   // if the examiner 
 
   
     try {
         
-     await STUDENT.findByIdAndUpdate(id, {internalExaminerApproved:true},  {new: true},
+     await STUDENT.findByIdAndUpdate(id, {examinerOneApproved:true},  {new: true},
   
       function (err, response) {
         // Handle any possible database errors
@@ -181,7 +183,7 @@ route.post('/editinfo', ensureAuth,  async  (req, res, next) =>
 
   // console.log("The user information: ", req.session.user);
   // console.log("The user information sesstion user id :", req.session.user._id);
-  // console.log("The user information full name: ", req.session.user.fullName);
+   console.log("The examiner Type: ", examinerType);
   
     try {
         

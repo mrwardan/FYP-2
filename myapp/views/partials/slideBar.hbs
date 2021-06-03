@@ -1,38 +1,36 @@
-<!-- ======= Mobile nav toggle button ======= -->
-<i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
-
-<!-- ======= Header ======= -->
-<header id="header">
+<div id="SlideBar-header">
 	<div class="d-flex flex-column">
 
-
-
 		<div class="profile">
-			<img src="/upload/images/{{user.image}}" alt="" class="img-fluid rounded-circle">
-			<h1 class="text-light"><a>{{user.fullName}}</a></h1>
+			<img src="/upload/images/{{user.image}}" alt="" class="rounded-circle" />
+			
 
 		</div>
-		<div class="text-center">
-			<p class="text-white bg-dark text-lg">ODMSOE</p>
+		<div class="nav-header">
+			<span class="text-white bg-dark text-lg">ODMSOE</span>
 
-			<hr>
 		</div>
 
-		<nav id="navbar" class="nav-menu navbar">
+		<nav class="nav-menu navbar">
 			<ul>
-				<li><a href="home" name="home" class="nav-link scrollto active"><i class="bx bx-home"></i>
+				<li><a href="home" name="home" class="hvr-grow nav-link scrollto"><i class="bx bx-home"></i>
 						<span>Home</span></a>
 				</li>
-				<li><a href="profile" name="profile" class="nav-link scrollto"><i class="bx bx-user"></i>
+				<li><a href="profile" name="profile" class="hvr-grow nav-link scrollto"><i class="bx bx-user"></i>
 						<span>Profile</span></a></li>
-				<li><a href="Manageusers" name="manageusers" class="nav-link scrollto"><i class="bx bx-user"></i>
+				<li><a href="Manageusers" name="manageusers" class="hvr-grow nav-link scrollto"><i
+							class="bx bx-user"></i>
 						<span>Manage Users</span></a></li>
-				<li><a href="AssignStudents" name="assignStudents" class="nav-link scrollto"><i class="bx bx-user"></i>
+				<li><a href="AssignStudents" name="assignStudents" class="hvr-grow nav-link scrollto"><i
+							class="bx bx-user"></i>
 						<span>Assign Students</span></a></li>
+				<li><a href="issueExam" name="issueExam" class="hvr-grow nav-link scrollto"><i
+							class="bx bx-user"></i>
+						<span>Issue Exam</span></a></li>
 
-				<li><a href="/signout" class="nav-link scrollto"><i class="bx bx-server"></i> <span>Sign
-							Out</span></a></li>
+				<li><a href="/signout" class="hvr-grow nav-link scrollto"><i class="bx bx-server"></i>
+						<span>Sign Out</span></a></li>
 			</ul>
 		</nav><!-- .nav-menu -->
 	</div>
-</header><!-- End Header -->
+</div><!-- End Header -->
