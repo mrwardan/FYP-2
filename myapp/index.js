@@ -24,7 +24,7 @@ const bcrypt = require("bcryptjs");
 const { getLogger } = require("nodemailer/lib/shared");
 const { nextTick } = require("process");
 const app = express();
-const port = process.env.PORT || 9999;
+const port = 9999; // || process.env.PORT 
 const DBurl =
   "mongodb+srv://Mohammed:Mohammed1234$@viva.yvpma.mongodb.net/Viva?retryWrites=true&w=majority";
 
@@ -217,6 +217,7 @@ app.post("/resetPassword", async (req, res) => {
           });
 
           console.log("This is the Response: " + response);
+          
           mailOptions.to = email;
           mailOptions.html = ` 
           <a href="${link}"> Click here to reset your password</a>

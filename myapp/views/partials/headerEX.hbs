@@ -1,21 +1,24 @@
 <head>
     <style>
         .main-header {
-            display: flex;
-            justify-content: center;
+            display:flex;
+            justify-content: center;  
+            width: 100%;     
             background-color: rgb(245, 245, 245);
             font-size: .5em;
-            padding: 1em;
+            padding:1.2em;
+            font-family: "Poppins", sans-serif;
+         
         }
 
         .nav a {
             display: inline-block;
             padding: .5em;
             color: #800000;
-            
+            font-weight: bold;
             text-decoration: none;
             position: relative;
-            top: -10px;
+            bottom: 10px;
             padding-left: 10em;
 
         }
@@ -24,9 +27,8 @@
 
 
         .main-name {
-            padding-top: .5em;
+            font-weight: bold;
             text-align: center;
-            margin: 0;
             font-size: 3em;
             color: #800000;
 
@@ -46,23 +48,17 @@
             text-decoration: none;
         }
 
-    
-
-        .nav a:hover {
-            color: black;
-            background-color: none;
-        }
-
+ 
         #he-img {
             position: relative;
-            bottom: -15px;
-            left: -90px;
+            left: -130px;
+            bottom: -10px;
 
         }
 
         #he-user {
             position: relative;
-            top: -4px;
+            top: -5px;;
             font-size: 2em;
         }
     </style>
@@ -87,7 +83,7 @@
             <li id="he-user">
                 <a href="">
 
-                    Admin: {{user.fullName}}
+                    Student: {{user.fullName}}
 
                 </a>
             </li>

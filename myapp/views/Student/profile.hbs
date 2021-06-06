@@ -1,3 +1,4 @@
+{{>headerS}}
 {{>slidebar_S}}
 
 
@@ -5,75 +6,71 @@
 
   <form action="/Student/profile" method="POST" enctype="multipart/form-data">
 
+    <span class="img-background">
+      <img class="pro-img" src="/upload/images/{{user.image}}" alt="no image" class="rounded-circle">
+
+      <label for="file-input">
+        <img class="immmg" src="https://icon-library.net/images/upload-photo-icon/upload-photo-icon-21.jpg"
+          width="20px" />
+      </label>
+      <input id="file-input" name="image" type="file" />
+
+    </span>
+
+
+
     <!-- ======= About Section ======= -->
     <section id="about" class="about">
       <div class="container">
 
-        <div class="section-title">
-          <h2>Profile</h2>
 
-        </div>
-        <div class="row">
-          <div class="col-lg-4" data-aos="fade-right">
-            <img src="/upload/images/{{user.image}}" alt="no image" class="rounded-circle">
-          </div>
-          <div class="col-lg-8 pt-4 pt-lg-0 content" data-aos="fade-left">
-            <h3> {{user.fullName}}</h3>
-            <div class="row">
-              <div class="col-lg-6">
-                <ul>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Full Name:</strong> <span>{{user.fullName}}</span>
-                  </li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Email:</strong> <span>{{user.email}}</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Institute:</strong> <span>{{user.institute}}</span>
-                  </li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Postion:</strong> <span>{{user.postion}}</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Major:</strong> <span>{{user.major}}</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Staff No:</strong> <span>{{user.staffNo}}</span>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Phone:</strong> <span>{{user.phone}}</span></li>
-                </ul>
-              </div>
+        <div class="content">
 
-            </div>
+          <h3> {{user.fullName}}</h3>
 
+          <div class="inside-content">
+
+            <ul>
+              <li><i class="bi bi-chevron-right"></i> <strong>Full Name:</strong> <span>{{user.fullName}}</span>
+              </li>
+              <li><i class="bi bi-chevron-right"></i> <strong>Email:</strong> <span>{{user.email}}</span></li>
+              </li>
+               <li><i class="bi bi-chevron-right"></i> <strong>MatricNo:</strong> <span>{{user.matricNo}}</span>
+              <li><i class="bi bi-chevron-right"></i> <strong>Phone:</strong> <span>{{user.phone}}</span></li>
+              <li><i class="bi bi-chevron-right"></i> <strong>Faculty:</strong> <span>{{user.faculty}}</span></li>
+              <li><i class="bi bi-chevron-right"></i> <strong>Major:</strong> <span>{{user.major}}</span></li>
+              <li><i class="bi bi-chevron-right"></i> <strong>Semester:</strong> <span>{{user.semester}}</span></li>
+              <li><i class="bi bi-chevron-right"></i> <strong>Nationality:</strong> <span>{{user.nationality}}</span></li>
+              <li><i class="bi bi-chevron-right"></i> <strong>Thesis Title:</strong> <span>{{user.thesisTitle}}</span></li>
+
+            </ul>
           </div>
 
+
         </div>
 
+
       </div>
-    </section><!-- End About Section -->
-
-    <br>
-    <br>
-    <br><br><br>
-    <div>
-      <a href="editinfo" name="editinfo">
-        <button type="button" id="edit_inf"> Edit infornation</button>
+    </section><!-- End profile Section -->
+    <div class="centerTheBtn">
 
 
-      </a>
+      <div class="profile-bottom-div">
+        <a href="editinfo" name="editinfo">
+          <button type="button" class="btn btn-warning">Edit Information</button>
+        </a>
 
-
-      <div class="form-group">
-
-
-        <label for="image" class="text-white">Upload image</label>
-        <i class="bi bi-card-image"></i>
-        <input type="file" name="image" id="image" class="form-control-file text-white">
-        </i>
-      </div>
-
-
-      <div class="control-group">
-        <!-- Button -->
-        <div class="controls">
-          <button class="btn btn-success" value="submit">Submit</button>
+        <div class="control-group">
+          <!-- Button -->
+          <div class="controls">
+            <button class="btn btn-success" value="submit">Submit</button>
+          </div>
         </div>
+
+
+
+
       </div>
-
-
-
-
     </div>
   </form>
 

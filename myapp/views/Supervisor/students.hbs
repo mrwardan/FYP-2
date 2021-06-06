@@ -6,39 +6,32 @@
 
 	<style>
 		body {
-			margin-top: 20px;
+			margin: 0;
+			padding: 0;
 		}
-
-
-
-		.StudentsHeader {
-
-			margin-left: 80px;
-
-
-			padding-top: 2em;
+		.cont{
+			margin-top: 2%;
+			margin-left: 5%;
 		}
-
-
-     .DivBeforeTable{
-		 background-color: gold;
-		 margin-left: 9%;
-		 margin-right: 5%;
-	 }
+		.DivBeforeTable {
+			margin-left: 22%;
+			margin-right: 20%;
+		}
 
 
 
 		/* TABLES */
 		.table {
 			background-color: hsl(0, 0%, 95%);
-		
+
 			border-collapse: separate;
 			border: 1px solid;
 			padding: 10px;
-			box-shadow: 5px 10px 10px #a8a7a7;
+			box-shadow: 3px 3px 3px #a8a7a7;
+
 		}
 
-	
+
 
 
 		.table tbody>tr>td {
@@ -46,133 +39,92 @@
 			vertical-align: middle;
 			background-color: white;
 			border: 1px solid;
-			
+
+		}
+		#TR > td >a{
+			text-decoration: none;
+			color: black;
 		}
 
-	
 
-
-		#SP {
-			margin-bottom: 5em;
-		}
-
-		#ADS {
-			margin-bottom: 2em;
-		}
 
 	</style>
 </head>
-
+{{>headerSV}}
 {{>slidebar_SV}}
 
-<header class="StudentsHeader">
+<div class="cont">
+
+<div class="DivBeforeTable">
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th><span>Name</span></th>
+				<th><span>Matric Number</span></th>
+				<th><span>Chairperson</span></th>
+				<th><span>Examiner 1</span></th>
+				<th><span>Examiner 2</span></th>
+				<th><span>Time</span></th>
+				<th><span>Actions</span></th>
 
 
-	<h3>Students Page</h3>
+			</tr>
+		</thead>
 
-
-
-
-</header>
-
-
-<div >
-
-
-	<hr>
-
-
-
-
-
-	
-
-
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-
-	<div >
-		<div >
-			<div >
-				<div class="DivBeforeTable">
-
-					<table class="table">
-						<thead>
-							<tr>
-								<th><span>Name</span></th>
-								<th><span>Matric Number</span></th>
-								<th><span>Chairperson</span></th>
-								<th><span>Examiner 1</span></th>
-								<th><span>Examiner 2</span></th>
-								<th><span>Time</span></th>
-								<th><span>Actions</span></th>
-
-
-							</tr>
-						</thead>
-
-						<tbody>
+		<tbody>
 
 
 
-							{{#each students}}
+			{{#each students}}
 
 
-							<tr id="TR">
-								<td>
+			<tr id="TR">
+				<td>
 
-									{{fullName}}
-								</td>
-								<td>
-									{{matricNo}}
-								</td>
-								<td class="text-center">
-									<span class="label label-default">{{chairPersonId.fullName}}</span>
+					{{fullName}}
+				</td>
+				<td>
+					{{matricNo}}
+				</td>
+				<td class="text-center">
+					<span class="label label-default">{{chairPersonId.fullName}}</span>
 
-								</td>
-								<td>
+				</td>
+				<td>
 
-									<a href="#">{{examinerOneId.fullName}}</a>
+					<a href="#">{{examinerOneId.fullName}}</a>
 
-								</td>
-
-
-								<td style="width: 20%;">
-
-									<a href="#">{{examinerTwoId.fullName}}</a>
-
-								</td>
-								<td>
-
-									{{date}}
-								</td>
-								<td>
+				</td>
 
 
-									<a href="/Supervisor/choose?id={{_id}}" class="edit"><i class="material-icons"
-											title="Edit">&#xE254;</i></a>
+				<td >
 
-									<a href="/Supervisor/deleteStudent/{{_id}}" class="delete"><i class="material-icons"
-											title="Delete">&#xE872;</i></a>
+					<a href="#">{{examinerTwoId.fullName}}</a>
+
+				</td>
+				<td>
+
+					{{date}}
+				</td>
+				<td>
 
 
-								</td>
+					<a href="/Supervisor/choose?id={{_id}}" class="edit"><i class="material-icons"
+							title="Edit">&#xE254;</i></a>
+
+					<a href="/Supervisor/deleteStudent/{{_id}}" class="delete"><i class="material-icons"
+							title="Delete">&#xE872;</i></a>
 
 
-							</tr>
-							{{/each}}
+				</td>
 
-						</tbody>
-					</table>
 
-				</div>
-			</div>
-		</div>
-	</div>
+			</tr>
+			{{/each}}
+
+		</tbody>
+	</table>
+
 </div>
-
-
-
-
-
-
-
+</div>

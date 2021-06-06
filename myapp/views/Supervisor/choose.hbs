@@ -1,22 +1,48 @@
+<head>
+    <style>
+        html {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0
+        }
+        .container{
+        
+            padding:2em;
+            width:100%;
+            
+
+        }
+        .form-group{
+            width:100%;
+        }
+        .col-md-4{
+             width:100%;
+
+        } 
+        .control-label{
+
+        }
+    </style>
+</head>
+{{>headerSV}}
 {{>slidebar_SV}}
 
 {{!-- //if i am in examiner page and i press submit on subervisor page there will be a conflict --}}
 
-<br>
+<div class="profileHeader" style="color:aliceblue">
+
+    <h5>Student Name: <strong>{{student.fullName}}</strong></h5>
+    <h5>Matric Card Number: <strong>{{student.matricNo}}</strong> </h5>
+
+</div>
+
+
+<hr style="color:aliceblue">
 <div class="main-choose">
-
-
-
-    <div class="text-center">
-        <strong>Welcome:</strong> {{user.fullName}}
-
-    </div>
-    <div class="profileHeader">
-
-        <h5>Student Name: <strong>{{student.fullName}}</strong></h5>
-        <h5>Matric Card Number: <strong>{{student.matricNo}}</strong> </h5>
-
-    </div>
 
 
 
@@ -30,7 +56,6 @@
 
 
 
-            <hr>
 
 
             <fieldset>
@@ -51,7 +76,7 @@
                                 <option value="null" selected>>unSelect</option>
                                 {{#each chairpeople}}
 
-                                 <option {{#ifEquals _id ../student.chairPersonId._id}} selected {{/ifEquals}}
+                                <option {{#ifEquals _id ../student.chairPersonId._id}} selected {{/ifEquals}}
                                     value="{{_id}}">{{fullName}} </option>
 
                                 {{/each}}

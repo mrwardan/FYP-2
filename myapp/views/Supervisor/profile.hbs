@@ -1,32 +1,39 @@
+<head>
+  <style>
+    html {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0
+    }
+  </style>
+</head>
+{{>headerSV}}
 {{>slidebar_SV}}
-<header class="profileHeader">
-
-  
-    <h3>Profile</h3>
-
-</header>
 
 <form class="text-center" action="/Supervisor/profile" method="POST" enctype="multipart/form-data">
 
-  <hr>
 
-  <div id="userInfo" >
+  <div id="userInfo">
 
     <section id="about" class="about ">
 
       <div class="row proBox">
         <div class="col-lg-5 imgBox " data-aos="fade-right">
 
-       <div class="image-container">
+          <div class="image-container">
 
-          <label for="file" >
-            <i class="img-postion bi bi-card-image">
-              <input type="file" name="image" id="file" style="display: none" class="form-control-file"
-                accept="image/gif,image/jpeg,image/jpg,image/png" multiple="" data-original-title="upload photos">
-            </i>
+            <label for="file">
+              <i class="img-postion bi bi-card-image">
+                <input type="file" name="image" id="file" style="display: none" class="form-control-file"
+                  accept="image/gif,image/jpeg,image/jpg,image/png" multiple="" data-original-title="upload photos">
+              </i>
 
-          </label>
-          <img src="/upload/images/{{user.image}}" style="height: 150px; width: 150px;" alt="no image">
+            </label>
+            <img src="/upload/images/{{user.image}}" style="height: 150px; width: 150px;" alt="no image">
           </div>
 
 
@@ -40,7 +47,7 @@
         </div>
         <div class="col-lg-8 pt-4 pt-lg-0 content" data-aos="fade-left">
           <h3> {{user.fullName}}</h3>
-<hr>
+          <hr>
 
           <div class="row">
             <div class="col-lg-6">
@@ -65,7 +72,7 @@
       </div>
 
     </section>
-<br>
+    <br>
 
   </div>
 
@@ -77,14 +84,14 @@
   <div class="text-center">
 
     <a href="editinfo" name="editinfo">
-      <button type="button" class="btn btn-primary"> Edit infornation</button>
+      <button type="button" class="btn btn-secondary"> Edit infornation</button>
 
 
     </a>
 
 
 
-    <button class="btn btn-success" value="submit">Submit</button>
+    <button class="btn btn-warning" value="submit">Submit</button>
 
 
 

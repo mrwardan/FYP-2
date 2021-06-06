@@ -27,20 +27,20 @@ const storage = multer.diskStorage({
 //upload parameters for multer
 const upload = multer({
   storage: storage,
-      
+
   limits: {
 
     fieldSize: 1024 * 1024 * 3,
   },
-  fileFilter: function(req, file, cb){
-   let ch = checkFileType(file, cb);
-   console.log(ch);
-   
+  fileFilter: function (req, file, cb) {
+    let ch = checkFileType(file, cb);
+    console.log(ch);
+
   }
 });
 
 // Check File Type
-function checkFileType(file, cb){
+function checkFileType(file, cb) {
   // Allowed ext
   const filetypes = /jpeg|jpg|png|gif/;
   // Check ext
@@ -48,87 +48,110 @@ function checkFileType(file, cb){
   // Check mime
   const mimetype = filetypes.test(file.mimetype);
 
-  if(mimetype && extname){
-    return cb(null,true);
+  if (mimetype && extname) {
+    return cb(null, true);
   } else {
     cb('Error: Images Only!');
-   
+
   }
 }
 
 
-route.get('/', ensureAuth, async (req, res, next) =>
-{
-  
-
- // res.json(user);
- res.render('Examiner/Dashboard', {user: req.session.user,  layout: 'mainEX.hbs'})
+route.get('/', ensureAuth, async (req, res, next) => {
 
 
-})
-route.get('/dashboard', ensureAuth, async (req, res, next) =>
-{
-  
-    //res.json(user);
-
- res.render('Examiner/Dashboard', {user: req.session.user,  layout: 'mainEX.hbs'})
+  // res.json(user);
+  res.render('Examiner/Dashboard', {
+    user: req.session.user,
+    layout: 'mainEX.hbs'
+  })
 
 
 })
+route.get('/dashboard', ensureAuth, async (req, res, next) => {
 
-route.get('/home',ensureAuth, (req, res, next) =>
-{
-    res.render('Examiner/Dashboard', {user: req.session.user, layout:'mainEx.hbs'})
+  //res.json(user);
 
-})
-route.get('/profile', ensureAuth,  (req, res, next) =>
-{
-    res.render('Examiner/profile', {user: req.session.user, layout:'mainEx.hbs'})
-    
+  res.render('Examiner/Dashboard', {
+    user: req.session.user,
+    layout: 'mainEX.hbs'
+  })
 
-})
-
-route.get('/editinfo',ensureAuth,  (req, res, next) =>
-{
-    res.render('Examiner/editinfo', {user: req.session.user, layout:'mainEx.hbs'})
 
 })
-route.get('/approve',ensureAuth, async (req, res, next) =>
-{
 
-  
+route.get('/home', ensureAuth, (req, res, next) => {
+  res.render('Examiner/Dashboard', {
+    user: req.session.user,
+    layout: 'mainEx.hbs'
+  })
+
+})
+route.get('/profile', ensureAuth, (req, res, next) => {
+  res.render('Examiner/profile', {
+    user: req.session.user,
+    layout: 'mainEx.hbs'
+  })
+
+
+})
+
+route.get('/editinfo', ensureAuth, (req, res, next) => {
+  res.render('Examiner/editinfo', {
+    user: req.session.user,
+    layout: 'mainEx.hbs'
+  })
+
+})
+route.get('/approve', ensureAuth, async (req, res, next) => {
+
+
   try {
-    const students = await STUDENT.find({examinerOneId: req.session.user._id}).lean().populate("supervisorId");
 
-    //res.json(students)
+    const students = await STUDENT.find({
+      $or: [{
+        examinerOneId: req.session.user._id
+      }, {
+        examinerTwoId: req.session.user._id
+      }]
+    }).lean().populate("supervisorId");
+
     console.log(students);
-    res.render('Examiner/Approve', {students: students, layout:'mainEx.hbs'})
+    res.render('Examiner/Approve', {
+      user: req.session.user,
+      students: students,
+      layout: 'mainEx.hbs'
+    })
 
 
   } catch (error) {
 
-res.json(error)
+    res.json(error)
 
-    
+
   }
 
 
 })
-route.get('/signout',(req, res, next) =>
-{
-  req.session.destroy(); 
-  res.render('login', {layout: 'mainEx'})
+route.get('/signout', (req, res, next) => {
+  req.session.destroy();
+  res.render('login', {
+    layout: 'mainEx'
+  })
 
 })
 
 
-route.post('/profile', ensureAuth, upload.single('image') , async (req, res, next) =>
-{
-   console.log('The req.file:',req.file);
-   console.log('The req.body',req.body);
+route.post('/profile', ensureAuth, upload.single('image'), async (req, res, next) => {
+  console.log('The req.file:', req.file);
+  console.log('The req.body', req.body);
 
-  await EXAMINER.findByIdAndUpdate(req.session.user._id, {image:req.file.filename},  {new: true},
-  
+  await EXAMINER.findByIdAndUpdate(req.session.user._id, {
+      image: req.file.filename
+    }, {
+      new: true
+    },
+
     function (err, response) {
       // Handle any possible database errors
       if (err) {
@@ -143,19 +166,24 @@ route.post('/profile', ensureAuth, upload.single('image') , async (req, res, nex
     })
 })
 
-route.post('/submitApprove', ensureAuth , async (req, res, next) =>
-{
-  const {id} = req.body;
+route.post('/submitApprove', ensureAuth, async (req, res, next) => {
+  const {
+    id
+  } = req.body;
 
   console.log("The user id: ", id);
 
-   // if the examiner 
+  // if the examiner 
 
-  
-    try {
-        
-     await STUDENT.findByIdAndUpdate(id, {examinerOneApproved:true},  {new: true},
-  
+
+  try {
+
+    await STUDENT.findByIdAndUpdate(id, {
+        examinerOneApproved: true
+      }, {
+        new: true
+      },
+
       function (err, response) {
         // Handle any possible database errors
         console.log('There is error and not able to retrieve the info');
@@ -165,30 +193,45 @@ route.post('/submitApprove', ensureAuth , async (req, res, next) =>
             message: 'Database Update Failure'
           });
         }
-        
 
-         res.redirect('approve')
-        console.log("This is the Response: " , response);
+
+        res.redirect('approve')
+        console.log("This is the Response: ", response);
       })
-  
-  
-      
-    } catch (error) {
-      res.json(error)
-    }
-    })
-route.post('/editinfo', ensureAuth,  async  (req, res, next) =>
-{
-  const { fullName, phone, postion, institute, major, examinerType} =req.body;
+
+
+
+  } catch (error) {
+    res.json(error)
+  }
+})
+route.post('/editinfo', ensureAuth, async (req, res, next) => {
+  const {
+    fullName,
+    phone,
+    postion,
+    institute,
+    major,
+    examinerType
+  } = req.body;
 
   // console.log("The user information: ", req.session.user);
   // console.log("The user information sesstion user id :", req.session.user._id);
-   console.log("The examiner Type: ", examinerType);
-  
-    try {
-        
-     await EXAMINER.findByIdAndUpdate(req.session.user._id, {fullName:fullName, phone:phone,postion:postion, institute:institute, major:major, examinerType: examinerType},  {new: true},
-  
+  console.log("The examiner Type: ", examinerType);
+
+  try {
+
+    await EXAMINER.findByIdAndUpdate(req.session.user._id, {
+        fullName: fullName,
+        phone: phone,
+        postion: postion,
+        institute: institute,
+        major: major,
+        examinerType: examinerType
+      }, {
+        new: true
+      },
+
       function (err, response) {
         // Handle any possible database errors
         console.log('There is error and not able to retrieve the info');
@@ -200,31 +243,29 @@ route.post('/editinfo', ensureAuth,  async  (req, res, next) =>
         }
         req.session.user = response;
 
-         res.redirect('profile')
-        console.log("This is the Response: " , response);
+        res.redirect('profile')
+        console.log("This is the Response: ", response);
       })
-  
-  
-      
-    } catch (error) {
-      res.json(error)
-    }
-    
 
-  
+
+
+  } catch (error) {
+    res.json(error)
+  }
+
+
+
 })
 
 
 
-function ensureAuth(req,res,next) {
-  if(req.session.user)
-  {
+function ensureAuth(req, res, next) {
+  if (req.session.user) {
     next()
-  }else
-  {
+  } else {
     res.redirect('login');
   }
-  
+
 }
 
 module.exports = route;

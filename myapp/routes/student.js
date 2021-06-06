@@ -60,6 +60,9 @@ route.get("/home", ensureAuth, (req, res, next) => {
 route.get("/profile", ensureAuth, (req, res, next) => {
   res.render("Student/profile", { user: req.session.user, layout: "mainS" });
 });
+route.get("/editinfo", ensureAuth, (req, res, next) => {
+  res.render("Student/editinfo", { user: req.session.user, layout: "mainS" });
+});
 route.get("/uploadDocuments", ensureAuth, async (req, res, next) => {
   
   try {
@@ -151,6 +154,58 @@ route.post(
         console.log("This is the Response: " + response);
       }
     );
+  }
+);
+
+//edit info post
+route.post(
+  "/editinfo",
+  ensureAuth,
+  async (req, res, next) => {
+    const {
+      fullName,
+      phone,
+      faculty,
+      major,
+      semester,
+      nationality,
+      thesisTitle
+    } = req.body;
+
+    // console.log("The user information: "+req.session.user);
+   // console.log("The request file:", req.file);
+
+    try {
+      await STUDENT.findByIdAndUpdate(
+        req.session.user._id, {
+          fullName: fullName,
+          phone: phone,
+          faculty:faculty,
+          semester:semester,
+          nationality:nationality,
+          thesisTitle:thesisTitle,
+          major: major,
+        }, {
+          new: true
+        },
+
+        function (err, response) {
+          // Handle any possible database errors
+          if (err) {
+            console.log("we hit an error" + err);
+            res.json({
+              message: "Database Update Failure",
+            });
+          }
+          req.session.user = response;
+
+          res.redirect("profile");
+          console.log("This is the Response: " + response);
+        }
+      );
+    } catch (error) {
+      res.json(error);
+    }
   }
 );
  

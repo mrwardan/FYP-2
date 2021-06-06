@@ -483,7 +483,15 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
+          mailOptions.to = email;
+          mailOptions.html = ` 
+          <a href="${link}"> Click here to reset your password</a>
+          `;
 
+          transporter.sendMail(mailOptions, function (err, info) {
+            if (err) console.log(err);
+            else console.log(info);
+          });
           console.log("This is the Response: " + response);
 
           // res.redirect('students')
@@ -507,6 +515,16 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
+
+          mailOptions.to = email;
+          mailOptions.html = ` 
+          <a href="${link}"> Click here to reset your password</a>
+          `;
+
+          transporter.sendMail(mailOptions, function (err, info) {
+            if (err) console.log(err);
+            else console.log(info);
+          });
 
           console.log("This is the Response: " + response);
         }
@@ -553,7 +571,15 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
+          mailOptions.to = email;
+          mailOptions.html = ` 
+          <a href="${link}"> Click here to reset your password</a>
+          `;
 
+          transporter.sendMail(mailOptions, function (err, info) {
+            if (err) console.log(err);
+            else console.log(info);
+          });
           console.log("This is the Response: " + response);
         }
       );
@@ -575,6 +601,16 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
+
+          mailOptions.to = email;
+          mailOptions.html = ` 
+          <a href="${link}"> Click here to reset your password</a>
+          `;
+
+          transporter.sendMail(mailOptions, function (err, info) {
+            if (err) console.log(err);
+            else console.log(info);
+          });
 
           console.log("This is the Response: " + response);
 
@@ -599,7 +635,15 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
+          mailOptions.to = email;
+          mailOptions.html = ` 
+          <a href="${link}"> Click here to reset your password</a>
+          `;
 
+          transporter.sendMail(mailOptions, function (err, info) {
+            if (err) console.log(err);
+            else console.log(info);
+          });
           console.log("This is the Response: " + response);
         }
       );
