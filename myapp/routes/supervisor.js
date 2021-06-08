@@ -7,6 +7,8 @@ const CHAIRPERSON = require("../models/Chairperson");
 const DOCUMENT = require("../models/Document");
 const multer = require("multer");
 const path = require("path");
+var nodemailer = require('nodemailer');
+
 const {
   findById
 } = require("../models/Student");
@@ -29,6 +31,21 @@ const storage = multer.diskStorage({
     callback(null, Date.now() + file.originalname);
   },
 });
+
+var transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "documentvivasystem@gmail.com",
+    pass: "M1234mras",
+  },
+});
+
+const mailOptions = {
+  from: "documentvivasystem@gmail.com", // sender address
+  to: "", // list of receivers
+  subject: "Viva Oral Examination", // Subject line
+  html: "", // plain text body
+};
 
 //upload parameters for multer
 const upload = multer({
@@ -116,6 +133,7 @@ route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
 
     //console.log('asdfghjhgfdsa');
     //console.log(allstudents);
+    console.log('supervisor name', req.session.user.fullName);
     console.log("THE STUDENT INFORMATION: ", allstudents);
 
     res.render("Supervisor/students", {
@@ -243,10 +261,10 @@ route.post(
 //chose
 route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
   const {
-    id
+    id, email
   } = req.query;
   // const id = req.params.id;
-  console.log('wardan');
+  console.log(email);
 
   try {
     const student = await STUDENT.findById(id)
@@ -458,8 +476,12 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
     matricNo,
     examinerOneId,
     examinerTwoId,
-    chairPersonId
+    chairPersonId,
   } = req.body;
+
+  const Examiner1 = await EXAMINER.findById(examinerOneId).lean();
+  const Examiner2 = await EXAMINER.findById(examinerTwoId).lean();
+
   const student = await STUDENT.findOne({
     matricNo: matricNo
   }).lean();
@@ -483,15 +505,7 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
-          mailOptions.to = email;
-          mailOptions.html = ` 
-          <a href="${link}"> Click here to reset your password</a>
-          `;
-
-          transporter.sendMail(mailOptions, function (err, info) {
-            if (err) console.log(err);
-            else console.log(info);
-          });
+     
           console.log("This is the Response: " + response);
 
           // res.redirect('students')
@@ -515,17 +529,6 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
-
-          mailOptions.to = email;
-          mailOptions.html = ` 
-          <a href="${link}"> Click here to reset your password</a>
-          `;
-
-          transporter.sendMail(mailOptions, function (err, info) {
-            if (err) console.log(err);
-            else console.log(info);
-          });
-
           console.log("This is the Response: " + response);
         }
       );
@@ -547,7 +550,7 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
-
+      
           console.log("This is the Response: " + response);
 
           // res.redirect('students')
@@ -571,9 +574,9 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
-          mailOptions.to = email;
+          mailOptions.to = Examiner1.email;
           mailOptions.html = ` 
-          <a href="${link}"> Click here to reset your password</a>
+          Please be notified that the supervisor Dr. ${req.session.user.fullName} has choosen you to be the Examiner for the student ${student.fullName}. Thank you! 
           `;
 
           transporter.sendMail(mailOptions, function (err, info) {
@@ -602,16 +605,6 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
             });
           }
 
-          mailOptions.to = email;
-          mailOptions.html = ` 
-          <a href="${link}"> Click here to reset your password</a>
-          `;
-
-          transporter.sendMail(mailOptions, function (err, info) {
-            if (err) console.log(err);
-            else console.log(info);
-          });
-
           console.log("This is the Response: " + response);
 
           // res.redirect('students')
@@ -635,9 +628,10 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
-          mailOptions.to = email;
+
+          mailOptions.to = Examiner2.email;
           mailOptions.html = ` 
-          <a href="${link}"> Click here to reset your password</a>
+          Please be notified that the supervisor Dr. ${req.session.user.fullName} has choosen you to be the Examiner for the student Mohammed Wardan. Thank you! 
           `;
 
           transporter.sendMail(mailOptions, function (err, info) {

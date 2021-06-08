@@ -73,7 +73,7 @@
                             <select name="chairPersonId" class="form-control selectpicker">
 
                                 {{#select student.chairPersonId._id }}
-                                <option value="null" selected>>unSelect</option>
+                                <option value="null" selected>Non</option>
                                 {{#each chairpeople}}
 
                                 <option {{#ifEquals _id ../student.chairPersonId._id}} selected {{/ifEquals}}
@@ -97,7 +97,7 @@
                             <select name="examinerOneId" class="form-control selectpicker">
 
                                 {{#select student.examinerOneId._id }}
-                                <option value="null" selected>unSelect</option>
+                                <option value="null" selected>Non</option>
 
                                 {{#each examiners}}
 
@@ -135,7 +135,7 @@
 
                             <select name="examinerTwoId" class="form-control selectpicker">
                                 {{#select student.examinerTwoId._id }}
-                                <option value="null" selected>>unSelect</option>
+                                <option value="null" selected>Non</option>
                                 {{#each examiners}}
 
 
