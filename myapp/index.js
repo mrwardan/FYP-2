@@ -10,6 +10,7 @@ const SUPERVISOR = require("./models/Supervisor");
 const STUDENT = require("./models/Student");
 const EXAMINER = require("./models/Examiner");
 const CHAIRPERSON = require("./models/Chairperson");
+const EXAMINFORMATION = require("./models/ExamInformation");
 const multer = require("multer");
 const MongoStore = require("connect-mongo");
 const { ifEquals, select, ifIn,toSplitFile } = require("./helpers/hbs");
@@ -503,6 +504,7 @@ app.use("/Student", require("./routes/student"));
 app.use("/Supervisor", require("./routes/supervisor"));
 app.use("/Examiner", require("./routes/examiner"));
 app.use("/Admin", require("./routes/admin"));
+app.use("/Chairperson", require("./routes/chairperson"));
 
 // app.all('*', function(req, res) {
 //   res.status(404).render('login');

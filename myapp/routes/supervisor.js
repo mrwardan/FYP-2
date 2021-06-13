@@ -217,7 +217,6 @@ route.get("/showDocument/:id", ensureAuth, ensureSupervisor, async (req, res, ne
     console.log("The doc is: ", doc);
 
     res.render("Supervisor/showDocument", {
-
       user: req.session.user,
       stu,
       doc,

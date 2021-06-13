@@ -2,6 +2,7 @@ var express = require("express");
 const route = express.Router();
 const USER = require("../models/User");
 const CHAIRPERSON = require("../models/Chairperson");
+const EXAMINFORMATION = require("../models/ExamInformation");
 const EXAMINER = require("../models/Examiner");
 const STUDENT = require("../models/Student");
 const SUPERVISOR = require("../models/Supervisor");
@@ -562,18 +563,16 @@ route.post("/issueExam", ensureAuth, ensureAdmin, async (req, res, next) => {
   console.log("selected ST 2: ", selectedInPage.student.examinerTwoApproved);
   console.log("selected ST CH: ", selectedInPage.student.chairPersonApproved);
 
-
-
-
-
-
   try { 
-
-    //if examiners & chair are approved
+    let exam ={
+      supervisor,
+      examiner1,examiner2,chairperson,student,date, time,venue
+    }; 
+    let exam_response = await  EXAMINFORMATION.create(exam);
     
-    
+    res.redirect("issueExam");
   } catch (error) {
-    
+    res.json(error)
   }
 });
 

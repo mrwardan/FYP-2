@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <style>
+        .ResultMainPage {
+            margin-left: 18%;
+            margin-top: .5%;
+            background-color: rgba(255, 255, 255, 0.822);
+            height: 700px;
+            width: 80%;
+        }
+
+        .StuInfo {
+            background-color: white;
+            width: 100%;
+            height: 355px;
+        }
+
+        .tableHeader {
+            background-color: gray;
+            text-align: left;
+            color: white;
+            font-size: 1.2em;
+            padding: 1em;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+
+        }
+
+        .table td {
+            border: 1px solid black;
+            border-right: none;
+            border-left: none;
+            padding: 15px;
+            text-align: left;
+
+        }
+
+        .table td:first-child {
+            text-align: left;
+            background-color: lightgray;
+            width: 100px;
+        }
+
+        .ResultInfo {
+            margin-top: 2em;
+            background-color: white;
+        }
+
+        .ResultTable {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .ResultTable td {
+            border: 1px solid black;
+            border-right: none;
+            border-left: none;
+            padding: 15px;
+            text-align: left;
+            padding-left: 30px;
+            ;
+
+        }
+
+        .ResultTable td:first-child {
+            text-align: left;
+            background-color: lightgray;
+            width: 30px;
+            padding-left: 10px;
+
+        }
+
+        .comment {
+            padding-top: 2em;
+            text-align: left;
+            background-color: lightgray;
+
+        }
+
+        .sub {
+            padding-top: 2em;
+            display: flex;
+            justify-content: center;
+            height: 100px;
+            width: 100%;
+            background-color: lightgray;
+        }
+
+
+        .button,
+        .tick {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: sans-serif;
+        }
+
+
+
+        .button {
+            width: 160px;
+            height: 40px;
+            background: dodgerblue;
+            border-radius: 6px;
+            transition: all .3s cubic-bezier(0.67, 0.17, 0.40, 0.83);
+        }
+
+        .button svg {
+            transform: rotate(180deg);
+            transition: all .5s;
+        }
+
+        .button__circle {
+            width: 60px;
+            height: 60px;
+            background: mediumseagreen;
+            border-radius: 50%;
+            transform: rotate(-180deg);
+        }
+
+        .button:hover {
+            cursor: pointer;
+        }
+
+        .tick {
+            color: white;
+            font-size: 1em;
+            transition: all .9s;
+        }
+    </style>
+</head>
+
+{{>headerCH}}
+{{>slidebarCH}}
+
+<body>
+    <div class="ResultMainPage">
+
+
+
+        <form action="/Chairperson/studentResults" method="POST">
+            <div class="StuInfo">
+                <div class="tableHeader">
+                    Student and project info
+                </div>
+
+                <table class="table">
+
+                    <tr>
+                        <td><strong>Name:</strong></td>
+                        <td>Maria Anders</td>
+                    </tr>
+                    <tr>
+                        <td> <strong>Program:</strong></td>
+                        <td>Francisco Chang</td>
+                    </tr>
+                    <tr>
+                        <td> <strong>Email:</strong></td>
+                        <td>Roland Mendel</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phone:</strong> </td>
+                        <td>Helen Bennett</td>
+                    </tr>
+                    <tr>
+                        <td> <strong>Title:</strong> </td>
+                        <td>Yoshi Tannamuri</td>
+                    </tr>
+                    <tr>
+                        <td> <strong>Type:</strong> </td>
+                        <td>Giovanni Rovelli</td>
+                    </tr>
+                </table>
+
+            </div>
+
+
+
+            <div class="ResultInfo">
+                <div class="tableHeader">
+                    RESULT (Choose One only: A, B1, B2 or C)
+                </div>
+
+                <table class="ResultTable">
+
+                    <tr>
+                        <td>A.</td>
+                        <td> <strong>Research proposal is accepted</strong>
+                            <ul>
+                                <li>Does not require any correction to the proposal report;</li>
+                                <li>Requires minor text editing, formatting of tables and/or figures, correction of
+                                    grammar,
+                                    spelling or typos.</li>
+                            </ul>
+
+                        </td>
+                        <td>
+                            <input type="radio" name="result" value="A"> <br>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> B1.</td>
+                        <td><strong>Research proposal is accepted with minor amendments </strong>
+                            <ul>
+                                <li>Requires minor text editing, formatting of tables and/or figures, correction of
+                                    grammar,
+                                    spelling or typos;</li>
+                                <li>Improvement in declaration of research objectives and problem statement;</li>
+                                <li>Requires a little addition or explanations pertaining to several short sections in
+                                    the
+                                    text;</li>
+                                <li>
+                                    Submission of correction form and corrected pages only must be on the second (2nd)
+                                    week
+                                    after presentation.
+                                </li>
+                                <li>The semester result will be TM (Unsatisfactory) if the corrected documents are not
+                                    submitted by the deadline.</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <input type="radio" name="result" value="B1"> <br>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> B2.</td>
+                        <td><strong>Research proposal is accepted with major amendments </strong>
+                            <ul>
+                                <li>Requires major text editing, formatting of tables and/or figures, correction of
+                                    grammar,
+                                    spelling or typos; </li>
+                                <li>Requires major revision on the proposal report writing and content;</li>
+                                <li>Revision of literature;</li>
+                                <li>Major improvement in the description of methodology;</li>
+                                <li>
+                                    Representation in the following semester:
+                                    <div>
+                                        <label>
+                                            <input type="radio" name="choice-radio">
+                                            Yes
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="choice-radio">
+                                            No
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    Note: Submission of two (2) reports to the office for representation.
+                                </li>
+                                <li>
+                                    Submission of correction form and report(s) must be on the sixth (6th) week after
+                                    presentation.
+                                </li>
+                                <li>
+                                    The semester result will be TM (Unsatisfactory) if the corrected report and
+                                    correction
+                                    form is not submitted by the deadline.
+                                </li>
+                            </ul>
+                        </td>
+                        <td>
+                            <input type="radio" name="result" value="B2"> <br>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>C. </td>
+                        <td> <strong>Research proposal is rejected </strong>
+                            <ul>
+                                <li>
+                                    Has substantial weakness that resulted the proposal report to be below acceptable
+                                    standards which cannot be addressed even with additional work or corrections;
+                                </li>
+                                <li>
+                                    Inadequate problem formulation, literature review and/or research methodology;
+                                </li>
+                                <li>
+                                    Has plagiarized work or text;
+                                </li>
+                                <li>
+                                    Resubmit new proposal and re-present in the following semester.
+                                </li>
+                                <li>
+                                    The semester result will be TM (Unsatisfactory).
+                                </li>
+                                <br>
+                                Please state reason(s) of rejection:
+                            </ul>
+                        </td>
+                        <td>
+                            <input type="radio" name="result" value="C"> <br>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+                <div class="comment">
+                    <div class="tableHeader">
+                        <strong>Comments of the First Assessment Session</strong>
+                    </div>
+
+                    <textarea name="comments" id="comment" cols="150"
+                        rows="10">Comments of the First Assessment Session</textarea>
+
+
+                </div>
+
+            </div>
+
+            <div class="sub">
+
+                <div class="button">
+                    <div class="container">
+                        <div class="tick">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+
+
+    </div>
+
+    <script>
+        let button = document.querySelector('.button');
+        let buttonText = document.querySelector('.tick');
+
+        const tickMark = "<svg width=\"58\" height=\"45\" viewBox=\"0 0 58 45\" xmlns=\"http://www.w3.org/2000/svg\"><path fill=\"#fff\" fill-rule=\"nonzero\" d=\"M19.11 44.64L.27 25.81l5.66-5.66 13.18 13.18L52.07.38l5.65 5.65\"/></svg>";
+
+        buttonText.innerHTML = "Submit";
+
+        button.addEventListener('click', function () {
+
+            if (buttonText.innerHTML !== "Submit") {
+                buttonText.innerHTML = "Submit";
+            } else if (buttonText.innerHTML === "Submit") {
+                buttonText.innerHTML = tickMark;
+            }
+            this.classList.toggle('button__circle');
+        });
+    </script>
+
+
+</body>
+
+</html>

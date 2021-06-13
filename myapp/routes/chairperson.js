@@ -1,5 +1,6 @@
 var express = require('express');
 const route = express.Router();
+const CHAIRPERSON = require("../models/Chairperson");
 const EXAMINER = require('../models/Examiner');
 const STUDENT = require('../models/Student');
 const SUPERVISOR = require('../models/Supervisor');
@@ -61,9 +62,9 @@ route.get('/', ensureAuth, async (req, res, next) => {
 
 
   // res.json(user);
-  res.render('Examiner/Dashboard', {
+  res.render('Chairperson/Dashboard', {
     user: req.session.user,
-    layout: 'mainEX.hbs'
+    layout: 'mainchair.hbs'
   })
 
 
@@ -72,34 +73,34 @@ route.get('/dashboard', ensureAuth, async (req, res, next) => {
 
   //res.json(user);
 
-  res.render('Examiner/Dashboard', {
+  res.render('Chairperson/Dashboard', {
     user: req.session.user,
-    layout: 'mainEX.hbs'
+    layout: 'mainchair.hbs'
   })
 
 
 })
 
 route.get('/home', ensureAuth, (req, res, next) => {
-  res.render('Examiner/Dashboard', {
+  res.render('Chairperson/Dashboard', {
     user: req.session.user,
-    layout: 'mainEx.hbs'
+    layout: 'mainchair.hbs'
   })
 
 })
 route.get('/profile', ensureAuth, (req, res, next) => {
-  res.render('Examiner/profile', {
+  res.render('Chairperson/profile', {
     user: req.session.user,
-    layout: 'mainEx.hbs'
+    layout: 'mainchair.hbs'
   })
 
 
 })
 
 route.get('/editinfo', ensureAuth, (req, res, next) => {
-  res.render('Examiner/editinfo', {
+  res.render('Chairperson/editinfo', {
     user: req.session.user,
-    layout: 'mainEx.hbs'
+    layout: 'mainchair.hbs'
   })
 
 })
@@ -108,19 +109,19 @@ route.get('/approve', ensureAuth, async (req, res, next) => {
 
   try {
 
-    const students = await STUDENT.find({
-      $or: [{
-        examinerOneId: req.session.user._id
-      }, {
-        examinerTwoId: req.session.user._id
-      }]
-    }).lean().populate("supervisorId");
+    const students = await STUDENT.find({ chairPersonId: req.session.user._id }).lean().populate("supervisorId");
 
-    console.log(students);
-    res.render('Examiner/Approve', {
+   let userID = false;
+
+    if(req.session.user._id){
+    userID = true;
+      
+    }
+    res.render('Chairperson/Approve', {
       user: req.session.user,
       students: students,
-      layout: 'mainEx.hbs'
+      userID,
+      layout: 'mainchair.hbs'
     })
 
 
@@ -136,16 +137,16 @@ route.get('/approve', ensureAuth, async (req, res, next) => {
 
 route.get('/results', ensureAuth, async (req, res, next) =>{
 
-  res.render('Examiner/Results',  {
+  res.render('Chairperson/Results',  {
     user: req.session.user,
-    layout: 'mainEx.hbs'
+    layout: 'mainchair.hbs'
   })
 
 })
 route.get('/signout', (req, res, next) => {
   req.session.destroy();
   res.render('login', {
-    layout: 'mainEx'
+    layout: 'mainchair'
   })
 
 })
@@ -155,7 +156,7 @@ route.post('/profile', ensureAuth, upload.single('image'), async (req, res, next
   console.log('The req.file:', req.file);
   console.log('The req.body', req.body);
 
-  await EXAMINER.findByIdAndUpdate(req.session.user._id, {
+  await CHAIRPERSON.findByIdAndUpdate(req.session.user._id, {
       image: req.file.filename
     }, {
       new: true
@@ -179,8 +180,7 @@ route.post('/submitApprove', ensureAuth, async (req, res, next) => {
   const {
     id
   } = req.body;
-
-  console.log("The user id: ", id);
+  console.log("Wardan love 2 ");
 
   // if the examiner 
 
@@ -188,21 +188,18 @@ route.post('/submitApprove', ensureAuth, async (req, res, next) => {
   try {
 
     await STUDENT.findByIdAndUpdate(id, {
-        examinerOneApproved: true
+        chairPersonApproved: true
       }, {
         new: true
       },
 
       function (err, response) {
-        // Handle any possible database errors
-        console.log('There is error and not able to retrieve the info');
         if (err) {
           console.log("we hit an error" + err);
           res.json({
             message: 'Database Update Failure'
           });
         }
-
 
         res.redirect('approve')
         console.log("This is the Response: ", response);
@@ -215,28 +212,26 @@ route.post('/submitApprove', ensureAuth, async (req, res, next) => {
   }
 })
 route.post('/editinfo', ensureAuth, async (req, res, next) => {
+  console.log('Wardan good');
   const {
     fullName,
     phone,
     postion,
     institute,
     major,
-    examinerType
   } = req.body;
 
   // console.log("The user information: ", req.session.user);
   // console.log("The user information sesstion user id :", req.session.user._id);
-  console.log("The examiner Type: ", examinerType);
-
   try {
 
-    await EXAMINER.findByIdAndUpdate(req.session.user._id, {
+    await CHAIRPERSON.findByIdAndUpdate(req.session.user._id, {
         fullName: fullName,
         phone: phone,
         postion: postion,
         institute: institute,
         major: major,
-        examinerType: examinerType
+        
       }, {
         new: true
       },
