@@ -64,7 +64,6 @@ route.get("/editinfo", ensureAuth, (req, res, next) => {
   res.render("Student/editinfo", { user: req.session.user, layout: "mainS" });
 });
 route.get("/uploadDocuments", ensureAuth, async (req, res, next) => {
-  
   try {
     const documents = await DOCUMENT.find({
       studentId: req.session.user._id,
@@ -72,47 +71,54 @@ route.get("/uploadDocuments", ensureAuth, async (req, res, next) => {
     let isProposal = false;
     let isPre = false;
     let isThesis = false;
-    
 
-    if(documents)
-    {
+    if (documents) {
+      documents.forEach((element) => {
+        console.log("element.fileType: ", element.fileType);
 
-      documents.forEach(element => {
-        console.log('element.fileType: ', element.fileType);
-
-
-
-        if(element.fileType == 'proposal')
-        {
+        if (element.fileType == "proposal") {
           isProposal = true;
-        } else if(element.fileType == 'Presentation')
-        {
-           isPre = true;
-
-
-        }else if(element.fileType == 'thesis')
-        {
-
+        } else if (element.fileType == "Presentation") {
+          isPre = true;
+        } else if (element.fileType == "thesis") {
           isThesis = true;
-
         }
-      
       });
-
     }
-    console.log('isProposal: after:', isProposal);
-    console.log('isPre: after:', isPre);
-    console.log('isThesis: after:', isThesis);
-  
+    console.log("isProposal: after:", isProposal);
+    console.log("isPre: after:", isPre);
+    console.log("isThesis: after:", isThesis);
+
     res.render("Student/uploadDocuments", {
       user: req.session.user,
-      documents,isProposal,isPre,isThesis,
+      documents,
+      isProposal,
+      isPre,
+      isThesis,
       layout: "mainS",
     });
   } catch (error) {
     res.json(error);
   }
 });
+route.get("/studentDetails", ensureAuth, async (req, res, next) => {
+  const student = await STUDENT.findById(req.session.user._id)
+    .lean()
+    .populate("supervisorId")
+    .populate("examinerOneId")
+    .populate("examinerTwoId")
+    .populate("chairPersonId");
+    console.log('student info: ', student);
+
+ //   res.json(student)
+
+  res.render("Student/stuInfo", {
+    user: req.session.user,
+    student,
+    layout: "mainS",
+  });
+});
+
 route.get("/signout", ensureAuth, (req, res, next) => {
   req.session.destroy();
   res.render("login", { layout: false });
@@ -158,58 +164,56 @@ route.post(
 );
 
 //edit info post
-route.post(
-  "/editinfo",
-  ensureAuth,
-  async (req, res, next) => {
-    const {
-      fullName,
-      phone,
-      faculty,
-      major,
-      semester,
-      nationality,
-      thesisTitle
-    } = req.body;
+route.post("/editinfo", ensureAuth, async (req, res, next) => {
+  const {
+    fullName,
+    phone,
+    faculty,
+    major,
+    semester,
+    nationality,
+    thesisTitle,
+  } = req.body;
 
-    // console.log("The user information: "+req.session.user);
-   // console.log("The request file:", req.file);
+  // console.log("The user information: "+req.session.user);
+  // console.log("The request file:", req.file);
 
-    try {
-      await STUDENT.findByIdAndUpdate(
-        req.session.user._id, {
-          fullName: fullName,
-          phone: phone,
-          faculty:faculty,
-          semester:semester,
-          nationality:nationality,
-          thesisTitle:thesisTitle,
-          major: major,
-        }, {
-          new: true
-        },
+  try {
+    await STUDENT.findByIdAndUpdate(
+      req.session.user._id,
+      {
+        fullName: fullName,
+        phone: phone,
+        faculty: faculty,
+        semester: semester,
+        nationality: nationality,
+        thesisTitle: thesisTitle,
+        major: major,
+      },
+      {
+        new: true,
+      },
 
-        function (err, response) {
-          // Handle any possible database errors
-          if (err) {
-            console.log("we hit an error" + err);
-            res.json({
-              message: "Database Update Failure",
-            });
-          }
-          req.session.user = response;
-
-          res.redirect("profile");
-          console.log("This is the Response: " + response);
+      function (err, response) {
+        // Handle any possible database errors
+        if (err) {
+          console.log("we hit an error" + err);
+          res.json({
+            message: "Database Update Failure",
+          });
         }
-      );
-    } catch (error) {
-      res.json(error);
-    }
+        req.session.user = response;
+
+        res.redirect("profile");
+        console.log("This is the Response: " + response);
+      }
+    );
+  } catch (error) {
+    res.json(error);
   }
-);
- 
-//upload proposal 
+});
+
+//upload proposal
 route.post(
   "/submitDoc",
   ensureAuth,
@@ -221,56 +225,44 @@ route.post(
       documentName: req.file.filename,
       fileType: req.body.fileType,
       submittedDate: Date.now(),
-
     });
 
-    if(req.session.user.supervisorId == null)
-    {
-      res.send('You must have a supervisor first')
-    } else
-    {
+    if (req.session.user.supervisorId == null) {
+      res.send("You must have a supervisor first");
+    } else {
       const document = await DOCUMENT.find({
         studentId: req.session.user._id,
         fileType: req.body.fileType,
       }).lean();
-  
+
       //fileType exits for loginedin user
       console.log("Req.userId : ", req.session.user._id);
       console.log("filetype : ", req.body.fileType);
       console.log("document : ", document);
-  
-      
-  
+
       if (document) {
         //detlete boj
         console.log("inside Mtherfucker");
-  
-  
+
         document.forEach(async (element) => {
-          await DOCUMENT.deleteOne({_id:element._id});
+          await DOCUMENT.deleteOne({ _id: element._id });
           console.log("element", element);
           console.log("id: ", element._id);
           console.log("submitted Date: ", element.createdAt);
-  
         });
-        
-       
       }
-  
+
       try {
         await DOCUMENT.create(doc);
         res.redirect("uploadDocuments");
       } catch (error) {
         res.json(error);
       }
-
     }
-
-   
   }
 );
 
-//upload presentation Slides 
+//upload presentation Slides
 route.post(
   "/submitPresentationSlides",
   ensureAuth,
@@ -282,54 +274,42 @@ route.post(
       documentName: req.file.filename,
       fileType: req.body.fileType,
       submittedDate: Date.now(),
-      
-      //create boolean to be true if there is a doc and false to 
 
+      //create boolean to be true if there is a doc and false to
     });
 
-    if(req.session.user.supervisorId == null)
-    {
-      res.send('You must have a supervisor first')
-    } else
-    {
+    if (req.session.user.supervisorId == null) {
+      res.send("You must have a supervisor first");
+    } else {
       const document = await DOCUMENT.find({
         studentId: req.session.user._id,
         fileType: req.body.fileType,
       }).lean();
-  
+
       //fileType exits for loginedin user
       console.log("Req.userId : ", req.session.user._id);
       console.log("filetype : ", req.body.fileType);
       console.log("document : ", document);
-  
-      
-  
+
       if (document) {
         //detlete boj
         console.log("inside Mtherfucker");
-  
-  
+
         document.forEach(async (element) => {
-          await DOCUMENT.deleteOne({_id:element._id});
+          await DOCUMENT.deleteOne({ _id: element._id });
           console.log("element", element);
           console.log("id: ", element._id);
           console.log("submitted Date: ", element.createdAt);
-  
         });
-        
-       
       }
-  
+
       try {
         await DOCUMENT.create(doc);
         res.redirect("uploadDocuments");
       } catch (error) {
         res.json(error);
       }
-
     }
-
-   
   }
 );
 
@@ -345,54 +325,42 @@ route.post(
       documentName: req.file.filename,
       fileType: req.body.fileType,
       submittedDate: Date.now(),
-    
-      //create boolean to be true if there is a doc and false to 
 
+      //create boolean to be true if there is a doc and false to
     });
 
-    if(req.session.user.supervisorId == null)
-    {
-      res.send('You must have a supervisor first')
-    } else
-    {
+    if (req.session.user.supervisorId == null) {
+      res.send("You must have a supervisor first");
+    } else {
       const document = await DOCUMENT.find({
         studentId: req.session.user._id,
         fileType: req.body.fileType,
       }).lean();
-  
+
       //fileType exits for loginedin user
       console.log("Req.userId : ", req.session.user._id);
       console.log("filetype : ", req.body.fileType);
       console.log("document : ", document);
-  
-      
-  
+
       if (document) {
         //detlete boj
         console.log("inside Mtherfucker");
-  
-  
+
         document.forEach(async (element) => {
-          await DOCUMENT.deleteOne({_id:element._id});
+          await DOCUMENT.deleteOne({ _id: element._id });
           console.log("element", element);
           console.log("id: ", element._id);
           console.log("submitted Date: ", element.createdAt);
-  
         });
-        
-       
       }
-  
+
       try {
         await DOCUMENT.create(doc);
         res.redirect("uploadDocuments");
       } catch (error) {
         res.json(error);
       }
-
     }
-
-   
   }
 );
 

@@ -51,19 +51,10 @@
 
         <form action="/Supervisor/choose" method="POST">
 
-
             <input type="hidden" value="{{student.matricNo}}" name="matricNo">
 
-
-
-
-
             <fieldset>
-
-
                 <!-- Select Basic -->
-
-
 
                 <div class="form-group">
                     <label class="col-md-4 control-label">Choose a Chairperson:</label>
@@ -74,7 +65,7 @@
 
                                 {{#select student.chairPersonId._id }}
                                 <option value="null" selected>Non</option>
-                                {{#each chairpeople}}
+                                {{#each chairPersons}}
 
                                 <option {{#ifEquals _id ../student.chairPersonId._id}} selected {{/ifEquals}}
                                     value="{{_id}}">{{fullName}} </option>

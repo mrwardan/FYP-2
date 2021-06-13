@@ -32,20 +32,22 @@
 
         }
 
-    
+
 
         .table tbody>tr>td {
             padding: 3px 10px;
             font-size: 0.875em;
             background: #f5f5f5;
             text-decoration: none;
-            
 
-        }    .table tbody>tr>td>a {
+
+        }
+
+        .table tbody>tr>td>a {
             text-decoration: none;
-            color:#800000;
-            
-            
+            color: #800000;
+
+
 
         }
 
@@ -54,9 +56,10 @@
             margin-top: 3%;
             margin-left: 20%;
             ;
-        } 
-        #button-a{
-            width:50px;
+        }
+
+        #button-a {
+            width: 50px;
             height: 40px;
         }
     </style>
@@ -110,19 +113,42 @@
 
                             <td style="width: 20%;">
 
-                                {{#if examinerOneApproved}}
-                                <p> Approved</p>
+                         {{log "examinerOneApproved: - " examinerOneApproved}}
+                         {{log "examinerOneId: - " examinerOneId}}
+                         {{log "user._id: ? " ../user._id}}
 
-                                {{else}}
-                                <p> Not Approved</p>
-                                {{/if}}
+                                {{#ifEquals ../user._id examinerOneId}}
+                                   {{#if examinerOneApproved}}
 
-                                {{#if examinerTwoApproved}}
-                                <p> Approved</p>
+                                        <p> Approved</p>
 
-                                {{else}}
-                                {{/if}}
+                                          {{else}}
+                               
+                                       <p> Not Approved</p>
 
+                                              {{/if}}
+
+                                              {{/ifEquals}}
+
+                           {{log "examinerTwoApproved: - " examinerTwoApproved}}
+                          {{log "examinerTwoId: - " examinerTwoId}}
+                          {{log "user._id: - "../user._id}}
+
+                                {{#ifEquals ../user._id examinerTwoId}}
+                                   {{#if examinerTwoApproved}}
+
+                                        <p> Approved</p>
+
+                                          {{else}}
+                               
+                                       <p> Not Approved</p>
+
+                                              {{/if}}
+
+                                              {{/ifEquals}}
+
+
+                                 
 
 
                             </td>
@@ -176,7 +202,7 @@
                         data: { id: studentId },
                         success: function (response) {
 
-                        window.location.reload(false);
+                            window.location.reload(false);
 
                         }
                     });

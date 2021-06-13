@@ -2,33 +2,32 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
   supervisorId: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "supervisor",
   },
-  examiner1Id: {
-    type: String,
-    required: true,
+  examinerOneId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "examiner",
 
   },
-  examiner2Id: {
-    type: String,
-    required: true,
+  examinerTwoId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "examiner",
 
   },
   chairpersonId: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "chairperson",
 
   },
 
   studentId: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "student",
   },
   examDate: {
     type: String,
     required: true,
-
   },
   time: {
     type: String,

@@ -65,17 +65,7 @@
                             <label class="col-md-4 col-form-label text-md-right">Supervisor:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please choose the Supervisor:</p>
-                                <select name="supervisor" class="form-control">
-
-                                    {{#each allSupervisors}}
-
-                                    <option value="{{_id}}">{{fullName}}</option>
-
-                                    {{/each}}
-
-
-
-                                </select>
+                                    <input type="text" id="sv" value="" readonly>
 
                             </div>
                         </div>
@@ -87,17 +77,8 @@
                             <label class="col-md-4 col-form-label text-md-right">Examiner 1:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please choose the Examiner 1:</p>
-                                <select name="examiner1" class="form-control">
+                                                        <input type="text" id="ex1" value="" readonly>
 
-                                    {{#each allexaminers}}
-
-                                    <option value="{{_id}}">{{fullName}}</option>
-
-                                    {{/each}}
-
-
-
-                                </select>
 
                             </div>
                         </div>
@@ -108,17 +89,7 @@
                             <label class="col-md-4 col-form-label text-md-right">Examiner 2:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please choose Examiner 2:</p>
-                                <select name="examiner2" class="form-control">
-
-                                    {{#each allexaminers}}
-
-                                    <option value="{{_id}}">{{fullName}}</option>
-
-                                    {{/each}}
-
-
-
-                                </select>
+                           <input type="text" id="ex2" value="" readonly>
 
                             </div>
                         </div>
@@ -129,17 +100,8 @@
                             <label class="col-md-4 col-form-label text-md-right">Chairperson:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please choose the Chairperson:</p>
-                                <select name="chairperson" class="form-control">
+                                                          <input type="text" id="ch" value="" readonly>
 
-                                    {{#each chairpeople}}
-
-                                    <option value="{{_id}}">{{fullName}}</option>
-
-                                    {{/each}}
-
-
-
-                                </select>
 
                             </div>
                         </div>
@@ -149,9 +111,9 @@
                             <label class="col-md-4 col-form-label text-md-right">Student:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please choose the Student:</p>
-                                <select name="student" class="form-control">
+                                <select name="studentId" id="stu" onchange="getStudentInfo();" class="form-control">
+                            <option value="null">None</option>
                                     {{#each allStudents}}
-
                                     <option value="{{_id}}">{{fullName}}</option>
 
 
@@ -169,7 +131,7 @@
                             <label class="col-md-4 col-form-label text-md-right">Exam date:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please enter the exam date:</p>
-                               <input type="date" name="date" class="form-control"  min="2021-05-27">
+                               <input type="date" name="examDate" class="form-control"  min="2021-05-27">
 
                             </div>
                         </div>
@@ -223,3 +185,22 @@
 
 
 </div>
+
+
+<script>
+     async function getStudentInfo() {
+
+      var studentID = document.getElementById("stu").value;
+
+       let response = await fetch('/Admin/StudentInfo/'+studentID);
+  let data = await response.json()
+ console.log(data);
+      document.getElementById("sv").value = data.supervisorName;
+      document.getElementById("ex1").value = data.examinerOneName;
+      document.getElementById("ex2").value = data.examinerTwoName;
+      document.getElementById("ch").value = data.chairpersonName;
+ 
+
+      }
+          
+</script>

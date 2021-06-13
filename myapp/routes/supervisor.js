@@ -270,10 +270,10 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       .lean()
       .populate("examinerOneId")
       .populate("examinerTwoId")
-      .populate("chairpeople");
+      .populate("chairPersonId");
     console.log("student is: ?", student);
     const examiners = await EXAMINER.find({}).lean();
-    const chairperson = await CHAIRPERSON.find({}).lean();
+    const chairpersons = await CHAIRPERSON.find({}).lean();
 
     // console.log("The student is:", student);
     // console.log('EXAMINERS :',examiners);
@@ -283,7 +283,7 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       res.render("Supervisor/choose", {
         student: student,
         examiners: examiners,
-        chairpeople: chairperson,
+        chairPersons: chairpersons,
         user: req.session.user,
         layout: "mainSV.hbs",
       });
@@ -321,7 +321,10 @@ route.get(
         _id: req.params.id
       }, {
         $set: {
-          supervisorId: null
+          supervisorId: null,
+          chairPersonId: null,
+          examinerOneId: null,
+          examinerTwoId: null
         }
       });
     } catch (error) {
@@ -471,6 +474,7 @@ route.post(
 );
 //choose post
 route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
+  console.log(req.body);
   const {
     matricNo,
     examinerOneId,
@@ -478,8 +482,6 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
     chairPersonId,
   } = req.body;
 
-  const Examiner1 = await EXAMINER.findById(examinerOneId).lean();
-  const Examiner2 = await EXAMINER.findById(examinerTwoId).lean();
 
   const student = await STUDENT.findOne({
     matricNo: matricNo
@@ -492,7 +494,8 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
         student._id, {
           new: true,
           $unset: {
-            chairPersonId: 1
+            chairPersonId: 1, 
+            chairPersonApproved: 1
           }
         },
 
@@ -537,7 +540,8 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
         student._id, {
           new: true,
           $unset: {
-            examinerOneId: 1
+            examinerOneId: 1,
+            examinerOneApproved:1
           }
         },
 
@@ -556,6 +560,8 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
         }
       );
     } else {
+      const Examiner1 = await EXAMINER.findById(examinerOneId).lean();
+
       await STUDENT.findByIdAndUpdate(
         student._id, {
           examinerOneId: examinerOneId,
@@ -591,7 +597,9 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
         student._id, {
           new: true,
           $unset: {
-            examinerTwoId: 1
+            examinerTwoId: 1, 
+            examinerTwoApproved: 1
+
           }
         },
 
@@ -610,6 +618,8 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
         }
       );
     } else {
+      const Examiner2 = await EXAMINER.findById(examinerTwoId).lean();
+
       await STUDENT.findByIdAndUpdate(
         student._id, {
           examinerTwoId: examinerTwoId,

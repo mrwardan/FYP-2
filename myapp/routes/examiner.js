@@ -134,9 +134,9 @@ route.get('/approve', ensureAuth, async (req, res, next) => {
 
 })
 
-route.get('/results', ensureAuth, async (req, res, next) =>{
+route.get('/results', ensureAuth, async (req, res, next) => {
 
-  res.render('Examiner/Results',  {
+  res.render('Examiner/Results', {
     user: req.session.user,
     layout: 'mainEx.hbs'
   })
@@ -156,10 +156,10 @@ route.post('/profile', ensureAuth, upload.single('image'), async (req, res, next
   console.log('The req.body', req.body);
 
   await EXAMINER.findByIdAndUpdate(req.session.user._id, {
-      image: req.file.filename
-    }, {
-      new: true
-    },
+    image: req.file.filename
+  }, {
+    new: true
+  },
 
     function (err, response) {
       // Handle any possible database errors
@@ -179,40 +179,78 @@ route.post('/submitApprove', ensureAuth, async (req, res, next) => {
   const {
     id
   } = req.body;
+  const student = await STUDENT.findById(id).lean()
+  console.log("student.examinerTwoId  ", student.examinerTwoId);
 
-  console.log("The user id: ", id);
+  // if this is the examiner two do 
+  if (student.examinerTwoId == req.session.user._id) {
 
-  // if the examiner 
+    try {
 
 
-  try {
 
-    await STUDENT.findByIdAndUpdate(id, {
+      await STUDENT.findByIdAndUpdate(id, {
+        examinerTwoApproved: true
+      }, {
+        new: true
+      },
+
+        function (err, response) {
+          // Handle any possible database errors
+          console.log('There is error and not able to retrieve the info');
+          if (err) {
+            console.log("we hit an error" + err);
+            res.json({
+              message: 'Database Update Failure'
+            });
+          }
+
+
+          res.redirect('approve')
+          console.log("This is the Response: ", response);
+        })
+
+
+
+    } catch (error) {
+      res.json(error)
+    }
+
+  } else{
+    try {
+
+
+
+      await STUDENT.findByIdAndUpdate(id, {
         examinerOneApproved: true
       }, {
         new: true
       },
 
-      function (err, response) {
-        // Handle any possible database errors
-        console.log('There is error and not able to retrieve the info');
-        if (err) {
-          console.log("we hit an error" + err);
-          res.json({
-            message: 'Database Update Failure'
-          });
-        }
+        function (err, response) {
+          // Handle any possible database errors
+          console.log('There is error and not able to retrieve the info');
+          if (err) {
+            console.log("we hit an error" + err);
+            res.json({
+              message: 'Database Update Failure'
+            });
+          }
 
 
-        res.redirect('approve')
-        console.log("This is the Response: ", response);
-      })
+          res.redirect('approve')
+          console.log("This is the Response: ", response);
+        })
 
 
 
-  } catch (error) {
-    res.json(error)
+    } catch (error) {
+      res.json(error)
+    }
+
+
   }
+
 })
 route.post('/editinfo', ensureAuth, async (req, res, next) => {
   const {
@@ -231,15 +269,15 @@ route.post('/editinfo', ensureAuth, async (req, res, next) => {
   try {
 
     await EXAMINER.findByIdAndUpdate(req.session.user._id, {
-        fullName: fullName,
-        phone: phone,
-        postion: postion,
-        institute: institute,
-        major: major,
-        examinerType: examinerType
-      }, {
-        new: true
-      },
+      fullName: fullName,
+      phone: phone,
+      postion: postion,
+      institute: institute,
+      major: major,
+      examinerType: examinerType
+    }, {
+      new: true
+    },
 
       function (err, response) {
         // Handle any possible database errors

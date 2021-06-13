@@ -13,7 +13,22 @@ const Swal = require("sweetalert2");
 const { ensureAuth } = require("../middleware/auth");
 const { ensureAdmin } = require("../middleware/auth");
 const bcrypt = require("bcryptjs");
+var nodemailer = require("nodemailer");
 
+var transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "documentvivasystem@gmail.com",
+    pass: "M1234mras",
+  },
+});
+
+const mailOptions = {
+  from: "documentvivasystem@gmail.com", // sender address
+  to: "", // list of receivers
+  subject: "Student Oral Examination (VIVA) details", // Subject line
+  html: "", // plain text body
+};
 //define storage for the images
 
 const storage = multer.diskStorage({
@@ -239,20 +254,53 @@ route.get(
 );
 
 route.get("/issueExam", ensureAuth, ensureAdmin, async (req, res, next) => {
-  const allSupervisors = await SUPERVISOR.find({}).lean();
   const allStudents = await STUDENT.find({}).lean();
-  const allexaminers = await EXAMINER.find({}).lean();
-  const chairpeople = await CHAIRPERSON.find({}).lean();
+
 
   res.render("Admin/registerExam", {
     user: req.session.user,
-    allSupervisors,
     allStudents,
-    allexaminers,
-    chairpeople,
     layout: "mainAdmin",
   });
 });
+
+route.get(
+  "/StudentInfo/:id",
+  ensureAuth,
+  ensureAdmin,
+  async (req, res, next) => {
+    const { id } = req.params;
+    try {
+      const student = await STUDENT.findById(id)
+        .lean()
+        .populate("supervisorId")
+        .populate("examinerOneId")
+        .populate("examinerTwoId")
+        .populate("chairPersonId");
+      console.log(student);
+      let json = {};
+      json.supervisorName =
+        student.supervisorId != undefined
+          ? student.supervisorId.fullName
+          : "None";
+      json.examinerOneName =
+        student.examinerOneId != undefined
+          ? student.examinerOneId.fullName
+          : "None";
+      json.examinerTwoName =
+        student.examinerTwoId != undefined
+          ? student.examinerTwoId.fullName
+          : "None";
+      json.chairpersonName =
+        student.chairPersonId != undefined
+          ? student.chairPersonId.fullName
+          : "None";
+      res.json(json);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+);
 route.post("/AdminSignup", ensureAuth, ensureAdmin, async (req, res) => {
   const {
     type,
@@ -508,7 +556,6 @@ route.post(
         console.log("selectedInPage.student ", selectedInPage.student);
 
         if (stu._id == selectedInPage.student) {
-          console.log("wardan");
           console.log("i choose this:", stu.matricNo);
 
           await STUDENT.findByIdAndUpdate(
@@ -542,37 +589,75 @@ route.post(
 );
 
 route.post("/issueExam", ensureAuth, ensureAdmin, async (req, res, next) => {
-  const supervisor = await SUPERVISOR.findOne({}).lean();
+  console.log(req.body);
 
-  const Student = await STUDENT.find({}).lean();
-  const examiner = await EXAMINER.find({}).lean();
-  const chair = await CHAIRPERSON.find({}).lean();
+  const student = await STUDENT.findById(req.body.studentId)
+    .lean()
+    .populate("supervisorId")
+    .populate("examinerOneId")
+    .populate("examinerTwoId")
+    .populate("chairPersonId");
 
-  selectedInPage = req.body;
 
-  console.log("selectedInPage", selectedInPage);
-  console.log("selected SV: ", selectedInPage.supervisor);
-  console.log("selected ST: ", selectedInPage.student);
-  console.log("selected EX1: ", selectedInPage.examiner1);
-  console.log("selected Ex2: ", selectedInPage.examiner2);
-  console.log("selected ChR: ", selectedInPage.chairperson);
-  console.log("Exam date: ", selectedInPage.date);
-  console.log("Time  : ", selectedInPage.time);
-  console.log("Venue  : ", selectedInPage.venue);
-  console.log("selected ST 1: ", selectedInPage.student.examinerOneApproved);
-  console.log("selected ST 2: ", selectedInPage.student.examinerTwoApproved);
-  console.log("selected ST CH: ", selectedInPage.student.chairPersonApproved);
 
-  try { 
-    let exam ={
-      supervisor,
-      examiner1,examiner2,chairperson,student,date, time,venue
-    }; 
-    let exam_response = await  EXAMINFORMATION.create(exam);
-    
+    console.log('Supervisor Email', student.supervisorId.email);
+    console.log('Chair Email', student.chairPersonId.email);
+    console.log('Examiner1 Email', student.examinerOneId.email);
+    console.log('Examiner2 Email', student.examinerTwoId.email);
+
+  try {
+    if (student.supervisorId == undefined) {
+      res.send("The Student has not been assigned a Supervisor");
+    }
+
+    if (student.chairPersonId == undefined) {
+      res.send("The Student has not been assigned a chairPerson");
+    }
+    if (student.examinerOneId == undefined) {
+      res.send("The Student has not been assigned an examiner One");
+    }
+    if (student.examinerTwoId == undefined) {
+      res.send("The Student has not been assigned an examiner Two");
+    }
+    if (student.chairPersonApproved === false) {
+      res.send("The Chairperson has not approved yet");
+    }
+    if (student.examinerOneApproved === false) {
+      res.send("The examiner One  has not approved yet");
+    }
+    if (student.examinerTwoApproved === false) {
+      res.send("The examiner Two has not approved yet");
+    }
+
+    let exam_response = await EXAMINFORMATION.create(req.body);
+    console.log('student.fullName: ',student.fullName);
+    console.log('examDate: ',req.body.examDate);
+    console.log('time: ',req.body.time);
+    console.log('venue: ',req.body.venue);
+
+    mailOptions.to = student.supervisorId.email;
+    mailOptions.to = student.chairPersonId.email;
+    mailOptions.to = student.examinerOneId.email;
+    mailOptions.to = student.examinerTwoId.email;
+
+    mailOptions.html = ` 
+    Dear Sir/Madam, <br><br>
+  Please be notified that the Examination information for the student: ${student.fullName} has been issued as followed: <br> 
+  Date: <strong>${req.body.examDate} </strong> <br> 
+  Time: <strong>${req.body.time}</strong> <br> 
+  Venue: <strong>${req.body.venue}</strong> <br> <br>
+  
+  Thank you! 
+  `;
+
+    transporter.sendMail(mailOptions, function (err, info) {
+      if (err) console.log(err);
+      else console.log(info);
+    });
+
     res.redirect("issueExam");
   } catch (error) {
-    res.json(error)
+    res.json(error);
   }
 });
 
