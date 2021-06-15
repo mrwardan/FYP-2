@@ -31,10 +31,6 @@ const UserSchema = new mongoose.Schema(
 			required: true
 
 		},
-		institute: {
-			type: String,
-
-		},
 	image: {
 			type: String,
 			default: 'wardan.jpg',

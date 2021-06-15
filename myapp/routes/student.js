@@ -168,8 +168,8 @@ route.post("/editinfo", ensureAuth, async (req, res, next) => {
   const {
     fullName,
     phone,
-    faculty,
-    major,
+    program,
+    type,
     semester,
     nationality,
     thesisTitle,
@@ -184,11 +184,11 @@ route.post("/editinfo", ensureAuth, async (req, res, next) => {
       {
         fullName: fullName,
         phone: phone,
-        faculty: faculty,
+        program: program,
         semester: semester,
         nationality: nationality,
         thesisTitle: thesisTitle,
-        major: major,
+        type: type,
       },
       {
         new: true,

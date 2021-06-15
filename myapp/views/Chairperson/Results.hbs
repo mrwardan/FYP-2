@@ -147,9 +147,8 @@
 <body>
     <div class="ResultMainPage">
 
+     {{log 'student: ' student }}
 
-
-        <form action="/Chairperson/studentResults" method="POST">
             <div class="StuInfo">
                 <div class="tableHeader">
                     Student and project info
@@ -159,32 +158,36 @@
 
                     <tr>
                         <td><strong>Name:</strong></td>
-                        <td>Maria Anders</td>
+                        <td>{{student.fullName}}</td>
                     </tr>
                     <tr>
                         <td> <strong>Program:</strong></td>
-                        <td>Francisco Chang</td>
+                        <td>{{student.program}}</td>
                     </tr>
                     <tr>
                         <td> <strong>Email:</strong></td>
-                        <td>Roland Mendel</td>
+                        <td>{{student.email}}</td>
                     </tr>
                     <tr>
                         <td><strong>Phone:</strong> </td>
-                        <td>Helen Bennett</td>
+                        <td>{{student.phone}}</td>
                     </tr>
                     <tr>
                         <td> <strong>Title:</strong> </td>
-                        <td>Yoshi Tannamuri</td>
+                        <td>{{student.thesisTitle}}</td>
                     </tr>
                     <tr>
                         <td> <strong>Type:</strong> </td>
-                        <td>Giovanni Rovelli</td>
+                        <td>{{student.type}}</td>
                     </tr>
                 </table>
 
             </div>
+{{log "student.id: " student._id}}
 
+        <form action="/Chairperson/studentResults" method="POST">
+        <input type="hidden"  name="chairPersonId" value="{{student.chairPersonId}}"> 
+        <input type="hidden"  name="studentId" value="{{student._id}}"> 
 
 
             <div class="ResultInfo">
@@ -325,6 +328,8 @@
             <div class="sub">
 
                 <div class="button">
+      <button class="btn-submit" value="submit">Submit</button>
+
                     <div class="container">
                         <div class="tick">
                         </div>

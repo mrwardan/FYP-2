@@ -17,12 +17,11 @@ const UserSchema = new mongoose.Schema({
   phone: {
     type: String,
   },
-  faculty: {
+  program: {
     type: String,
   },
-  major: {
+  type: {
     type: String,
-    required: true,
   },
   semester: {
     type: String,

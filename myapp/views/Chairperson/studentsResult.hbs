@@ -9,11 +9,28 @@
       margin: 0;
       padding: 0
     }
-      
+       .StudentsDoc {
+      background-color: white;
+      width: 400px;
+    }
+    table{
+      width:100%;
+      border: none;
+    }
+    table td{
+      display: flex;
+      justify-content: left;
+      text-decoration: none;;
+    }   
+    table td a{
+      padding: 1em;
+      text-decoration: none;;
+    }
   </style>
 </head>
-{{>headerSV}}
-{{>slidebar_SV}}
+
+{{>headerCH}}
+{{>slidebarCH}}
 
 
 
@@ -42,7 +59,7 @@
 
             <td>
 
-              <a href="/Supervisor/showDocument/{{_id}}">{{fullName}}</a>
+              <a href="/Chairperson/results/{{_id}}">{{fullName}}</a>
 
             </td>
 

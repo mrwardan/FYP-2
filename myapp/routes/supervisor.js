@@ -5,19 +5,16 @@ const SUPERVISOR = require("../models/Supervisor");
 const EXAMINER = require("../models/Examiner");
 const CHAIRPERSON = require("../models/Chairperson");
 const DOCUMENT = require("../models/Document");
+const EXAMINFORMATION = require("../models/ExamInformation");
 const multer = require("multer");
 const path = require("path");
-var nodemailer = require('nodemailer');
+var nodemailer = require("nodemailer");
 
-const {
-  findById
-} = require("../models/Student");
+const { findById } = require("../models/Student");
 const Swal = require("sweetalert2");
 const formidable = require("formidable");
 var fs = require("fs");
-const {
-  ensureAuth
-} = require("../middleware/auth");
+const { ensureAuth } = require("../middleware/auth");
 
 //define storage for the images
 const storage = multer.diskStorage({
@@ -118,8 +115,8 @@ route.get("/profile", ensureAuth, ensureSupervisor, (req, res, next) => {
 route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
   try {
     const allstudents = await STUDENT.find({
-        supervisorId: req.session.user._id,
-      })
+      supervisorId: req.session.user._id,
+    })
       .lean()
       .populate("examinerOneId")
       .populate("examinerTwoId")
@@ -133,7 +130,7 @@ route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
 
     //console.log('asdfghjhgfdsa');
     //console.log(allstudents);
-    console.log('supervisor name', req.session.user.fullName);
+    console.log("supervisor name", req.session.user.fullName);
     console.log("THE STUDENT INFORMATION: ", allstudents);
 
     res.render("Supervisor/students", {
@@ -145,6 +142,43 @@ route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
     res.json(error);
   }
 });
+route.get(
+  "/examinersInformation",
+  ensureAuth,
+  ensureSupervisor,
+  async (req, res, next) => {
+    try {
+      const allexaminers = await EXAMINER.find({}).lean();
+
+      console.log("THE STUDENT INFORMATION: ", allexaminers);
+
+      res.render("Supervisor/examinerInfo", {
+        examiners: allexaminers,
+        user: req.session.user,
+        layout: "mainSV.hbs",
+      });
+    } catch (error) {
+      res.json(error);
+    }
+  }
+);
+
+route.get("/examInfo", ensureAuth, ensureSupervisor, async (req, res, next) => {
+  try {
+    var allstudents = await STUDENT.find({
+      supervisorId: req.session.user._id,
+    }).lean();
+
+    res.render("Supervisor/vivaExam", {
+      students: allstudents,
+      user: req.session.user,
+      layout: "mainSV.hbs",
+    });
+  } catch (error) {
+    res.json(error);
+  }
+});
+
 //edit info page
 route.get("/editinfo", ensureAuth, ensureSupervisor, (req, res, next) => {
   res.render("Supervisor/editinfo", {
@@ -179,59 +213,96 @@ route.get(
   }
 );
 //students documents
-route.get("/studentDoc", ensureAuth, ensureSupervisor, async (req, res, next) => {
+route.get(
+  "/studentDoc",
+  ensureAuth,
+  ensureSupervisor,
+  async (req, res, next) => {
+    try {
+      var allstudents = await STUDENT.find({
+        supervisorId: req.session.user._id,
+      }).lean();
+      //var doc = await DOCUMENT.findOne({ studentId: allstudents._id }).lean();
 
-  try {
-    var allstudents = await STUDENT.find({
-      supervisorId: req.session.user._id,
-    }).lean();
-    //var doc = await DOCUMENT.findOne({ studentId: allstudents._id }).lean();
+      //console.log("doc it is", doc);
 
-    //console.log("doc it is", doc);
+      console.log("THE STUDENT INFORMATION: ", allstudents);
 
-    console.log("THE STUDENT INFORMATION: ", allstudents);
-
-    res.render("Supervisor/document", {
-      students: allstudents,
-      user: req.session.user,
-      layout: "mainSV.hbs",
-    });
-  } catch (error) {
-    res.json(error);
+      res.render("Supervisor/document", {
+        students: allstudents,
+        user: req.session.user,
+        layout: "mainSV.hbs",
+      });
+    } catch (error) {
+      res.json(error);
+    }
   }
-});
+);
 
 //show students documents
-route.get("/showDocument/:id", ensureAuth, ensureSupervisor, async (req, res, next) => {
+route.get(
+  "/showDocument/:id",
+  ensureAuth,
+  ensureSupervisor,
+  async (req, res, next) => {
+    console.log("id:", req.params.id);
 
-  console.log("id:", req.params.id);
+    try {
+      const stu = await STUDENT.findOne({
+        _id: req.params.id,
+      }).lean();
+      const doc = await DOCUMENT.find({
+        studentId: stu._id,
+      }).lean();
+      console.log("The student is: ", stu.fullName);
+      console.log("The doc is: ", doc);
 
-  try {
-    const stu = await STUDENT.findOne({
-      _id: req.params.id
-    }).lean();
-    const doc = await DOCUMENT.find({
-      studentId: stu._id
-    }).lean();
-    console.log("The student is: ", stu.fullName);
-    console.log("The doc is: ", doc);
-
-    res.render("Supervisor/showDocument", {
-      user: req.session.user,
-      stu,
-      doc,
-      layout: "mainSV.hbs",
-    });
-
-  } catch (error) {
-    res.json(error);
+      res.render("Supervisor/showDocument", {
+        user: req.session.user,
+        stu,
+        doc,
+        layout: "mainSV.hbs",
+      });
+    } catch (error) {
+      res.json(error);
+    }
   }
+);
 
-});
+route.get(
+  "/vivaExamInfo/:id",
+  ensureAuth,
+  ensureSupervisor,
+  async (req, res, next) => {
+    console.log("id:", req.params.id);
 
+    try {
+      const stu = await STUDENT.findOne({
+        _id: req.params.id,
+      })
+        .lean()
+        .populate("examinerOneId")
+        .populate("examinerTwoId")
+        .populate("chairPersonId");
 
+      const examInfo = await EXAMINFORMATION.findOne({
+        studentId: stu._id,
+      }).lean();
 
+      console.log("The student is: ", stu.examinerOneId);
+      console.log("The exam info is: ", examInfo);
 
+      res.render("Supervisor/vivaExamInfo", {
+        user: req.session.user,
+        stu,
+        examInfo,
+        layout: "mainSV.hbs",
+      });
+    } catch (error) {
+      res.json(error);
+    }
+  }
+);
 
 route.post(
   "/studentDoc",
@@ -239,14 +310,14 @@ route.post(
   ensureSupervisor,
   async (req, res, next) => {
     var student = await STUDENT.findOne({
-      matricNo: req.body.matricNo
+      matricNo: req.body.matricNo,
     }).lean();
     // console.log("The student is: ", student);
     //console.log("The student Id is: ", student);
 
     try {
       var doc = await DOCUMENT.findOne({
-        studentId: student._id
+        studentId: student._id,
       }).lean();
       //console.log('doc:', doc.documentName);
     } catch (error) {
@@ -259,9 +330,7 @@ route.post(
 
 //chose
 route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
-  const {
-    id, email
-  } = req.query;
+  const { id, email } = req.query;
   // const id = req.params.id;
   console.log(email);
 
@@ -300,7 +369,7 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
 route.get("/signout", (req, res, next) => {
   req.session.destroy();
   res.render("login", {
-    layout: false
+    layout: false,
   });
 });
 
@@ -314,19 +383,22 @@ route.get(
 
     try {
       stu = await STUDENT.find({
-        _id: req.params.id
+        _id: req.params.id,
       }).lean();
 
-      await STUDENT.updateOne({
-        _id: req.params.id
-      }, {
-        $set: {
-          supervisorId: null,
-          chairPersonId: null,
-          examinerOneId: null,
-          examinerTwoId: null
+      await STUDENT.updateOne(
+        {
+          _id: req.params.id,
+        },
+        {
+          $set: {
+            supervisorId: null,
+            chairPersonId: null,
+            examinerOneId: null,
+            examinerTwoId: null,
+          },
         }
-      });
+      );
     } catch (error) {
       res.json(error);
     }
@@ -361,10 +433,12 @@ route.post(
     // console.log(req.body);
 
     await SUPERVISOR.findByIdAndUpdate(
-      req.session.user._id, {
-        image: req.file.filename
-      }, {
-        new: true
+      req.session.user._id,
+      {
+        image: req.file.filename,
+      },
+      {
+        new: true,
       },
 
       function (err, response) {
@@ -388,27 +462,23 @@ route.post(
   ensureAuth,
   ensureSupervisor,
   async (req, res, next) => {
-    const {
-      fullName,
-      phone,
-      postion,
-      institute,
-      major
-    } = req.body;
+    const { fullName, phone, postion, institute, major } = req.body;
 
     // console.log("The user information: "+req.session.user);
     console.log("The request file:", req.file);
 
     try {
       await SUPERVISOR.findByIdAndUpdate(
-        req.session.user._id, {
+        req.session.user._id,
+        {
           fullName: fullName,
           phone: phone,
           postion: postion,
           institute: institute,
           major: major,
-        }, {
-          new: true
+        },
+        {
+          new: true,
         },
 
         function (err, response) {
@@ -436,13 +506,11 @@ route.post(
   ensureAuth,
   ensureSupervisor,
   async (req, res, next) => {
-    const {
-      matricNo
-    } = req.body;
+    const { matricNo } = req.body;
 
     try {
       const student = await STUDENT.findOne({
-        matricNo: matricNo
+        matricNo: matricNo,
       }).lean();
 
       if (!student) {
@@ -450,10 +518,12 @@ route.post(
       }
 
       await STUDENT.findByIdAndUpdate(
-        student._id, {
-          supervisorId: req.session.user._id
-        }, {
-          new: true
+        student._id,
+        {
+          supervisorId: req.session.user._id,
+        },
+        {
+          new: true,
         },
 
         function (err, response) {
@@ -475,28 +545,23 @@ route.post(
 //choose post
 route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
   console.log(req.body);
-  const {
-    matricNo,
-    examinerOneId,
-    examinerTwoId,
-    chairPersonId,
-  } = req.body;
-
+  const { matricNo, examinerOneId, examinerTwoId, chairPersonId } = req.body;
 
   const student = await STUDENT.findOne({
-    matricNo: matricNo
+    matricNo: matricNo,
   }).lean();
   console.log("What info: ", student);
 
   try {
     if (chairPersonId == "null") {
       await STUDENT.findByIdAndUpdate(
-        student._id, {
+        student._id,
+        {
           new: true,
           $unset: {
-            chairPersonId: 1, 
-            chairPersonApproved: 1
-          }
+            chairPersonId: 1,
+            chairPersonApproved: 1,
+          },
         },
 
         function (err, response) {
@@ -507,7 +572,7 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
-     
+
           console.log("This is the Response: " + response);
 
           // res.redirect('students')
@@ -515,12 +580,14 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       );
     } else {
       await STUDENT.findByIdAndUpdate(
-        student._id, {
+        student._id,
+        {
           chairPersonId: chairPersonId,
           chairPersonApproved: false,
           submittedDate: Date.now(),
-        }, {
-          new: true
+        },
+        {
+          new: true,
         },
 
         function (err, response) {
@@ -537,12 +604,13 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
     }
     if (examinerOneId == "null") {
       await STUDENT.findByIdAndUpdate(
-        student._id, {
+        student._id,
+        {
           new: true,
           $unset: {
             examinerOneId: 1,
-            examinerOneApproved:1
-          }
+            examinerOneApproved: 1,
+          },
         },
 
         function (err, response) {
@@ -553,7 +621,7 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
               message: "Database Update Failure",
             });
           }
-      
+
           console.log("This is the Response: " + response);
 
           // res.redirect('students')
@@ -563,12 +631,14 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       const Examiner1 = await EXAMINER.findById(examinerOneId).lean();
 
       await STUDENT.findByIdAndUpdate(
-        student._id, {
+        student._id,
+        {
           examinerOneId: examinerOneId,
           examinerOneApproved: false,
           submittedDate: Date.now(),
-        }, {
-          new: true
+        },
+        {
+          new: true,
         },
 
         function (err, response) {
@@ -594,13 +664,13 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
     }
     if (examinerTwoId == "null") {
       await STUDENT.findByIdAndUpdate(
-        student._id, {
+        student._id,
+        {
           new: true,
           $unset: {
-            examinerTwoId: 1, 
-            examinerTwoApproved: 1
-
-          }
+            examinerTwoId: 1,
+            examinerTwoApproved: 1,
+          },
         },
 
         function (err, response) {
@@ -621,12 +691,14 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
       const Examiner2 = await EXAMINER.findById(examinerTwoId).lean();
 
       await STUDENT.findByIdAndUpdate(
-        student._id, {
+        student._id,
+        {
           examinerTwoId: examinerTwoId,
           examinerTwoApproved: false,
           submittedDate: Date.now(),
-        }, {
-          new: true
+        },
+        {
+          new: true,
         },
 
         function (err, response) {
@@ -651,8 +723,6 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
         }
       );
     }
-
-
 
     res.redirect("students");
   } catch (error) {

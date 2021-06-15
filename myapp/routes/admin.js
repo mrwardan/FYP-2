@@ -597,68 +597,77 @@ route.post("/issueExam", ensureAuth, ensureAdmin, async (req, res, next) => {
     .populate("examinerOneId")
     .populate("examinerTwoId")
     .populate("chairPersonId");
+   
+    const thereIsExam = await EXAMINFORMATION.find({
+      studentId: student._id,
+    }).lean();
 
+    console.log('thereIsExam: ', thereIsExam.length);
+   
+    
+    if(thereIsExam.length == 0)
+    {
+      try {
+        //if there is an exam from before the
+        if (student.supervisorId == undefined) {
+          res.send("The Student has not been assigned a Supervisor");
+        }
+    
+        if (student.chairPersonId == undefined) {
+          res.send("The Student has not been assigned a chairPerson");
+        }
+        if (student.examinerOneId == undefined) {
+          res.send("The Student has not been assigned an examiner One");
+        }
+        if (student.examinerTwoId == undefined) {
+          res.send("The Student has not been assigned an examiner Two");
+        }
+        if (student.chairPersonApproved === false) {
+          res.send("The Chairperson has not approved yet");
+        }
+        if (student.examinerOneApproved === false) {
+          res.send("The examiner One  has not approved yet");
+        }
+        if (student.examinerTwoApproved === false) {
+          res.send("The examiner Two has not approved yet");
+        }
+    
+        let exam_response = await EXAMINFORMATION.create(req.body);
+        console.log('student.fullName: ',student.fullName);
+        console.log('examDate: ',req.body.examDate);
+        console.log('time: ',req.body.time);
+        console.log('venue: ',req.body.venue);
+    
+        mailOptions.to = student.supervisorId.email;
+        mailOptions.to = student.chairPersonId.email;
+        mailOptions.to = student.examinerOneId.email;
+        mailOptions.to = student.examinerTwoId.email;
+    
+        mailOptions.html = ` 
+        Dear Sir/Madam, <br><br>
+      Please be notified that the Examination information for the student: ${student.fullName} has been issued as followed: <br> 
+      Date: <strong>${req.body.examDate} </strong> <br> 
+      Time: <strong>${req.body.time}</strong> <br> 
+      Venue: <strong>${req.body.venue}</strong> <br> <br>
+      
+      Thank you! 
+      `;
+    
+        transporter.sendMail(mailOptions, function (err, info) {
+          if (err) console.log(err);
+          else console.log(info);
+        });
+    
+        res.redirect("issueExam");
+      } catch (error) {
+        res.json(error);
+      }
 
-
-    console.log('Supervisor Email', student.supervisorId.email);
-    console.log('Chair Email', student.chairPersonId.email);
-    console.log('Examiner1 Email', student.examinerOneId.email);
-    console.log('Examiner2 Email', student.examinerTwoId.email);
-
-  try {
-    if (student.supervisorId == undefined) {
-      res.send("The Student has not been assigned a Supervisor");
+    } else{
+      res.send('Already booked')
     }
 
-    if (student.chairPersonId == undefined) {
-      res.send("The Student has not been assigned a chairPerson");
-    }
-    if (student.examinerOneId == undefined) {
-      res.send("The Student has not been assigned an examiner One");
-    }
-    if (student.examinerTwoId == undefined) {
-      res.send("The Student has not been assigned an examiner Two");
-    }
-    if (student.chairPersonApproved === false) {
-      res.send("The Chairperson has not approved yet");
-    }
-    if (student.examinerOneApproved === false) {
-      res.send("The examiner One  has not approved yet");
-    }
-    if (student.examinerTwoApproved === false) {
-      res.send("The examiner Two has not approved yet");
-    }
-
-    let exam_response = await EXAMINFORMATION.create(req.body);
-    console.log('student.fullName: ',student.fullName);
-    console.log('examDate: ',req.body.examDate);
-    console.log('time: ',req.body.time);
-    console.log('venue: ',req.body.venue);
-
-    mailOptions.to = student.supervisorId.email;
-    mailOptions.to = student.chairPersonId.email;
-    mailOptions.to = student.examinerOneId.email;
-    mailOptions.to = student.examinerTwoId.email;
-
-    mailOptions.html = ` 
-    Dear Sir/Madam, <br><br>
-  Please be notified that the Examination information for the student: ${student.fullName} has been issued as followed: <br> 
-  Date: <strong>${req.body.examDate} </strong> <br> 
-  Time: <strong>${req.body.time}</strong> <br> 
-  Venue: <strong>${req.body.venue}</strong> <br> <br>
-  
-  Thank you! 
-  `;
-
-    transporter.sendMail(mailOptions, function (err, info) {
-      if (err) console.log(err);
-      else console.log(info);
-    });
-
-    res.redirect("issueExam");
-  } catch (error) {
-    res.json(error);
-  }
+ 
 });
 
 module.exports = route;

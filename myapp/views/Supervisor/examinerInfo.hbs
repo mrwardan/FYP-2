@@ -1,0 +1,113 @@
+<head>
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .cont {
+            margin-top: 5%;
+            margin-left: 5%;
+        }
+
+        .DivBeforeTable {
+            margin-left: 22%;
+            margin-right: 20%;
+        }
+
+
+
+        /* TABLES */
+        .table {
+            background-color: hsl(0, 0%, 95%);
+
+            border-collapse: separate;
+            border: 1px solid;
+            padding: 10px;
+            box-shadow: 3px 3px 3px #a8a7a7;
+
+        }
+
+
+
+
+        .table tbody>tr>td {
+            font-size: 0.875em;
+            vertical-align: middle;
+            background-color: white;
+            border: 1px solid;
+
+        }
+
+        #TR>td>a {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+</head>
+{{>headerSV}}
+{{>slidebar_SV}}
+
+<div class="cont">
+
+    <div class="DivBeforeTable">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><span>Name</span></th>
+                    <th><span>email</span></th>
+                    <th><span>Major</span></th>
+                    <th><span>postion</span></th>
+                    <th><span>Phone</span></th>
+
+
+
+                </tr>
+            </thead>
+
+            <tbody>
+
+
+
+            {{#each examiners}}
+
+
+
+                <tr id="TR">
+                    <td>
+                        {{fullName}}
+                    </td>
+                    <td>
+                        {{email}}
+                    </td>
+                    <td class="text-center">
+                        <span class="label label-default">{{major}}</span>
+                    </td>
+                    <td>
+                        <span class="label label-default">{{postion}}</span>
+
+                    </td>
+
+
+                    <td>
+                        <span class="label label-default">{{phone}}</span>
+
+                    </td>   
+
+
+
+                </tr>
+
+            {{/each}}
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
