@@ -13,7 +13,7 @@ const CHAIRPERSON = require("./models/Chairperson");
 const EXAMINFORMATION = require("./models/ExamInformation");
 const multer = require("multer");
 const MongoStore = require("connect-mongo");
-const { ifEquals, select, ifIn,toSplitFile } = require("./helpers/hbs");
+const { ifEquals, select, ifIn, toSplitFile } = require("./helpers/hbs");
 const Swal = require("sweetalert2");
 const { v4: uuidv4 } = require("uuid");
 var nodemailer = require("nodemailer");
@@ -25,7 +25,7 @@ const bcrypt = require("bcryptjs");
 const { getLogger } = require("nodemailer/lib/shared");
 const { nextTick } = require("process");
 const app = express();
-const port = 9999; // || process.env.PORT 
+const port = 9999; // || process.env.PORT
 const DBurl =
   "mongodb+srv://Mohammed:Mohammed1234$@viva.yvpma.mongodb.net/Viva?retryWrites=true&w=majority";
 
@@ -66,12 +66,12 @@ const connectDB = async () => {
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 //initilize middelware
-app.use(logger)
+app.use(logger);
 
 app.engine(
   "hbs",
   exphbs({
-    helpers: { ifEquals, select, ifIn, toSplitFile},
+    helpers: { ifEquals, select, ifIn, toSplitFile },
     defaultLayout: false,
     extname: "hbs",
   })
@@ -93,7 +93,6 @@ const mailOptions = {
   html: "", // plain text body
 };
 
-
 // The render render a hbs file
 // redirect redirect to a route
 
@@ -105,7 +104,7 @@ app.get("/signup", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
- // console.log("hmm", req.body);
+  // console.log("hmm", req.body);
   res.render("login");
 });
 
@@ -213,12 +212,11 @@ app.post("/resetPassword", async (req, res) => {
 
           res.render("resetPassword", {
             layout: false,
-            msg:
-              " If an account exists for that email address, we will email you instructions for resetting your password. ",
+            msg: " If an account exists for that email address, we will email you instructions for resetting your password. ",
           });
 
           console.log("This is the Response: " + response);
-          
+
           mailOptions.to = email;
           mailOptions.html = ` 
           <a href="${link}"> Click here to reset your password</a>
@@ -233,8 +231,7 @@ app.post("/resetPassword", async (req, res) => {
     } else {
       res.render("resetPassword", {
         layout: false,
-        msg:
-          " If an account exists for that email address, we will email you instructions for resetting your password. ",
+        msg: " If an account exists for that email address, we will email you instructions for resetting your password. ",
       });
     }
   } catch (error) {
@@ -266,7 +263,6 @@ app.post("/signup", async (req, res) => {
   try {
     console.log("inside try");
     console.log("The type is :", type);
-    
 
     switch (type) {
       case "Admin":
@@ -392,9 +388,7 @@ app.post("/signup", async (req, res) => {
   }
 
   if (req.session.user_id === undefined) {
-
     res.redirect("login");
-
   } else {
     if (req.session.user.type === "Admin") {
       res.redirect(req.session.user.type + "/Manageusers");
@@ -411,6 +405,15 @@ app.post("/login", async (req, res) => {
 
   const user = await USER.findOne({ email: email }).lean();
   // console.log('The user email is: ',req.body.email);
+
+  if (!user) {
+    console.log("IS it null?", user);
+    return res.render("login", {
+      wrongPass: "Wrong email or password",
+    });
+
+    //return res.status(400).send("Cannot find username");
+  }
 
   if (user) {
     if (await bcrypt.compare(password, user.password)) {
@@ -490,13 +493,6 @@ app.post("/login", async (req, res) => {
         wrongPass: "Wrong email or password",
       });
     }
-  } else {
-    console.log("IS it null?", user);
-    res.render("login", {
-      wrongPass: "Wrong email or password",
-    });
-
-    //return res.status(400).send("Cannot find username");
   }
 });
 

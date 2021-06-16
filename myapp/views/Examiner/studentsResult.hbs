@@ -1,0 +1,96 @@
+<head>
+  <style>
+    html {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0
+    }
+    .main-doc{
+      margin-left: 25%;
+      margin-top: 3%;
+    }
+
+    .StudentsDoc {
+      background-color: white;
+      width: 400px;
+    }
+
+    table {
+      width: 100%;
+      border: none;
+    }
+
+    table td {
+      display: flex;
+      justify-content: left;
+      text-decoration: none;
+      ;
+    }
+
+    table td a {
+      padding: 1em;
+      text-decoration: none;
+      ;
+    }
+  </style>
+</head>
+{{>headerEX}}
+{{>slidebar_EX}}
+
+
+
+<div class="main-doc">
+
+
+  <div class="StudentsDoc">
+
+
+
+
+    <table class="table" border="1">
+      <thead class="thead-dark">
+
+        <tr>
+          <th value="hidden">#</th>
+          <th scope="col">Name</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <div>
+          {{#each students}}
+          <tr>
+            <th scope="row" onclick="idynamic()"></th>
+
+            <td>
+
+              <a href="/Examiner/results/{{_id}}">{{fullName}}</a>
+
+            </td>
+
+
+          </tr>
+          {{/each}}
+        </div>
+      </tbody>
+    </table>
+
+    </table>
+  </div>
+</div>
+
+
+<script>
+  var table = document.getElementsByTagName('table')[0],
+    rows = table.getElementsByTagName('tr'),
+    text = 'textContent' in document ? 'textContent' : 'innerText';
+
+  for (var i = 1, len = rows.length; i < len; i++) {
+    rows[i].children[0][text] = i + ')' + rows[i].children[0][text];
+  }
+
+</script>

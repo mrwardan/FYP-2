@@ -6,6 +6,7 @@ const EXAMINER = require("../models/Examiner");
 const CHAIRPERSON = require("../models/Chairperson");
 const DOCUMENT = require("../models/Document");
 const EXAMINFORMATION = require("../models/ExamInformation");
+const RESULT = require("../models/Result");
 const multer = require("multer");
 const path = require("path");
 var nodemailer = require("nodemailer");
@@ -269,6 +270,28 @@ route.get(
   }
 );
 
+//show students documents
+route.get(
+  "/examResults",
+  ensureAuth,
+  ensureSupervisor,
+  async (req, res, next) => {
+    try {
+      var allstudents = await STUDENT.find({
+        supervisorId: req.session.user._id,
+      }).lean();
+
+      res.render("Supervisor/studentResult", {
+        students: allstudents,
+        user: req.session.user,
+        layout: "mainSV.hbs",
+      });
+    } catch (error) {
+      res.json(error);
+    }
+  }
+);
+
 route.get(
   "/vivaExamInfo/:id",
   ensureAuth,
@@ -304,6 +327,51 @@ route.get(
   }
 );
 
+route.get(
+  "/viewExamResult/:id",
+  ensureAuth,
+  ensureSupervisor,
+  async (req, res, next) => {
+    console.log("stId:", req.params.id);
+
+    let studentId = req.params.id;
+
+    const student = await STUDENT.findById(studentId)
+      .lean()
+      .populate("examinerOneId")
+      .populate("examinerTwoId")
+      .populate("chairPersonId");
+    console.log("student: ", student);
+    
+    chairId = student.chairPersonId._id;
+    EX1Id = student.examinerOneId._id;
+    EX2Id = student.examinerTwoId._id;
+    console.log("chairId",chairId);
+
+
+    const finalChairResult = await RESULT.findOne({
+      studentId: student._id,
+      reviewerId: chairId,
+    }).lean();
+    const finalExaminerOneResult = await RESULT.findOne({
+      studentId: studentId,
+      reviewerId: EX1Id,
+    }).lean();
+    const finalExaminerTwoResult = await RESULT.findOne({
+      studentId: studentId,
+      reviewerId: EX2Id,
+    }).lean();
+    console.log("finalCHAIRResult: ", finalChairResult);
+    console.log("finalEX1Result: ", finalExaminerOneResult);
+    console.log("finalEX2Result: ", finalExaminerTwoResult);
+
+    res.render("Supervisor/showStudentResult", {
+      user: req.session.user,
+      student, finalChairResult,finalExaminerOneResult,finalExaminerTwoResult,
+      layout: "mainSV.hbs",
+    });
+  }
+);
 route.post(
   "/studentDoc",
   ensureAuth,

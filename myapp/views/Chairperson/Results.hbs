@@ -69,8 +69,6 @@
             padding: 15px;
             text-align: left;
             padding-left: 30px;
-            ;
-
         }
 
         .ResultTable td:first-child {
@@ -78,30 +76,29 @@
             background-color: lightgray;
             width: 30px;
             padding-left: 10px;
-
         }
 
         .comment {
             padding-top: 2em;
             text-align: left;
             background-color: lightgray;
+        }
 
+        .buttonBackground {
+            display: flex;
+            justify-content: space-around;
+            background-color: lightgray;
+            padding: 2em;
         }
 
         .sub {
-            padding-top: 2em;
-            display: flex;
-            justify-content: center;
-            height: 100px;
-            width: 100%;
-            background-color: lightgray;
+            width: 40%;
+            margin-left: 50px;
         }
 
 
         .button,
         .tick {
-            display: flex;
-            justify-content: center;
             align-items: center;
             font-family: sans-serif;
         }
@@ -113,81 +110,91 @@
             height: 40px;
             background: dodgerblue;
             border-radius: 6px;
-            transition: all .3s cubic-bezier(0.67, 0.17, 0.40, 0.83);
+            transition: all .15s cubic-bezier(0.67, 0.17, 0.40, 0.83);
+        }
+
+        .DeleteButton {}
+
+        .delete {
+            display: inline-block;
+            width: 100%;
+            padding-top: .8em;
+            padding-bottom: .8em;
+            text-decoration: none;
+            color: white;
         }
 
         .button svg {
-            transform: rotate(180deg);
             transition: all .5s;
+               width: 25px;
+            height: 25px;
         }
 
-        .button__circle {
-            width: 60px;
-            height: 60px;
-            background: mediumseagreen;
-            border-radius: 50%;
-            transform: rotate(-180deg);
-        }
+   
 
         .button:hover {
             cursor: pointer;
         }
 
         .tick {
+          
             color: white;
             font-size: 1em;
             transition: all .9s;
         }
     </style>
+
+
 </head>
 
 {{>headerCH}}
 {{>slidebarCH}}
 
 <body>
+
     <div class="ResultMainPage">
 
-     {{log 'student: ' student }}
+        {{log 'results: $: ' result }}
 
-            <div class="StuInfo">
-                <div class="tableHeader">
-                    Student and project info
-                </div>
 
-                <table class="table">
-
-                    <tr>
-                        <td><strong>Name:</strong></td>
-                        <td>{{student.fullName}}</td>
-                    </tr>
-                    <tr>
-                        <td> <strong>Program:</strong></td>
-                        <td>{{student.program}}</td>
-                    </tr>
-                    <tr>
-                        <td> <strong>Email:</strong></td>
-                        <td>{{student.email}}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Phone:</strong> </td>
-                        <td>{{student.phone}}</td>
-                    </tr>
-                    <tr>
-                        <td> <strong>Title:</strong> </td>
-                        <td>{{student.thesisTitle}}</td>
-                    </tr>
-                    <tr>
-                        <td> <strong>Type:</strong> </td>
-                        <td>{{student.type}}</td>
-                    </tr>
-                </table>
-
+        <div class="StuInfo">
+            <div class="tableHeader">
+                Student and project info
             </div>
-{{log "student.id: " student._id}}
+
+            <table class="table">
+
+                <tr>
+                    <td><strong>Name:</strong></td>
+                    <td>{{student.fullName}}</td>
+                </tr>
+                <tr>
+                    <td> <strong>Program:</strong></td>
+                    <td>{{student.program}}</td>
+                </tr>
+                <tr>
+                    <td> <strong>Email:</strong></td>
+                    <td>{{student.email}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Phone:</strong> </td>
+                    <td>{{student.phone}}</td>
+                </tr>
+                <tr>
+                    <td> <strong>Title:</strong> </td>
+                    <td>{{student.thesisTitle}}</td>
+                </tr>
+                <tr>
+                    <td> <strong>Type:</strong> </td>
+                    <td>{{student.type}}</td>
+                </tr>
+            </table>
+
+        </div>
+        {{log "student.id: " student._id}}
 
         <form action="/Chairperson/studentResults" method="POST">
-        <input type="hidden"  name="chairPersonId" value="{{student.chairPersonId}}"> 
-        <input type="hidden"  name="studentId" value="{{student._id}}"> 
+            <input type="hidden" name="studentId" value="{{student._id}}">
 
 
             <div class="ResultInfo">
@@ -317,34 +324,55 @@
                         <strong>Comments of the First Assessment Session</strong>
                     </div>
 
-                    <textarea name="comments" id="comment" cols="150"
-                        rows="10">Comments of the First Assessment Session</textarea>
+                    <textarea name="comment" id="comment" cols="150" rows="10">{{result.comment}}</textarea>
 
 
                 </div>
 
             </div>
 
-            <div class="sub">
+            <div class="buttonBackground">
 
-                <div class="button">
-      <button class="btn-submit" value="submit">Submit</button>
 
-                    <div class="container">
-                        <div class="tick">
+                <div class="sub">
+
+
+                    <button class="button" value="submit">
+                        <div class="container">
+
+                            <div class="tick">
+
+                            </div>
                         </div>
-                    </div>
+                    </button>
+
+                    <button class="button DeleteButton" type="button">
+
+                        <a href="/Chairperson/deleteResult/{{student._id}}" class="delete">Delete</a>
+
+                    </button>
+
+
+
+
+
                 </div>
+
             </div>
-
-
         </form>
-    </div>
 
 
     </div>
+
+
 
     <script>
+        var result = '{{{ result.result}}}';
+        console.log(result)
+        document.getElementsByName("result").forEach(function (e) {
+            if (e.value === result)
+                e.checked = true;
+        });
         let button = document.querySelector('.button');
         let buttonText = document.querySelector('.tick');
 

@@ -128,16 +128,62 @@ route.get("/results/:id", ensureAuth, async (req, res, next) => {
     const student = await STUDENT.findOne({
       _id: req.params.id,
     }).lean();
+    if (student == null) {
+      return res.send("No student found!");
+    }
+
+    const result = await RESULT.findOne({
+      studentId: req.params.id,
+      reviewerId: req.session.user._id,
+    }).lean();
 
     res.render("Chairperson/Results", {
       user: req.session.user,
       student: student,
+      result,
       layout: "mainchair.hbs",
     });
   } catch (error) {
     res.json(error);
   }
 });
+
+route.get("/deleteResult/:id", ensureAuth, async (req, res, next) => {
+  try {
+    const student = await STUDENT.findOne({
+      _id: req.params.id,
+    }).lean();
+
+    if (student == null) {
+      return res.send("No student found!");
+    }
+    const result = await RESULT.findOne({
+      studentId: req.params.id,
+      reviewerId: req.session.user._id,
+    }).lean();
+    console.log("result: D:",result._id);
+
+    await RESULT.findByIdAndDelete(result._id,
+
+      function (err, response) {
+        // Handle any possible database errors
+        if (err) {
+          console.log("we hit an error and could not delete the result" + err);
+          res.json({
+            message: "Database Update Failure",
+          });
+
+        }
+        res.redirect(`/Chairperson/results/${student._id}`);
+        console.log("This is the DeletedResponse: " + response);
+
+      }
+    )
+  } catch (error) {
+    res.json(error);
+  }
+});
+
 route.get("/signout", (req, res, next) => {
   req.session.destroy();
   res.render("login", {
@@ -249,50 +295,36 @@ route.post("/editinfo", ensureAuth, async (req, res, next) => {
     res.json(error);
   }
 });
+
 route.post("/studentResults", ensureAuth, async (req, res, next) => {
-  let { result, comments, chairPersonId, studentId } = req.body;
-  console.log('studentId: ',studentId);
+  let { studentId } = req.body;
+  console.log("studentId: ", studentId);
+  console.log("REDWHAN ", req.session.user);
 
-  const student = await STUDENT.findOne({
-    _id: studentId,
-  }).lean();
-  console.log("chairPersonId: $: ", req.body );
+  const student = await STUDENT.findById(studentId).lean();
 
-
-  console.log("studentFound: ", student);
-
-  const thereIsaResult = await RESULT.find({
-    studentId: studentId,
-  }).lean();
-
-  console.log('thereIsaResult: ', thereIsaResult);
-  console.log('thereIsaResult length: ', thereIsaResult.length);
-
- if(thereIsaResult.length == 0){
-    
-    try {
-
-      for (var i = 0; i < result.length; i++) {
-        result = result[i];
-      }
-
-      const ChairRESULT = await RESULT.create(req.body);
-      console.log("ChairRESULT: ", ChairRESULT);
-      res.redirect(`/Chairperson/results/${studentId}`);
-
-      
-    
-      
-    } catch (error) {
-      res.json(error)
-
-    }
-
-  }else{
-    res.send('Already has result');
+  if (student == null) {
+    return res.send("No student found!");
   }
 
- 
+  const thereIsaResult = await RESULT.findOne({
+    studentId: studentId,
+    reviewerId: req.session.user._id,
+  }).lean();
+
+  if (thereIsaResult != null) {
+    return res.send("Already has result");
+  }
+
+  try {
+    req.body.reviewerId = req.session.user._id;
+    var revewierResult = await RESULT.create(req.body);
+    return res.send("done");
+
+    //res.redirect(`/${req}/results/${studentId}`);
+  } catch (error) {
+    res.json(error);
+  }
 });
 
 function ensureAuth(req, res, next) {

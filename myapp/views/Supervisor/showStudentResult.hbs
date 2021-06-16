@@ -1,0 +1,146 @@
+<head>
+
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .cont {
+      display: flex;
+      justify-content: left;
+      margin-top: 20px;
+      margin-left: 250px;
+
+
+    }
+
+    .StuInfo {
+
+      background-color: white;
+      width: 99%;
+      height: 100%;
+    }
+
+    .tableHeader {
+
+      background-color: gray;
+      text-align: left;
+      color: white;
+      font-size: 1.2em;
+      padding: 1em;
+    }
+
+    .table {
+
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      margin: 0;
+      padding: 0;
+
+    }
+
+    .table td {
+
+      border: 1px solid black;
+      border-right: none;
+      border-left: none;
+      padding: 20px;
+      height: 100%;
+      text-align: left;
+
+    }
+
+
+    .table td:first-child {
+
+      text-align: left;
+      background-color: lightgray;
+      width: 100px;
+      font-weight: bold;
+
+    }
+
+    tbody>:nth-child(2) {
+      height: 500px;
+    }
+  </style>
+</head>
+{{>headerSV}}
+{{>slidebar_SV}}
+
+<div class="cont">
+
+  <div class="StuInfo">
+    <div class="tableHeader">
+      <strong>Chairperson Result and Comments</strong>
+    </div>
+    <table class="table">
+    {{log "finalChairResult" finalChairResult.result}}
+      <tbody>
+        <tr>  
+          <td> <strong>Result</strong></td>
+          <td><strong>"{{finalChairResult.result}}"</strong> </td>
+        </tr>
+        <tr>
+          <td> <strong>Comment</strong></td>
+          <td>{{finalChairResult.comment}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<div class="cont">
+
+  <div class="StuInfo">
+    <div class="tableHeader">
+      <strong>Examiner 1 Result and Comments</strong>
+    </div>
+    <table class="table">
+
+
+      <tr>
+        <td> <strong>Result</strong></td>
+          <td><strong>"{{finalExaminerOneResult.result}}"</strong> </td>
+      </tr>
+      <tr>
+        <td> <strong>Comment</strong></td>
+        <td>{{finalExaminerOneResult.comment}}</td>
+      </tr>
+
+    </table>
+
+  </div>
+</div>
+
+
+<div class="cont">
+
+  <div class="StuInfo">
+    <div class="tableHeader">
+      <strong>Examiner 2 Result and Comments</strong>
+    </div>  
+    <table class="table">
+
+
+      <tr>
+        <td> <strong>Result</strong></td>
+          <td><strong>"{{finalExaminerTwoResult.result}}"</strong> </td>
+      </tr>
+      <tr>
+        <td> <strong>Comment</strong></td>
+        <td>{{finalExaminerTwoResult.comment}}</td>
+      </tr>
+
+    </table>
+
+  </div>
+</div>
+<br>
