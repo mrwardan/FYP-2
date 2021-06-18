@@ -48,6 +48,9 @@ const UserSchema = new mongoose.Schema({
   chairPersonApproved: {
     type: Boolean,
   },
+  chairPersonReject: {
+    type: Boolean,
+  },
   examinerTwoApproved: {
     type: Boolean,
   },

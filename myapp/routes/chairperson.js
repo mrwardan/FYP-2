@@ -4,6 +4,7 @@ const CHAIRPERSON = require("../models/Chairperson");
 const EXAMINER = require("../models/Examiner");
 const STUDENT = require("../models/Student");
 const SUPERVISOR = require("../models/Supervisor");
+const EXAMINFORMATION = require("../models/ExamInformation");
 const RESULT = require("../models/Result");
 const multer = require("multer");
 const path = require("path");
@@ -87,7 +88,9 @@ route.get("/editinfo", ensureAuth, (req, res, next) => {
 });
 route.get("/approve", ensureAuth, async (req, res, next) => {
   try {
-    const students = await STUDENT.find({ chairPersonId: req.session.user._id })
+    const students = await STUDENT.find({
+      chairPersonId: req.session.user._id,
+    })
       .lean()
       .populate("supervisorId");
 
@@ -161,9 +164,10 @@ route.get("/deleteResult/:id", ensureAuth, async (req, res, next) => {
       studentId: req.params.id,
       reviewerId: req.session.user._id,
     }).lean();
-    console.log("result: D:",result._id);
+    console.log("result: D:", result._id);
 
-    await RESULT.findByIdAndDelete(result._id,
+    await RESULT.findByIdAndDelete(
+      result._id,
 
       function (err, response) {
         // Handle any possible database errors
@@ -172,13 +176,69 @@ route.get("/deleteResult/:id", ensureAuth, async (req, res, next) => {
           res.json({
             message: "Database Update Failure",
           });
-
         }
         res.redirect(`/Chairperson/results/${student._id}`);
         console.log("This is the DeletedResponse: " + response);
-
       }
-    )
+    );
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+route.get("/examInfo", ensureAuth, async (req, res, next) => {
+  
+  try {
+    const examInfo = await EXAMINFORMATION.find({
+      chairPersonId: req.session.user._id,
+    })
+      .lean()
+      .populate("studentId")
+      .populate("examinerOneId")
+      .populate("examinerTwoId")
+      .populate("supervisorId");
+
+    console.log("examInfo: ", examInfo);
+
+    res.render("Chairperson/vivaExam", {
+      user: req.session.user,
+      examInfo,
+      layout: "mainchair.hbs",
+    });
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+route.get("/vivaExamInfo/:id", ensureAuth, async (req, res, next) => {
+  console.log("id:", req.params.id);
+
+  try {
+    console.log("wardan");
+
+    const student = await STUDENT.findById(req.params.id)
+      .lean()
+      .populate("examinerOneId")
+      .populate("examinerTwoId")
+      .populate("chairPersonId");
+
+    if (stu == null) {
+      return res.send("no student found!");
+    }
+    console.log("wardan1");
+
+    const examInfo = await EXAMINFORMATION.findOne({
+      studentId: stu._id,
+    }).lean();
+
+    console.log("wardan2");
+
+    res.render("Chairperson/vivaExamInfo", {
+      user: req.session.user,
+      stu,
+      examInfo,
+      layout: "mainchair.hbs",
+    });
   } catch (error) {
     res.json(error);
   }
@@ -249,6 +309,37 @@ route.post("/submitApprove", ensureAuth, async (req, res, next) => {
         }
 
         res.redirect("approve");
+        console.log("This is the Response: ", response);
+      }
+    );
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+route.post("/submitReject", ensureAuth, async (req, res, next) => {
+  const { id } = req.body;
+
+  try {
+    await STUDENT.findByIdAndUpdate(
+      id,
+      {
+        chairPersonReject: true,
+      },
+      {
+        new: true,
+      },
+
+      function (err, response) {
+        if (err) {
+          console.log("we hit an error" + err);
+          res.json({
+            message: "Database Update Failure",
+          });
+        }
+
+        res.redirect("approve");
+
         console.log("This is the Response: ", response);
       }
     );

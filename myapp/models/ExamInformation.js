@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema({
     ref: "examiner",
 
   },
-  chairpersonId: {
+  chairPersonId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "chairperson",
 

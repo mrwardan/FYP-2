@@ -1,0 +1,118 @@
+<head>
+    <style>
+        html {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0
+        }
+
+        .main-students {
+            margin-left: 25%;
+            margin-top: 5%;
+        }
+
+        .StudentsDoc {
+            background-color: white;
+            color: black;
+            width: 400px;
+        }
+
+        table {
+            width: 100%;
+            border: none;
+        }
+
+        table td {
+            display: flex;
+            justify-content: left;
+            text-decoration: none;
+            ;
+        }
+
+        table td a {
+            width: 100%;
+            color: #800000;
+            padding: 1em;
+            text-decoration: none;
+            
+        }
+
+        table td a:hover {
+
+            background-color: #800000;
+            color: white;
+
+            text-decoration: none;
+            ;
+        }
+    </style>
+</head>
+
+{{>header}}
+{{>slideBar}}
+
+
+
+
+<div class="main-students">
+
+
+    <div class="StudentsDoc">
+
+
+
+
+        <table class="table" border="1">
+            <thead class="thead-dark">
+
+                <tr>
+                    <th value="hidden">#</th>
+                    <th scope="col">Name</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <div>
+
+
+                    {{#each students}}
+
+
+
+
+                    <tr>
+                        <th scope="row" onclick="idynamic()"></th>
+
+                        <td>
+
+                            <a href="/Admin/ShowStudentInfo/{{_id}}">{{fullName}}</a>
+
+                        </td>
+
+                        {{/each}}
+
+
+                    </tr>
+                </div>
+            </tbody>
+        </table>
+
+        </table>
+    </div>
+</div>
+
+
+<script>
+    var table = document.getElementsByTagName('table')[0],
+        rows = table.getElementsByTagName('tr'),
+        text = 'textContent' in document ? 'textContent' : 'innerText';
+
+    for (var i = 1, len = rows.length; i < len; i++) {
+        rows[i].children[0][text] = i + ')' + rows[i].children[0][text];
+    }
+
+</script>

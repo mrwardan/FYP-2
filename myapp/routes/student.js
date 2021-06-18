@@ -242,7 +242,6 @@ route.post(
 
       if (document) {
         //detlete boj
-        console.log("inside Mtherfucker");
 
         document.forEach(async (element) => {
           await DOCUMENT.deleteOne({ _id: element._id });

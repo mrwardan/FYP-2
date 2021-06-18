@@ -63,6 +63,10 @@
       <tbody>
         <div>
           {{#each students}}
+
+           {{#ifEquals ../user._id examinerOneId}}
+          {{#if examinerOneApproved}}
+
           <tr>
             <th scope="row" onclick="idynamic()"></th>
 
@@ -74,6 +78,27 @@
 
 
           </tr>
+          {{/if}}
+
+          {{/ifEquals}}
+
+           {{#ifEquals ../user._id examinerTwoId}}
+          {{#if examinerTwoApproved}}
+
+          <tr>
+            <th scope="row" onclick="idynamic()"></th>
+
+            <td>
+
+              <a href="/Examiner/results/{{_id}}">{{fullName}}</a>
+
+            </td>
+
+
+          </tr>
+          {{/if}}
+
+          {{/ifEquals}}
           {{/each}}
         </div>
       </tbody>

@@ -9,10 +9,12 @@
 			margin: 0;
 			padding: 0;
 		}
-		.cont{
+
+		.cont {
 			margin-top: 2%;
 			margin-left: 5%;
 		}
+
 		.DivBeforeTable {
 			margin-left: 22%;
 			margin-right: 20%;
@@ -41,13 +43,11 @@
 			border: 1px solid;
 
 		}
-		#TR > td >a{
+
+		#TR>td>a {
 			text-decoration: none;
 			color: black;
 		}
-
-
-
 	</style>
 </head>
 {{>headerSV}}
@@ -55,76 +55,76 @@
 
 <div class="cont">
 
-<div class="DivBeforeTable">
+	<div class="DivBeforeTable">
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th><span>Name</span></th>
-				<th><span>Matric Number</span></th>
-				<th><span>Chairperson</span></th>
-				<th><span>Examiner 1</span></th>
-				<th><span>Examiner 2</span></th>
-				<th><span>Time</span></th>
-				<th><span>Actions</span></th>
-
-
-			</tr>
-		</thead>
-
-		<tbody>
+		<table class="table">
+			<thead>
+				<tr>
+					<th><span>Name</span></th>
+					<th><span>Matric Number</span></th>
+					<th><span>Chairperson</span></th>
+					<th><span>Examiner 1</span></th>
+					<th><span>Examiner 2</span></th>
+					<th><span>Time</span></th>
+					<th><span>Actions</span></th>
 
 
+				</tr>
+			</thead>
 
-			{{#each students}}
-
-
-			<tr id="TR">
-				<td>
-
-					{{fullName}}
-				</td>
-				<td>
-					{{matricNo}}
-				</td>
-				<td class="text-center">
-					<span class="label label-default">{{chairPersonId.fullName}}</span>
-
-				</td>
-				<td>
-
-					<a href="#">{{examinerOneId.fullName}}</a>
-
-				</td>
+			<tbody>
 
 
-				<td >
 
-					<a href="#">{{examinerTwoId.fullName}}</a>
-
-				</td>
-				<td>
-
-					{{date}}
-				</td>
-				<td>
+				{{#each students}}
 
 
-					<a href="/Supervisor/choose?id={{_id}}" class="edit"><i class="material-icons"
-							title="Edit">&#xE254;</i></a>
+				<tr id="TR">
+					<td>
 
-					<a href="/Supervisor/deleteStudent/{{_id}}" class="delete"><i class="material-icons"
-							title="Delete">&#xE872;</i></a>
+						{{fullName}}
+					</td>
+					<td>
+						{{matricNo}}
+					</td>
+					<td class="text-center">
+						<span class="label label-default">{{chairPersonId.fullName}}</span>
+
+					</td>
+					<td>
+
+						<a href="#">{{examinerOneId.fullName}}</a>
+
+					</td>
 
 
-				</td>
+					<td>
+
+						<a href="#">{{examinerTwoId.fullName}}</a>
+
+					</td>
+					<td>
+
+						{{date}}
+					</td>
+					<td>
 
 
-			</tr>
-			{{/each}}
+						<a href="/Supervisor/choose?id={{_id}}" class="edit"><i class="material-icons"
+								title="Edit">&#xE254;</i></a>
 
-		</tbody>
-	</table>
+						<a href="/Supervisor/deleteStudent/{{_id}}" class="delete"><i class="material-icons"
+								title="Delete">&#xE872;</i></a>
 
-</div>
+
+					</td>
+
+
+				</tr>
+				{{/each}}
+
+			</tbody>
+		</table>
+
+	</div>
 </div>

@@ -3,6 +3,7 @@ const route = express.Router();
 const EXAMINER = require('../models/Examiner');
 const STUDENT = require('../models/Student');
 const SUPERVISOR = require('../models/Supervisor');
+const EXAMINFORMATION = require("../models/ExamInformation");
 const RESULT = require("../models/Result");
 const multer = require('multer');
 const path = require('path');
@@ -214,6 +215,70 @@ route.get("/deleteResult/:id", ensureAuth, async (req, res, next) => {
     res.json(error);
   }
 });
+
+route.get("/examInfo", ensureAuth, async (req, res, next) => {
+
+  try {
+    var allstudents = await STUDENT.find({
+      $or: [{
+        examinerOneId: req.session.user._id
+      }, {
+        examinerTwoId: req.session.user._id
+      }]
+    }).lean();
+
+    res.render("Examiner/vivaExam", {
+      students: allstudents,
+      user: req.session.user,
+      layout: "mainEx.hbs",
+    });
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+route.get(
+  "/vivaExamInfo/:id",
+  ensureAuth,
+  async (req, res, next) => {
+    console.log("id:", req.params.id);
+
+    try {
+      console.log('wardan');
+
+
+      const stu = await STUDENT.findById(req.params.id)
+        .lean()
+        .populate("examinerOneId")
+        .populate("examinerTwoId")
+        .populate("chairPersonId");
+        
+        if(stu == null){
+
+          return res.send('no student found!');
+        }
+        console.log('wardan1');
+
+      const examInfo = await EXAMINFORMATION.findOne({
+        studentId: stu._id,
+      }).lean();
+
+      console.log('wardan2');
+
+      res.render("Examiner/vivaExamInfo", {
+        user: req.session.user,
+        stu,
+        examInfo,
+        layout: "mainEx.hbs",
+      });
+    } catch (error) {
+      res.json(error);
+    }
+  }
+);
+
+
+
 route.get('/signout', (req, res, next) => {
   req.session.destroy();
   res.render('login', {

@@ -7,6 +7,7 @@ const EXAMINER = require("../models/Examiner");
 const STUDENT = require("../models/Student");
 const SUPERVISOR = require("../models/Supervisor");
 const ADMIN = require("../models/Admin");
+const RESULT = require("../models/Result");
 const multer = require("multer");
 const path = require("path");
 const Swal = require("sweetalert2");
@@ -225,10 +226,6 @@ route.get("/view/:id", ensureAuth, ensureAdmin, async (req, res) => {
   }
 });
 
-route.get("/signout", (req, res) => {
-  req.session.destroy();
-  res.redirect("/login");
-});
 
 route.get("/AdminSignup", (req, res) => {
   res.redirect("/Admin/Manageusers");
@@ -301,6 +298,88 @@ route.get(
     }
   }
 );
+
+route.get(
+  "/students",
+  ensureAuth,
+  ensureAdmin,
+  async (req, res, next) => {
+
+    try {
+      const students = await STUDENT.find({})
+        .lean()
+
+      console.log("student: ", students);
+
+      res.render("Admin/students", {
+        user: req.session.user,
+        students,
+        layout: "mainAdmin",
+      });
+
+
+    } catch (error) {
+      res.json(error);
+    }
+  }
+);
+
+route.get(
+  "/ShowStudentInfo/:id",
+  ensureAuth,
+  ensureAdmin,
+  async (req, res, next) => {
+
+    let stuID = req.params.id;
+
+    const student = await STUDENT.findById(stuID).lean()
+      .populate("supervisorId")
+      .populate("examinerOneId")
+      .populate("examinerTwoId")
+      .populate("chairPersonId");
+
+    console.log("student: ", student);
+
+    chairId = student.chairPersonId._id;
+    EX1Id = student.examinerOneId._id;
+    EX2Id = student.examinerTwoId._id;
+
+    const examInfo = await EXAMINFORMATION.findOne({
+      studentId:stuID,
+    }).lean();
+
+    console.log("examInfo:", examInfo);
+
+
+    const finalChairResult = await RESULT.findOne({
+      studentId: stuID,
+      reviewerId: chairId,
+    }).lean();
+
+    const finalExaminerOneResult = await RESULT.findOne({
+      studentId: stuID,
+      reviewerId: EX1Id,
+    }).lean();
+
+    const finalExaminerTwoResult = await RESULT.findOne({
+      studentId: stuID,
+      reviewerId: EX2Id,
+    }).lean();
+
+
+
+    res.render("Admin/showStudentInfo", {
+      user: req.session.user,
+      student, finalChairResult, finalExaminerOneResult, finalExaminerTwoResult, examInfo,
+      layout: "mainAdmin",
+    });
+  }
+);
+
+route.get("/signout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/login");
+});
 route.post("/AdminSignup", ensureAuth, ensureAdmin, async (req, res) => {
   const {
     type,
@@ -597,53 +676,61 @@ route.post("/issueExam", ensureAuth, ensureAdmin, async (req, res, next) => {
     .populate("examinerOneId")
     .populate("examinerTwoId")
     .populate("chairPersonId");
-   
-    const thereIsExam = await EXAMINFORMATION.find({
-      studentId: student._id,
-    }).lean();
 
-    console.log('thereIsExam: ', thereIsExam.length);
-   
-    
-    if(thereIsExam.length == 0)
-    {
-      try {
-        //if there is an exam from before the
-        if (student.supervisorId == undefined) {
-          res.send("The Student has not been assigned a Supervisor");
-        }
-    
-        if (student.chairPersonId == undefined) {
-          res.send("The Student has not been assigned a chairPerson");
-        }
-        if (student.examinerOneId == undefined) {
-          res.send("The Student has not been assigned an examiner One");
-        }
-        if (student.examinerTwoId == undefined) {
-          res.send("The Student has not been assigned an examiner Two");
-        }
-        if (student.chairPersonApproved === false) {
-          res.send("The Chairperson has not approved yet");
-        }
-        if (student.examinerOneApproved === false) {
-          res.send("The examiner One  has not approved yet");
-        }
-        if (student.examinerTwoApproved === false) {
-          res.send("The examiner Two has not approved yet");
-        }
-    
-        let exam_response = await EXAMINFORMATION.create(req.body);
-        console.log('student.fullName: ',student.fullName);
-        console.log('examDate: ',req.body.examDate);
-        console.log('time: ',req.body.time);
-        console.log('venue: ',req.body.venue);
-    
-        mailOptions.to = student.supervisorId.email;
-        mailOptions.to = student.chairPersonId.email;
-        mailOptions.to = student.examinerOneId.email;
-        mailOptions.to = student.examinerTwoId.email;
-    
-        mailOptions.html = ` 
+  const thereIsExam = await EXAMINFORMATION.find({
+    studentId: student._id,
+  }).lean();
+
+  console.log('thereIsExam: ', thereIsExam.length);
+
+
+  if (thereIsExam.length == 0) {
+    try {
+      //if there is an exam from before the
+      if (student.supervisorId == undefined) {
+        res.send("The Student has not been assigned a Supervisor");
+      }
+
+      if (student.chairPersonId == undefined) {
+        res.send("The Student has not been assigned a chairPerson");
+      }
+      if (student.examinerOneId == undefined) {
+        res.send("The Student has not been assigned an examiner One");
+      }
+      if (student.examinerTwoId == undefined) {
+        res.send("The Student has not been assigned an examiner Two");
+      }
+      if (student.chairPersonApproved === false) {
+        res.send("The Chairperson has not approved yet");
+      }
+      if (student.examinerOneApproved === false) {
+        res.send("The examiner One  has not approved yet");
+      }
+      if (student.examinerTwoApproved === false) {
+        res.send("The examiner Two has not approved yet");
+      }
+
+      console.log("student.chairPersonId: ", student.chairPersonId);
+      console.log("student.examinerOneId: ", student.examinerOneId);
+      console.log("student.examinerTwoId: ", student.examinerTwoId);
+      
+      req.body.supervisorId = student.supervisorId;
+      req.body.examinerOneId = student.examinerOneId;
+      req.body.examinerTwoId = student.examinerTwoId;
+      req.body.chairPersonId = student.chairPersonId;
+
+      let exam_response = await EXAMINFORMATION.create(req.body);
+      console.log('student.fullName: ', student.fullName);
+      console.log('examDate: ', req.body.examDate);
+      console.log('time: ', req.body.time);
+      console.log('venue: ', req.body.venue);
+
+      mailOptions.to = student.supervisorId.email;
+      mailOptions.to = student.chairPersonId.email;
+      mailOptions.to = student.examinerOneId.email;
+      mailOptions.to = student.examinerTwoId.email;
+
+      mailOptions.html = ` 
         Dear Sir/Madam, <br><br>
       Please be notified that the Examination information for the student: ${student.fullName} has been issued as followed: <br> 
       Date: <strong>${req.body.examDate} </strong> <br> 
@@ -652,22 +739,22 @@ route.post("/issueExam", ensureAuth, ensureAdmin, async (req, res, next) => {
       
       Thank you! 
       `;
-    
-        transporter.sendMail(mailOptions, function (err, info) {
-          if (err) console.log(err);
-          else console.log(info);
-        });
-    
-        res.redirect("issueExam");
-      } catch (error) {
-        res.json(error);
-      }
 
-    } else{
-      res.send('Already booked')
+      transporter.sendMail(mailOptions, function (err, info) {
+        if (err) console.log(err);
+        else console.log(info);
+      });
+
+      res.redirect("issueExam");
+    } catch (error) {
+      res.json(error);
     }
 
- 
+  } else {
+    res.send('Already booked')
+  }
+
+
 });
 
 module.exports = route;

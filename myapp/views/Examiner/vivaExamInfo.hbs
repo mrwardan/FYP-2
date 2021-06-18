@@ -1,0 +1,115 @@
+<head>
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .cont {
+            margin-top: 3%;
+            margin-left: 30%;
+        }
+
+        .ResultMainPage {
+            margin-left: 18%;
+            margin-top: .5%;
+            background-color: rgba(255, 255, 255, 0.822);
+            height: 700px;
+            width: 80%;
+        }
+
+        .StuInfo {
+            background-color: white;
+            width: 50%;
+            height: 470px;
+        }
+
+        .tableHeader {
+            background-color: gray;
+            text-align: left;
+            color: white;
+            font-size: 1.2em;
+            padding: 1em;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+
+        }
+
+        .table td {
+            border: 1px solid black;
+            border-right: none;
+            border-left: none;
+            padding: 15px;
+            text-align: left;
+
+        }
+
+        .table td:first-child {
+            text-align: left;
+            background-color: lightgray;
+            width: 100px;
+        }
+
+
+  
+    
+
+
+
+    </style>
+</head>
+
+{{>headerEX}}
+{{>slidebar_EX}}
+
+<div class="cont">
+
+    <div class="StuInfo">
+        <div class="tableHeader">
+            <strong>Oral Examination details</strong>
+        </div>
+         {{log 'ex1 name: ' examInfo}}
+        <table class="table">
+
+            <tr>
+                <td><strong>Student Name:</strong></td>
+                <td>{{stu.fullName}}</td>
+            </tr>
+            <tr>
+                <td> <strong>Examiner 1:</strong></td>
+                <td>{{stu.examinerOneId.fullName}}</td>
+            </tr>
+            <tr>
+                <td> <strong>Examiner 2:</strong></td>
+                <td>{{stu.examinerTwoId.fullName}}</td>
+            </tr>   
+            <tr>
+                <td><strong>Chairperson:</strong> </td>
+                <td>{{stu.chairPersonId.fullName}}</td>
+            </tr>
+            <tr>
+                <td> <strong>Exam date:</strong> </td>
+                <td>{{examInfo.examDate}}</td>
+            </tr>
+            
+            <tr>
+                <td> <strong>Time:</strong> </td>
+                <td>{{examInfo.time}}</td>
+            </tr>
+            <tr>
+                <td> <strong>Venue:</strong> </td>
+                <td>{{examInfo.venue}}</td>
+            </tr>
+        </table>
+
+    </div>
+</div>

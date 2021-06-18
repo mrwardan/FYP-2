@@ -79,12 +79,17 @@
         }
 
         .comment {
-            padding-top: 2em;
+            width: 100%;
             text-align: left;
             background-color: lightgray;
         }
+        .textArea{
+            width: 100%;
+        }
+
 
         .buttonBackground {
+            margin-bottom: 2em;
             display: flex;
             justify-content: space-around;
             background-color: lightgray;
@@ -92,8 +97,9 @@
         }
 
         .sub {
+            padding-bottom: 2em;;
             width: 40%;
-            margin-left: 50px;
+            margin-left: 35%;
         }
 
 
@@ -103,8 +109,6 @@
             font-family: sans-serif;
         }
 
-
-
         .button {
             width: 160px;
             height: 40px;
@@ -113,7 +117,6 @@
             transition: all .15s cubic-bezier(0.67, 0.17, 0.40, 0.83);
         }
 
-        .DeleteButton {}
 
         .delete {
             display: inline-block;
@@ -319,19 +322,20 @@
 
                 </table>
 
+            <div class="buttonBackground">
+
                 <div class="comment">
                     <div class="tableHeader">
                         <strong>Comments of the First Assessment Session</strong>
                     </div>
 
-                    <textarea name="comment" id="comment" cols="150" rows="10">{{result.comment}}</textarea>
+                    <textarea class="textArea" name="comment" id="comment" cols="150" rows="10">{{result.comment}}</textarea>
 
 
                 </div>
 
             </div>
 
-            <div class="buttonBackground">
 
 
                 <div class="sub">

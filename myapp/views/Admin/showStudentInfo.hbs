@@ -1,0 +1,173 @@
+<head>
+
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .cont {
+      margin-top: 3%;
+      margin-left: 30%;
+    }
+
+    .ResultMainPage {
+      margin-left: 18%;
+      margin-top: .5%;
+      background-color: rgba(255, 255, 255, 0.822);
+      height: 700px;
+      width: 80%;
+    }
+
+    .StuInfo {
+      background-color: white;
+      width: 50%;
+      height: 100%;
+    }
+
+    .tableHeader {
+      background-color: gray;
+      text-align: left;
+      color: white;
+      font-size: 1.2em;
+      padding: 1em;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+
+    }
+
+    .table td {
+      border: 1px solid black;
+      border-right: none;
+      border-left: none;
+      padding: 15px;
+      text-align: left;
+
+    }
+
+    .table td:first-child {
+      text-align: left;
+      background-color: lightgray;
+      width: 100px;
+    }
+  </style>
+</head>
+
+{{>header}}
+{{>slideBar}}
+
+<div class="cont">
+
+  <div class="StuInfo">
+
+    <div class="tableHeader">
+      <strong>Student Information:</strong>
+    </div>
+
+    <table class="table">
+
+      <tr>
+        <td><strong>Student Name:</strong></td>
+        <td>{{student.fullName}}</td>
+      </tr>
+      <tr>
+        <td><strong>Student's Matric No:</strong></td>
+        <td>{{student.matricNo}}</td>
+      </tr>
+      <tr>
+        <td><strong>Student's Email:</strong></td>
+        <td>{{student.email}}</td>
+      </tr>
+      <tr>
+        <td> <strong>Supervisor:</strong></td>
+
+        <td>{{student.supervisorId.fullName}}</td>
+      </tr>
+      <tr>
+        <td> <strong>Examiner 1:</strong></td>
+
+        {{#if student.examinerOneApproved}}
+
+
+        <td>{{student.examinerOneId.fullName}}</td>
+
+
+        {{else}}
+        <td>
+          <span> <strong> Non </strong> </span>
+        </td>
+          {{/if}}
+      </tr>
+      <tr>
+        <td> <strong>Examiner 2:</strong></td>
+        {{#if student.examinerTwoApproved}}
+
+        <td>{{student.examinerTwoId.fullName}}</td>
+
+
+        {{else}}
+        <td>
+          <span> <strong> Non </strong> </span>
+        </td>
+
+          {{/if}}
+
+      </tr>
+      <tr>
+        <td><strong>Chairperson:</strong> </td>
+        {{#if student.chairPersonApproved}}
+
+
+
+        <td>{{student.chairPersonId.fullName}}</td>
+
+
+
+        {{else}}
+
+        <td>
+          <span> <strong> Non </strong> </span>
+        </td>
+
+
+
+        {{/if}}
+
+
+
+      </tr>
+
+      <tr>
+        <td> <strong>Exam date:</strong> </td>
+        <td>{{examInfo.examDate}}</td>
+      </tr>
+
+      <tr>
+        <td> <strong>Time:</strong> </td>
+        <td>{{examInfo.time}}</td>
+      </tr>
+
+      <tr>
+        <td> <strong>Venue:</strong> </td>
+        <td>{{examInfo.venue}}</td>
+      </tr>
+
+      <tr>
+        <td> <strong>Result:</strong> </td>
+        <td>{{finalChairResult.result}}</td>
+      </tr>
+
+      <tr>
+        <td> <strong>Comments:</strong> </td>
+        <td>{{finalChairResult.comment}}</td>
+      </tr>
+
+    </table>
+
+  </div>
+</div>
