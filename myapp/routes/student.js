@@ -1,19 +1,15 @@
-const USER = require("../models/User");
 var express = require("express");
 const route = express.Router();
 const STUDENT = require("../models/Student");
-const SUPERVISOR = require("../models/Supervisor");
 const DOCUMENT = require("../models/Document");
-const EXAMINER = require("../models/Examiner");
-const CHAIRPERSON = require("../models/Chairperson");
-const { ensureAuth } = require("../middleware/auth");
 const multer = require("multer");
 const path = require("path");
-const { findById } = require("../models/Student");
-const Swal = require("sweetalert2");
+const csrf = require("csurf");
 const formidable = require("formidable");
-var fs = require("fs");
+var bodyParser = require("body-parser");
 
+const { ensureAuth, ensureStudent } = require("../middleware/auth");
+const csrfProtection = csrf();
 //define storage for the images
 const storage = multer.diskStorage({
   //destination for files
@@ -51,79 +47,133 @@ function checkFileType(file, cb) {
   }
 }
 
-route.get("/dashboard", ensureAuth, (req, res, next) => {
-  res.render("Student/dashboard", { user: req.session.user, layout: "mainS" });
-});
-route.get("/home", ensureAuth, (req, res, next) => {
-  res.render("Student/dashboard", { user: req.session.user, layout: "mainS" });
-});
-route.get("/profile", ensureAuth, (req, res, next) => {
-  res.render("Student/profile", { user: req.session.user, layout: "mainS" });
-});
-route.get("/editinfo", ensureAuth, (req, res, next) => {
-  res.render("Student/editinfo", { user: req.session.user, layout: "mainS" });
-});
-route.get("/uploadDocuments", ensureAuth, async (req, res, next) => {
-  try {
-    const documents = await DOCUMENT.find({
-      studentId: req.session.user._id,
-    }).lean();
-    let isProposal = false;
-    let isPre = false;
-    let isThesis = false;
-
-    if (documents) {
-      documents.forEach((element) => {
-        console.log("element.fileType: ", element.fileType);
-
-        if (element.fileType == "proposal") {
-          isProposal = true;
-        } else if (element.fileType == "Presentation") {
-          isPre = true;
-        } else if (element.fileType == "thesis") {
-          isThesis = true;
-        }
-      });
-    }
-    console.log("isProposal: after:", isProposal);
-    console.log("isPre: after:", isPre);
-    console.log("isThesis: after:", isThesis);
-
-    res.render("Student/uploadDocuments", {
-      user: req.session.user,
-      documents,
-      isProposal,
-      isPre,
-      isThesis,
-      layout: "mainS",
-    });
-  } catch (error) {
-    res.json(error);
-  }
-});
-route.get("/studentDetails", ensureAuth, async (req, res, next) => {
-  const student = await STUDENT.findById(req.session.user._id)
-    .lean()
-    .populate("supervisorId")
-    .populate("examinerOneId")
-    .populate("examinerTwoId")
-    .populate("chairPersonId");
-    console.log('student info: ', student);
-
- //   res.json(student)
-
-  res.render("Student/stuInfo", {
+//dashboard-no route
+route.get("/", ensureAuth, ensureStudent, async (req, res, next) => {
+  res.render("Student/dashboard", {
     user: req.session.user,
-    student,
+    layout: "mainSV.hbs",
+  });
+});
+
+route.get("/dashboard", ensureAuth, ensureStudent, (req, res, next) => {
+  res.render("Student/dashboard", {
+    user: req.session.user,
     layout: "mainS",
   });
 });
 
-route.get("/signout", ensureAuth, (req, res, next) => {
-  req.session.destroy();
-  res.render("login", { layout: false });
+route.get("/home", ensureAuth, ensureStudent, (req, res, next) => {
+  res.render("Student/dashboard", {
+    user: req.session.user,
+    layout: "mainS",
+  });
 });
-route.get("/getSV", ensureAuth, async (req, res, next) => {
+
+route.get(
+  "/profile",
+  ensureAuth,
+  ensureStudent,
+  csrfProtection,
+  (req, res, next) => {
+    res.render("Student/profile", {
+      user: req.session.user,
+      csrfToken: req.csrfToken(),
+      layout: "mainS",
+    });
+  }
+);
+route.get(
+  "/editinfo",
+  ensureAuth,
+  ensureStudent,
+  csrfProtection,
+  (req, res, next) => {
+    try {
+      console.log("Fuck");
+      res.render("Student/editinfo", {
+        user: req.session.user,
+        csrfToken: req.csrfToken(),
+        layout: "mainS",
+      });
+    } catch (error) {
+      res.json(error);
+    }
+  }
+);
+route.get(
+  "/uploadDocuments",
+  ensureAuth,
+  ensureStudent,
+  csrfProtection,
+  async (req, res, next) => {
+    try {
+      if (!req.session.user.supervisorId) {
+        res.render("403");
+      }
+
+      const documents = await DOCUMENT.find({
+        studentId: req.session.user._id,
+      }).lean();
+
+      let isProposal = false;
+      let isPre = false;
+      let isThesis = false;
+
+      if (documents) {
+        documents.forEach((element) => {
+          console.log("element.fileType: ", element.fileType);
+
+          if (element.fileType == "proposal") {
+            isProposal = true;
+          } else if (element.fileType == "Presentation") {
+            isPre = true;
+          } else if (element.fileType == "thesis") {
+            isThesis = true;
+          }
+        });
+      }
+      console.log("isProposal: after:", isProposal);
+      console.log("isPre: after:", isPre);
+      console.log("isThesis: after:", isThesis);
+
+      res.render("Student/uploadDocuments", {
+        user: req.session.user,
+        csrfToken: req.csrfToken(),
+        documents,
+        isProposal,
+        isPre,
+        isThesis,
+        layout: "mainS",
+      });
+    } catch (error) {
+      res.json(error);
+    }
+  }
+);
+route.get(
+  "/studentDetails",
+  ensureAuth,
+  ensureStudent,
+  async (req, res, next) => {
+    const student = await STUDENT.findById(req.session.user._id)
+      .lean()
+      .populate("supervisorId")
+      .populate("examinerOneId")
+      .populate("examinerTwoId")
+      .populate("chairPersonId");
+    console.log("student info: ", student);
+
+    //   res.json(student)
+
+    res.render("Student/stuInfo", {
+      user: req.session.user,
+      student,
+      layout: "mainS",
+    });
+  }
+);
+
+route.get("/getSV", ensureAuth, ensureStudent, async (req, res, next) => {
   try {
     const SV = await STUDENT.findById(req.session.user._id)
       .lean()
@@ -137,6 +187,7 @@ route.get("/getSV", ensureAuth, async (req, res, next) => {
 route.post(
   "/profile",
   ensureAuth,
+  ensureStudent,
   upload.single("image"),
   async (req, res, next) => {
     console.log("Req file", req.file);
@@ -164,59 +215,64 @@ route.post(
 );
 
 //edit info post
-route.post("/editinfo", ensureAuth, async (req, res, next) => {
-  const {
-    fullName,
-    phone,
-    program,
-    type,
-    semester,
-    nationality,
-    thesisTitle,
-  } = req.body;
+route.post(
+  "/editinfo",
+  ensureAuth,
+  ensureStudent,
+  csrfProtection,
+  async (req, res, next) => {
+    const {
+      fullName,
+      phone,
+      program,
+      projectType,
+      semester,
+      nationality,
+      thesisTitle,
+    } = req.body;
 
-  // console.log("The user information: "+req.session.user);
-  // console.log("The request file:", req.file);
+    try {
+      await STUDENT.findByIdAndUpdate(
+        req.session.user._id,
+        {
+          fullName: fullName,
+          phone: phone,
+          program: program,
+          semester: semester,
+          nationality: nationality,
+          thesisTitle: thesisTitle,
+          projectType: projectType,
+        },
+        {
+          new: true,
+        },
 
-  try {
-    await STUDENT.findByIdAndUpdate(
-      req.session.user._id,
-      {
-        fullName: fullName,
-        phone: phone,
-        program: program,
-        semester: semester,
-        nationality: nationality,
-        thesisTitle: thesisTitle,
-        type: type,
-      },
-      {
-        new: true,
-      },
+        function (err, response) {
+          // Handle any possible database errors
+          if (err) {
+            console.log("we hit an error" + err);
+            res.json({
+              message: "Database Update Failure",
+            });
+          }
+          req.session.user = response;
 
-      function (err, response) {
-        // Handle any possible database errors
-        if (err) {
-          console.log("we hit an error" + err);
-          res.json({
-            message: "Database Update Failure",
-          });
+          res.redirect("/Student/profile/:_csrf");
+          console.log("This is the Response: " + response);
         }
-        req.session.user = response;
-
-        res.redirect("profile");
-        console.log("This is the Response: " + response);
-      }
-    );
-  } catch (error) {
-    res.json(error);
+      );
+    } catch (error) {
+      res.json(error);
+    }
   }
-});
+);
 
 //upload proposal
 route.post(
   "/submitDoc",
   ensureAuth,
+  ensureStudent,
+  csrfProtection,
   upload.single("document"),
   async (req, res, next) => {
     let doc = new DOCUMENT({
@@ -253,7 +309,7 @@ route.post(
 
       try {
         await DOCUMENT.create(doc);
-        res.redirect("uploadDocuments");
+        res.redirect("/Student/uploadDocuments");
       } catch (error) {
         res.json(error);
       }
@@ -265,6 +321,8 @@ route.post(
 route.post(
   "/submitPresentationSlides",
   ensureAuth,
+  ensureStudent,
+  csrfProtection,
   upload.single("document"),
   async (req, res, next) => {
     let doc = new DOCUMENT({
@@ -304,7 +362,7 @@ route.post(
 
       try {
         await DOCUMENT.create(doc);
-        res.redirect("uploadDocuments");
+        res.redirect("/Student/uploadDocuments");
       } catch (error) {
         res.json(error);
       }
@@ -316,6 +374,8 @@ route.post(
 route.post(
   "/submitThesis",
   ensureAuth,
+  ensureStudent,
+  csrfProtection,
   upload.single("document"),
   async (req, res, next) => {
     let doc = new DOCUMENT({
@@ -355,21 +415,12 @@ route.post(
 
       try {
         await DOCUMENT.create(doc);
-        res.redirect("uploadDocuments");
+        res.redirect("/Student/uploadDocuments");
       } catch (error) {
         res.json(error);
       }
     }
   }
 );
-
-function ensureStudent(req, res, next) {
-  const secret = req.session.user.Auth;
-  if (secret === "SupAuth_$") {
-    next();
-  } else {
-    res.redirect(req.get("referer"));
-  }
-}
 
 module.exports = route;

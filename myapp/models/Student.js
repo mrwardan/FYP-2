@@ -5,6 +5,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+    default: "Student",
+  },
+  projectType: {
+    type: String,
+  },
   matricNo: {
     type: String,
     required: true,
@@ -18,9 +25,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
   },
   program: {
-    type: String,
-  },
-  type: {
     type: String,
   },
   semester: {
@@ -39,9 +43,6 @@ const UserSchema = new mongoose.Schema({
   image: {
     type: String,
   },
-  status: {
-    type: String,
-  },
   examinerOneApproved: {
     type: Boolean,
   },
@@ -51,6 +52,13 @@ const UserSchema = new mongoose.Schema({
   chairPersonReject: {
     type: Boolean,
   },
+  examinerOneReject: {
+    type: Boolean,
+  },
+  examinerTwoReject: {
+    type: Boolean,
+  },
+
   examinerTwoApproved: {
     type: Boolean,
   },

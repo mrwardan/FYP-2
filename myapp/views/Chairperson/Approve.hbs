@@ -1,6 +1,7 @@
 <head>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta name="_csrf" content="{{csrfToken}}"> 
 
 
     <style>
@@ -211,8 +212,6 @@
                                     <button id="button-a">
                                         <i class="bi bi-x-circle" style="font-size: 30px;"
                                             onclick="reject('{{_id}}')"></i>
-
-
                                     </button>
 
 
@@ -428,6 +427,7 @@
 
         console.log('Wardan');
 
+var _csrf = document.querySelector('meta[name="_csrf"]').getAttribute('content')
 
         function approve(studentId) {
 
@@ -444,7 +444,10 @@
 
                     $.ajax({
                         url: 'submitApprove',
-                        type: 'post',
+                        type: 'POST',
+                         headers: {
+                            'CSRF-Token': _csrf
+                        },
                         data: { id: studentId },
                         success: function (response) {
 
@@ -479,7 +482,10 @@
 
                     $.ajax({
                         url: 'submitReject',
-                        type: 'post',
+                        type: 'POST',
+                        headers: {
+                            'CSRF-Token': _csrf
+                        },
                         data: { id: studentId },
                         success: function (response) {
 

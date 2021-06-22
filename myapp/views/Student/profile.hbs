@@ -4,7 +4,7 @@
 
 <div class="main">
 
-  <form action="/Student/profile" method="POST" enctype="multipart/form-data">
+  <form action="/Student/profile/?_csrf={{csrfToken}}" method="POST" enctype="multipart/form-data">
 
     <span class="img-background">
       <img class="pro-img" src="/upload/images/{{user.image}}" alt="no image" class="rounded-circle">
@@ -56,13 +56,14 @@
 
 
       <div class="profile-bottom-div">
-        <a href="editinfo" name="editinfo">
+        <a href="/Student/editinfo" name="editinfo">
           <button type="button" class="btn btn-warning">Edit Information</button>
         </a>
 
         <div class="control-group">
           <!-- Button -->
           <div class="controls">
+            
             <button class="btn btn-success" value="submit">Submit</button>
           </div>
         </div>

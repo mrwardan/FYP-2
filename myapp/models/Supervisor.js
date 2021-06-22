@@ -1,55 +1,44 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema(
-	{
-		fullName: {  		
+const UserSchema = new mongoose.Schema({
+  fullName: {
+    type: String,
+  },
+  type: {
+    type: String,
+    default: "Supervisor",
+  },
+  staffNo: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  email: {
+    type: String,
+    unique: true,
+  },
+  postion: {
+    type: String,
+  },
+  major: {
+    type: String,
+  },
+  institute: {
+    type: String,
+  },
+  phone: {
+    type: String,
+  },
+  image: {
+    type: String,
+    default: "wardan.jpg",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-			type: String,
-			
-		},
-		staffNo: {
-			type: String,
-			required: true,
-			unique: true
-		},
-		email: {
-			type: String,
-			unique: true
+const model = mongoose.model("supervisor", UserSchema);
 
-		},
-		postion: {
-			type: String,
-
-		},
-		major: {
-			type: String,
-			
-
-		},
-		institute: {
-			type: String,
-
-		},
-		phone: {
-			type: String,
-
-		},
-		image: {
-			type: String,
-			default: 'wardan.jpg',
-		  },
-		  Auth: {
-			type: String,
-		default: 'SupAuth_$'
-		  },
-		createdAt: {
-			type: Date,
-			default: Date.now
-		},
-	}
-)
-
-const model = mongoose.model('supervisor', UserSchema)
-
-module.exports = model
-
+module.exports = model;

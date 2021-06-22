@@ -8,12 +8,17 @@
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js"></script>
+  {{!--
+  <meta name="_csrf" content=""> --}}
+
+
   <!------ Include the above in your HEAD tag ---------->
   <style>
     html {
       background-color: rgb(92, 0, 30);
       margin: 0;
-      padding:0;
+      padding: 0;
     }
 
     body {
@@ -361,14 +366,14 @@
       text-align: left;
       font-weight: lighter;
     }
+
     .footer {
-   position: fixed;
-   left: 0;
-   bottom: 0;
-   width: 100%;
-   text-align: center;
-}
-  
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
   </style>
 
 </head>
@@ -378,7 +383,7 @@
     <nav class="Sys-nav sys-main-nav">
       <ul class="Sys-ul">
         <span class="Sys-span">
-          <li >
+          <li>
             <img src="UTM.jpg" alt="">
           </li>
           <li>
@@ -416,15 +421,19 @@
       </div>
 
       <!-- Login Form -->
-      <form action="/login" method="POST">
+      <form action="/login" method="POST" id="loginForm">
         <div class="utm-1">
 
           <img src="utm-1.png" width="150px" alt="Italian Trulli">
 
         </div>
 
-        <input type="text" id="login" class="fadeIn second" name="email" placeholder="username">
+        <input type="text" id="email" class="fadeIn second" name="email" placeholder="username">
         <input type="text" id="password" class="fadeIn third" name="password" placeholder="password">
+        <div class="form-group">
+          <div class="g-recaptcha" data-sitekey="6Lfo1EobAAAAAMSH2Pd9Dxm9a9Q7o6UtGERDK2Rs"></div>
+        </div>
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <input type="submit" class="fadeIn fourth" value="Log In">
         {{#if wrongPass}}
         <p>
@@ -455,6 +464,31 @@
   <footer class="footer">
     Copyright © 2021-2022 School of Computing, Faculty of Engineering, Universiti Teknologi Malaysia.
   </footer>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', e => {
+      e.preventDefault();
+      console.log("im herer")
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const _csrf = document.getElementsByName('_csrf')[0].value; 
+      const captcha = document.querySelector('#g-recaptcha-response').value;
+      
+      //console.log("csrf:" _csrf) 
+      return fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json', 'CSRF-Token': _csrf},
+        body: JSON.stringify({ email: email, password: password, captcha: captcha})
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("here")
+          console.log(data);
+          alert(data.msg);
+          if (data.success) return window.location.href = `/${data.type}/dashboard`;
+        });
+
+    });
+  </script>
 </body>
 
 </html>

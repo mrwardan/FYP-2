@@ -7,16 +7,16 @@
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
     <style>
-
-        body{
-            background-color:#800000;
+        body {
+            background-color: #800000;
         }
+
         .The-container {
-            background-color:#800000;
+            background-color: #800000;
             margin: 0;
             padding: 0;
             margin-left: 18%;
-     
+
 
         }
 
@@ -26,13 +26,15 @@
             position: relative;
             right: -20%;
         }
-           #he-img {
+
+        #he-img {
             position: relative;
             bottom: -5px;
             left: -90px;
 
         }
-        #he-title{
+
+        #he-title {
             position: relative;
             top: 12px;
         }
@@ -42,17 +44,44 @@
             top: 12px;
             font-size: 2em;
         }
+        .error{
+            color: red;;
+        }
+        .success{
+            color: green;
+        }
     </style>
 </head>
 
 
 <div class="The-container">
 
- 
+
 
     <div class="form">
         <main>
+            {{#if error}}
 
+            
+            <div class="alert alert-light" role="alert">
+                <div class="error">
+               <h4>{{error}}</h4>
+
+                </div>
+            </div>
+
+            {{/if}}
+             {{#if success}}
+
+            
+            <div class="alert alert-light" role="alert">
+                <div class="success">
+               <h4>{{success}}</h4>
+
+                </div>
+            </div>
+
+            {{/if}}
             <div class="card">
                 <div class="card-header">Issue Oral Examination Date</div>
                 <div class="card-body">
@@ -65,7 +94,7 @@
                             <label class="col-md-4 col-form-label text-md-right">Supervisor:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please choose the Supervisor:</p>
-                                    <input type="text" id="sv" value="" readonly>
+                                <input type="text" id="sv" value="" readonly>
 
                             </div>
                         </div>
@@ -77,7 +106,7 @@
                             <label class="col-md-4 col-form-label text-md-right">Examiner 1:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please choose the Examiner 1:</p>
-                                                        <input type="text" id="ex1" value="" readonly>
+                                <input type="text" id="ex1" value="" readonly>
 
 
                             </div>
@@ -89,7 +118,7 @@
                             <label class="col-md-4 col-form-label text-md-right">Examiner 2:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please choose Examiner 2:</p>
-                           <input type="text" id="ex2" value="" readonly>
+                                <input type="text" id="ex2" value="" readonly>
 
                             </div>
                         </div>
@@ -100,7 +129,7 @@
                             <label class="col-md-4 col-form-label text-md-right">Chairperson:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please choose the Chairperson:</p>
-                                                          <input type="text" id="ch" value="" readonly>
+                                <input type="text" id="ch" value="" readonly>
 
 
                             </div>
@@ -112,7 +141,7 @@
                             <div class="col-md-6">
                                 <p class="help-block">Please choose the Student:</p>
                                 <select name="studentId" id="stu" onchange="getStudentInfo();" class="form-control">
-                            <option value="null">None</option>
+                                    <option value="null">None</option>
                                     {{#each allStudents}}
                                     <option value="{{_id}}">{{fullName}}</option>
 
@@ -131,7 +160,7 @@
                             <label class="col-md-4 col-form-label text-md-right">Exam date:</label>
                             <div class="col-md-6">
                                 <p class="help-block">Please enter the exam date:</p>
-                               <input type="date" name="examDate" class="form-control"  min="2021-05-27">
+                                <input type="date" name="examDate" class="form-control" min="2021-05-27">
 
                             </div>
                         </div>
@@ -167,6 +196,7 @@
                         <div class="control-group">
 
                             <div class="col-md-6 offset-md-4">
+                                							<input type="hidden" name="_csrf" value="{{csrfToken}}">
                                 <button type="submit" class="btn btn-primary">
                                     Add
                                 </button>
@@ -188,19 +218,19 @@
 
 
 <script>
-     async function getStudentInfo() {
+    async function getStudentInfo() {
 
-      var studentID = document.getElementById("stu").value;
+        var studentID = document.getElementById("stu").value;
 
-       let response = await fetch('/Admin/StudentInfo/'+studentID);
-  let data = await response.json()
- console.log(data);
-      document.getElementById("sv").value = data.supervisorName;
-      document.getElementById("ex1").value = data.examinerOneName;
-      document.getElementById("ex2").value = data.examinerTwoName;
-      document.getElementById("ch").value = data.chairpersonName;
- 
+        let response = await fetch('/Admin/StudentInfo/' + studentID);
+        let data = await response.json()
+        console.log(data);
+        document.getElementById("sv").value = data.supervisorName;
+        document.getElementById("ex1").value = data.examinerOneName;
+        document.getElementById("ex2").value = data.examinerTwoName;
+        document.getElementById("ch").value = data.chairpersonName;
 
-      }
-          
+
+    }
+
 </script>

@@ -1,149 +1,241 @@
 {{>header}}
 
 <head>
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+	<script src="sweetalert2.all.min.js"></script>
+	<script src="sweetalert2.min.js"></script>
+	<link rel="stylesheet" href="sweetalert2.min.css">
+
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 	<style>
-		* {
-			margin: 0;
-			padding: 0;
-		}
-
-		html {
-			margin: 0;
-			padding: 0;
-		}
-
-		body {
-			margin: 0;
-			padding: 0;
-		}
-
 		.container {
 			max-width: 1150px;
 			width: 100%;
 			margin-left: 23%;
+			background-color: rgb(201, 201, 201);
+
+
 		}
-		
-       
-		  #he-img {
-            position: relative;
-            bottom: -5px;
-            left: -90px;
 
-        }
-        #he-title{
-            position: relative;
-            top: 12px;
+		.userData {}
 
-        }
+		.CON {
+			width: 100%;
+			padding: 1em;
+			background-color: rgb(242, 242, 242);
+			border-radius: 2%;
 
-        #he-user {
-            position: relative;	
-            top: 10px;
-            font-size: 2.5em;
+		}
 
-        }
+
+		#he-img {
+			position: relative;
+			bottom: -5px;
+			left: -90px;
+
+		}
+
+		#he-title {
+			position: relative;
+			top: 12px;
+
+		}
+
+		#he-user {
+			position: relative;
+			top: 10px;
+			font-size: 2.5em;
+
+		}
 	</style>
 </head>
 {{>slideBar}}
-<div>
-	<div class="container bootstrap snippet">
-		<div class="row">
 
+<div class="container">
+	<div class="row">
 
-			<div class="col-lg-2 col-sm-6 " id="space1">
-				<div class="circle-tile ">
-					<a href="#">
-						<div class="circle-tile-heading red">Supervisors</div>
-					</a>
-					<div class="circle-tile-content red">
-						<div class="circle-tile-description text-faded"> Number of supervisors </div>
-						<div class="circle-tile-number text-faded ">{{supervisors.length }}</div>
-						<a class="circle-tile-footer" href="#Supervisors">Show<i
-								class="fa fa-chevron-circle-right"></i></a>
-					</div>
-				</div>
-
-
-			</div>
-
-			<div class="col-lg-2 col-sm-6" id="space2">
-				<div class="circle-tile ">
-					<a href="#">
-						<div class="circle-tile-heading dark-blue">Examiners</div>
-					</a>
-					<div class="circle-tile-content dark-blue">
-						<div class="circle-tile-description text-faded"> Number of examiners</div>
-						<div class="circle-tile-number text-faded ">{{examiners.length}}</div>
-						<a class="circle-tile-footer" href="#Examiners">Show<i
-								class="fa fa-chevron-circle-right"></i></a>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-2 col-sm-6" id="space3">
-				<div class="circle-tile ">
-					<a href="#">
-						<div class="circle-tile-heading dark-blue">Students</div>
-					</a>
-					<div class="circle-tile-content dark-blue">
-						<div class="circle-tile-description text-faded"> Number of students</div>
-						<div class="circle-tile-number text-faded ">{{students.length}}</div>
-						<a class="circle-tile-footer" href="#Students">Show<i
-								class="fa fa-chevron-circle-right"></i></a>
-					</div>
+		<div class="col-lg-2 col-sm-6 " id="space1">
+			<div class="circle-tile ">
+				<a href="#">
+					<div class="circle-tile-heading red">Supervisors</div>
+				</a>
+				<div class="circle-tile-content red">
+					<div class="circle-tile-description text-faded"> Number of supervisors </div>
+					<div class="circle-tile-number text-faded ">{{supervisors.length }}</div>
+					<a class="circle-tile-footer" href="#Supervisors">Show<i class="fa fa-chevron-circle-right"></i></a>
 				</div>
 			</div>
 
 
 		</div>
+
+		<div class="col-lg-2 col-sm-6" id="space2">
+			<div class="circle-tile ">
+				<a href="#">
+					<div class="circle-tile-heading dark-blue">Examiners</div>
+				</a>
+				<div class="circle-tile-content dark-blue">
+					<div class="circle-tile-description text-faded"> Number of examiners</div>
+					<div class="circle-tile-number text-faded ">{{examiners.length}}</div>
+					<a class="circle-tile-footer" href="#Examiners">Show<i class="fa fa-chevron-circle-right"></i></a>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-2 col-sm-6" id="space3">
+			<div class="circle-tile ">
+				<a href="#">
+					<div class="circle-tile-heading dark-blue">Students</div>
+				</a>
+				<div class="circle-tile-content dark-blue">
+					<div class="circle-tile-description text-faded"> Number of students</div>
+					<div class="circle-tile-number text-faded ">{{students.length}}</div>
+					<a class="circle-tile-footer" href="#Students">Show<i class="fa fa-chevron-circle-right"></i></a>
+				</div>
+			</div>
+		</div>
+
+
 	</div>
-
-
-
 </div>
+
+
+
+
 
 
 <div class="main">
 
 	<div class="AddUser text-center">
-		<span class="adduser-color"> Add new User + </span>
-		<a data-target="#addEmployeeModal" class="btn btn-warning" data-toggle="modal"><span>Add</span></a> <br><br>
+		<a data-target="#addEmployeeModal" class="btn btn-warning" data-toggle="modal"><span>Add new User +</span></a>
+		<br><br>
 
 	</div>
 
 	<div class="UserData">
 
 
-		<div>
+		<div class="userdata1">
+
+			<div class="circle-tile_user ">
+
+				<div class="circle-tile-heading_user red" style="color: rgb(0, 0, 0);">
+					<h4>Admins</h4>
+				</div>
+
+				<div class="CON circle-tile-content_user white">
+					<div>
+						<div>
+							<div class="table-wrapper">
+								<div class="table-title">
+									<div class="row">
+
+
+
+									</div>
+								</div>
+							</div>
+
+
+							<table class="table  table-hover">
+								<thead>
+
+
+
+									<tr>
+
+										<th>
+
+										</th>
+										<th>Name</th>
+										<th>Email</th>
+										<th>Major</th>
+										<th>Phone</th>
+
+									</tr>
+
+								</thead>
+								<tbody>
+									{{#each admins}}
+
+
+
+									<tr>
+										<td>
+
+											<div class="ShowUserInfo">
+
+												<a>
+
+													<span class="material-icons">
+														visibility
+													</span>
+												</a>
+
+
+
+											</div>
+
+
+
+										</td>
+
+										<div>
+
+											<td> {{fullName}} </td>
+											<td> {{email}} </td>
+											<td> {{major}} </td>
+											<td> {{phone}} </td>
+
+										</div>
+
+
+									</tr>
+									{{/each}}
+								</tbody>
+							</table>
+						</div>
+
+
+
+
+
+
+
+					</div>
+				</div>
+
+
+			</div>
+
+		</div>
+	</div>
+
+
+
+	<div class="UserData">
+		<div class="userdata1">
 			<div class="col-lg-2 col-sm-6">
 				<div class="circle-tile_user ">
-					<a href="#">
-						<div class="circle-tile-heading_user red" style="color: rgb(0, 0, 0);">Admins</div>
-					</a>
-					<div class="circle-tile-content_user white">
+			
+						<div class="circle-tile-heading_user orange" style="color: rgb(0, 0, 0);">
+							<h4>Chairs</h4>
+						</div>
+				
 
+
+
+					<div class="CON circle-tile-content_user white ">
 						<div>
 
 
-
 							<div>
-								<div class="table-wrapper">
-									<div class="table-title">
-										<div class="row">
 
 
-
-										</div>
-									</div>
-								</div>
-
-
-								<table class="table  table-hover">
+								<table class="table table-hover">
 									<thead>
-
-
-
 										<tr>
 
 											<th>
@@ -159,25 +251,112 @@
 
 									</thead>
 									<tbody>
-										{{#each admins}}
+										{{#each chairpeople}}
 
 
 
 										<tr>
 											<td>
 
-												<div class="ShowUserInfo">
+												<a href="view/{{_id}}">
 
-													<a>
+													<span class="material-icons">
+														visibility
+													</span>
+												</a>
+											</td>
 
-														<span class="material-icons">
-															visibility
-														</span>
-													</a>
+											<div>
+
+												<td> {{fullName}} </td>
+												<td> {{email}} </td>
+												<td> {{major}} </td>
+												<td> {{phone}} </td>
+
+											</div>
+
+											<td>
+												<a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
+														class="material-icons" data-toggle="tooltip"
+														title="Edit">&#xE254;</i></a>
+												<button>
+													<i class="material-icons" style="font-size: 30px;"
+														onclick="deleteUser('{{_id}}')">&#xE872;</i>
+												</button>
+
+											</td>
+										</tr>
+										{{/each}}
+									</tbody>
+								</table>
+							</div>
+
+
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 
-												</div>
+
+
+
+
+
+	<div class="UserData" id="Supervisors">
+		<div class="userdata1">
+
+
+			<div class="col-lg-2 col-sm-6">
+				<div class="circle-tile_user ">
+			
+						<div class="circle-tile-heading_user orange" style="color: rgb(0, 0, 0);">
+							<h4>Supervisors</h4>
+						</div>
+				
+					<div class="CON circle-tile-content_user white">
+
+						<div>
+
+							<div>
+								<table class="table  table-hover">
+									<thead>
+										<tr>
+
+											<th>
+
+
+												</span>
+											</th>
+											<th>Name</th>
+											<th>Email</th>
+											<th>Major</th>
+											<th>Phone</th>
+											<th>Actions</th>
+
+										</tr>
+
+									</thead>
+									<tbody>
+										{{#each supervisors}}
+
+										{{!--
+										<script>console.log({{ admins }})</script> --}}
+
+										<tr>
+											<td>
+												<a href="view/{{_id}}">
+
+													<span class="material-icons">
+														visibility
+													</span>
+												</a>
+
 
 
 
@@ -196,77 +375,125 @@
 												<a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
 														class="material-icons" data-toggle="tooltip"
 														title="Edit">&#xE254;</i></a>
-												<a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
-														class="material-icons" data-toggle="tooltip"
-														title="Delete">&#xE872;</i></a>
+												<button>
+
+													<i class="material-icons" style="font-size: 30px;"
+														onclick="deleteUser('{{_id}}')">&#xE872;</i>
+
+												</button>
 											</td>
 										</tr>
 										{{/each}}
 									</tbody>
 								</table>
 							</div>
-
-
-
-
-
-
-							<form action="/delete" method="POST">
-								<!-- Delete Modal HTML -->
-								<div id="deleteEmployeeModal" class="modal fade">
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<form>
-												<div class="modal-header">
-													<h4 class="modal-title">Delete
-														Employee
-													</h4>
-													<button type="button" class="close" data-dismiss="modal"
-														aria-hidden="true">&times;</button>
-												</div>
-												<div class="modal-body">
-													<p>Are you sure you want to delete
-														these
-														Records?</p>
-													<p class="text-warning"><small>This
-															action cannot be
-															undone.</small>
-													</p>
-												</div>
-												<div class="modal-footer">
-													<input type="button" class="btn btn-default" data-dismiss="modal"
-														value="Cancel">
-													<input type="submit" class="btn btn-danger" value="Delete">
-												</div>
-											</form>
-										</div>
-									</div>
-								</div>
-							</form>
 						</div>
 					</div>
-
-
 				</div>
 			</div>
 		</div>
+
 	</div>
 
 
 
-	<div class="UserData">
-		<div class="col-lg-2 col-sm-6">
-			<div class="circle-tile_user ">
-				<a href="#">
-					<div class="circle-tile-heading_user orange" style="color: rgb(0, 0, 0);">Chairs</div>
-				</a>
-				<div class="circle-tile-content_user white">
-					<div>
 
 
+	<div class="UserData" id="Examiners">
+		<div class="userdata1">
+			<div class="col-lg-2 col-sm-6">
+				<div class="circle-tile_user ">
+			
+						<div class="circle-tile-heading_user orange" style="color: rgb(0, 0, 0);">
+							<h4>Examiners</h4>
+						</div>
+			
+					<div class="CON circle-tile-content_user white">
+
+						<table class="table table-hover">
+							<thead>
+								<tr>
+
+									<th>
+
+
+
+									</th>
+									<th>Name</th>
+									<th>Email</th>
+									<th>Major</th>
+									<th>Phone</th>
+									<th>Actions</th>
+
+								</tr>
+
+							</thead>
+							<tbody>
+								{{#each examiners}}
+
+								{{!--
+								<script>console.log({{ admins }})</script> --}}
+
+								<tr>
+									<td>
+										<a href="view/{{_id}}">
+
+											<span class="material-icons">
+												visibility
+											</span>
+										</a>
+
+
+
+									</td>
+
+									<div>
+
+										<td> {{fullName}} </td>
+										<td> {{email}} </td>
+										<td> {{major}} </td>
+										<td> {{phone}} </td>
+
+									</div>
+
+									<td>
+										<a href="#editUser" class="edit" data-toggle="modal"><i class="material-icons"
+												data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+										<button>
+
+											<i class="material-icons" style="font-size: 30px;"
+												onclick="deleteUser('{{_id}}')">&#xE872;</i>
+
+										</button>
+									</td>
+								</tr>
+
+
+								{{/each}}
+
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+	<div class="UserData" id="Students">
+		<div class="userdata1">
+
+			<div class="col-lg-2 col-sm-6">
+				<div class="circle-tile_user ">
+			
+						<div class="circle-tile-heading_user orange" style="color: rgb(0, 0, 0);">
+							<h4>Students</h4>
+						</div>
+			
+					<div class="CON circle-tile-content_user white">
 						<div>
-
-
 							<table class="table table-hover">
 								<thead>
 									<tr>
@@ -284,90 +511,7 @@
 
 								</thead>
 								<tbody>
-									{{#each chairpeople}}
-
-
-
-									<tr>
-										<td>
-
-											<a href="view/{{_id}}">
-
-												<span class="material-icons">
-													visibility
-												</span>
-											</a>
-										</td>
-
-										<div>
-
-											<td> {{fullName}} </td>
-											<td> {{email}} </td>
-											<td> {{major}} </td>
-											<td> {{phone}} </td>
-
-										</div>
-
-										<td>
-											<a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
-													class="material-icons" data-toggle="tooltip"
-													title="Edit">&#xE254;</i></a>
-											<a href="/Admin/delete/{{_id}}" class="delete"><i class="material-icons"
-													title="Delete">&#xE872;</i></a>
-										</td>
-									</tr>
-									{{/each}}
-								</tbody>
-							</table>
-						</div>
-
-
-					</div>
-
-
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-
-
-
-
-
-
-	<div class="UserData" id="Supervisors">
-		<div class="col-lg-2 col-sm-6">
-			<div class="circle-tile_user ">
-				<a href="#">
-					<div class="circle-tile-heading_user orange" style="color: rgb(0, 0, 0);">Supervisors</div>
-				</a>
-				<div class="circle-tile-content_user white">
-
-					<div>
-
-						<div>
-							<table class="table  table-hover">
-								<thead>
-									<tr>
-
-										<th>
-
-
-											</span>
-										</th>
-										<th>Name</th>
-										<th>Email</th>
-										<th>Major</th>
-										<th>Phone</th>
-										<th>Actions</th>
-
-									</tr>
-
-								</thead>
-								<tbody>
-									{{#each supervisors}}
+									{{#each students}}
 
 									{{!--
 									<script>console.log({{ admins }})</script> --}}
@@ -382,8 +526,6 @@
 											</a>
 
 
-
-
 										</td>
 
 										<div>
@@ -396,176 +538,24 @@
 										</div>
 
 										<td>
-											<a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
+
+											<a href="#editUser" class="edit" data-toggle="modal"><i
 													class="material-icons" data-toggle="tooltip"
 													title="Edit">&#xE254;</i></a>
-											<a href="/Admin/delete/{{_id}}" class="delete"><i class="material-icons"
-													title="Delete">&#xE872;</i></a>
+											<button>
+
+												<i class="material-icons" style="font-size: 30px;"
+													onclick="deleteUser('{{_id}}')">&#xE872;</i>
+
+											</button>
+
+
 										</td>
 									</tr>
 									{{/each}}
 								</tbody>
 							</table>
 						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-
-
-
-
-
-	<div class="UserData" id="Examiners">
-		<div class="col-lg-2 col-sm-6">
-			<div class="circle-tile_user ">
-				<a href="#">
-					<div class="circle-tile-heading_user orange" style="color: rgb(0, 0, 0);">Examiners</div>
-				</a>
-				<div class="circle-tile-content_user white">
-
-					<table class="table table-hover">
-						<thead>
-							<tr>
-
-								<th>
-
-
-
-								</th>
-								<th>Name</th>
-								<th>Email</th>
-								<th>Major</th>
-								<th>Phone</th>
-								<th>Actions</th>
-
-							</tr>
-
-						</thead>
-						<tbody>
-							{{#each examiners}}
-
-							{{!--
-							<script>console.log({{ admins }})</script> --}}
-
-							<tr>
-								<td>
-									<a href="view/{{_id}}">
-
-										<span class="material-icons">
-											visibility
-										</span>
-									</a>
-
-
-
-								</td>
-
-								<div>
-
-									<td> {{fullName}} </td>
-									<td> {{email}} </td>
-									<td> {{major}} </td>
-									<td> {{phone}} </td>
-
-								</div>
-
-								<td>
-									<a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
-											class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-									<a href="/Admin/delete/{{_id}}" class="delete"><i class="material-icons"
-											title="Delete">&#xE872;</i></a>
-								</td>
-							</tr>
-							{{/each}}
-						</tbody>
-					</table>
-				</div>
-			</div>
-
-
-		</div>
-	</div>
-
-
-
-
-
-	<!-- Add Modal HTML -->
-
-
-	<div class="UserData" id="Students">
-		<div class="col-lg-2 col-sm-6">
-			<div class="circle-tile_user ">
-				<a href="#">
-					<div class="circle-tile-heading_user orange" style="color: rgb(0, 0, 0);">Students</div>
-				</a>
-				<div class="circle-tile-content_user white">
-
-					<div>
-
-
-
-						<table class="table table-hover">
-							<thead>
-								<tr>
-
-									<th>
-
-									</th>
-									<th>Name</th>
-									<th>Email</th>
-									<th>Major</th>
-									<th>Phone</th>
-									<th>Actions</th>
-
-								</tr>
-
-							</thead>
-							<tbody>
-								{{#each students}}
-
-								{{!--
-								<script>console.log({{ admins }})</script> --}}
-
-								<tr>
-									<td>
-										<a href="view/{{_id}}">
-
-											<span class="material-icons">
-												visibility
-											</span>
-										</a>
-
-
-									</td>
-
-									<div>
-
-										<td> {{fullName}} </td>
-										<td> {{email}} </td>
-										<td> {{major}} </td>
-										<td> {{phone}} </td>
-
-									</div>
-
-									<td>
-										<a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
-												class="material-icons" data-toggle="tooltip"
-												title="Edit">&#xE254;</i></a>
-										<a href="/Admin/delete/{{_id}}" class="delete"><i class="material-icons"
-												title="Delete">&#xE872;</i></a>
-									</td>
-								</tr>
-								{{/each}}
-							</tbody>
-						</table>
-
-
-
 					</div>
 				</div>
 			</div>
@@ -639,6 +629,7 @@
 						</div>
 						<div class="modal-footer">
 							<input type="button" class="btn btn-light" data-dismiss="modal" value="Cancel">
+							<input type="hidden" name="_csrf" value="{{csrfToken}}">
 							<input type="submit" class="btn btn-success" value="Add">
 						</div>
 					</form>
@@ -648,7 +639,7 @@
 	</div>
 
 
-	<div id="ShowUserInfo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	{{!-- <div id="ShowUserInfo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -658,7 +649,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">
-					<form action="/signup" method="post">
+					<form action="/Admin/AdminSignup" method="post">
 						<div class="modal-body">
 							<div class="form-group">
 								<label>User Id:</label>
@@ -683,99 +674,65 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> --}}
 
 
 
-
-
-	<!-- Edit Modal HTML -->
-	<div id="editEmployeeModal" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-
-				<div class="modal-header">
-					<h4 class="modal-title">Edit Employee</h4>
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				</div>
-				<div class="modal-body">
-					<form action="/signup" method="POST">
-
-						<div class="form-group">
-							<label>Name</label>
-							<input type="text" id="name" name="name" class="form-control" required>
-						</div>
-						<div class="form-group">
-							<label>Email</label>
-							<input type="email" id="email" name="email" class="form-control" required>
-						</div>
-
-						<div class="form-group">
-							<label>Major</label>
-							<input type="text" id="major" name="major" class="form-control" required>
-
-						</div>
-						<div class="form-group">
-							<label>Phone</label>
-							<input type="text" id="phone" name="phone" class="form-control" required>
-						</div>
-				</div>
-				<div class="modal-footer">
-					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-					<input type="submit" class="btn btn-info" value="Save">
-				</div>
-				</form>
-
-
-			</div>
-		</div>
-	</div>
-	<form action="/delete" method="POST">
-		<!-- Delete Modal HTML -->
-		<div id="deleteEmployeeModal" class="modal fade">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<form>
-						<div class="modal-header">
-							<h4 class="modal-title">Delete
-								Employee
-							</h4>
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						</div>
-						<div class="modal-body">
-							<p>Are you sure you want to delete
-								these
-								Records?</p>
-							<p class="text-warning"><small>This
-									action cannot be
-									undone.</small>
-							</p>
-						</div>
-						<div class="modal-footer">
-							<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-							<input type="submit" class="btn btn-danger" value="Delete">
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</form>
 </div>
-</div>
-</div>
-</div>
+
 
 <script>
+	function deleteUser(id) {
+		console.log("id: ", id)
+		const swalWithBootstrapButtons = Swal.mixin({
+			customClass: {
+				confirmButton: 'btn btn-danger',
+				cancelButton: 'btn btn-success'
+			},
+			buttonsStyling: false
+		})
+		swalWithBootstrapButtons.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes, delete it!',
+			cancelButtonText: 'No, cancel!',
+			reverseButtons: true,
 
-	function getUserInfo() {
-
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: '/Admin/delete/' + id,
+					type: 'get',
+					success: function (response) {
+						window.location.reload(false);
+					}
+				});
+				swalWithBootstrapButtons.fire(
+					'Deleted!',
+					'Your file has been deleted.',
+					'success'
+				)
+			} else if (
+				/* Read more about handling dismissals below */
+				result.dismiss === Swal.DismissReason.cancel
+			) {
+				swalWithBootstrapButtons.fire(
+					'Cancelled',
+					'Your imaginary file is safe :)',
+					'error'
+				)
+			}
+		})
 	}
 
-	const show = document.querySelector(".ShowUserInfo");
-	show.addEventListener("click", e => {
 
-		alert("love");
-	})
+
+
+
+
+
 </script>
 
 {{! add 3 boxes }}

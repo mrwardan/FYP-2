@@ -3,6 +3,8 @@
 
 <head>
   <title>Signup</title>
+  <script src="https://www.google.com/recaptcha/api.js"></script>
+
 
   <!-- Required meta tags -->
   <meta charset="utf-8">
@@ -135,7 +137,8 @@
       left: 0;
       bottom: 0;
       width: 100%;
-      height: 20px;;
+      height: 20px;
+      ;
       background-color: rgb(151, 59, 59);
       color: white;
       text-align: center;
@@ -196,18 +199,18 @@
           <div class="card">
             <div class="card-header">Register</div>
             <div class="card-body">
-              <form class="form-horizontal" action='' method="POST">
+              <form class="form-horizontal" id="SignUpForm">
                 <div class="form-group row">
-                  <label for="full_name" class="col-md-4 col-form-label text-md-right">Full Name</label>
+                  <label for="fullName" class="col-md-4 col-form-label text-md-right">Full Name</label>
                   <div class="col-md-6">
-                    <input type="text" id="full_name" class="form-control" name="fullName">
+                    <input type="text" id="fullName" class="form-control" name="fullName">
                   </div>
                 </div>
 
                 <div class="form-group row">
                   <label for="email_address" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
                   <div class="col-md-6">
-                    <input type="text" id="email_address" class="form-control" name="email">
+                    <input type="text" id="email" class="form-control" name="email">
                   </div>
                 </div>
 
@@ -229,38 +232,40 @@
                 </div>
 
                 <div class="form-group row">
-                  <label for="phone_number" class="col-md-4 col-form-label text-md-right">Major</label>
+                  <label for="major" class="col-md-4 col-form-label text-md-right">Major</label>
                   <div class="col-md-6">
-                    <input type="text" id="phone_number" class="form-control" name="major">
+                    <input type="text" id="major" class="form-control" name="major">
                   </div>
                 </div>
 
                 <div class="form-group row">
-                  <label for="phone_number" class="col-md-4 col-form-label text-md-right">Phone Number</label>
+                  <label for="phone" class="col-md-4 col-form-label text-md-right">Phone Number</label>
                   <div class="col-md-6">
-                    <input type="text" id="phone_number" class="form-control" name="Phone">
+                    <input type="text" id="phone" class="form-control" name="phone">
                   </div>
                 </div>
 
 
                 <div class="form-group row">
-                  <label for="permanent_address" class="col-md-4 col-form-label text-md-right">Staff/Matric
+                  <label for="matricNo" class="col-md-4 col-form-label text-md-right">Staff/Matric
                     No:</label>
                   <div class="col-md-6">
-                    <input type="text" id="permanent_address" class="form-control" name="matricNo">
+                    <input type="text" id="matricNo" class="form-control" name="matricNo">
                   </div>
                 </div>
 
                 <div class="form-group row">
-                  <label for="permanent_address" class="col-md-4 col-form-label text-md-right">Password</label>
+                  <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
                   <div class="col-md-6">
-                    <input type="text" id="permanent_address" class="form-control" name="password">
+                    <input type="text" id="password" class="form-control" name="password">
                   </div>
                 </div>
-
                 <div class="control-group">
-
                   <div class="col-md-6 offset-md-4">
+                    <div class="form-group">
+                      <div class="g-recaptcha" data-sitekey="6Lfo1EobAAAAAMSH2Pd9Dxm9a9Q7o6UtGERDK2Rs"></div>
+                    </div>
+                                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
                     <button type="submit" class="btn btn-primary" onclick="CreatedSucc()">
                       Register
                     </button>
@@ -279,6 +284,38 @@
   <div class="footer">
     <p>Copyright © 2021-2022 School of Computing, Faculty of Engineering, Universiti Teknologi Malaysia.</p>
   </div>
+
+
+  <script>
+
+    document.getElementById('SignUpForm').addEventListener('submit', e => {
+      e.preventDefault();
+      console.log("im wardan")
+      const type = document.getElementById('type').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const fullName = document.getElementById('fullName').value;
+      const major = document.getElementById('major').value;
+      const phone = document.getElementById('phone').value;
+      const matricNo = document.getElementById('matricNo').value;
+      const _csrf = document.getElementsByName('_csrf')[0].value;
+      const captcha = document.querySelector('#g-recaptcha-response').value;
+      //console.log("csrf:" _csrf) 
+      return fetch('/signup', {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json', 'CSRF-Token':_csrf },
+        body: JSON.stringify({ type:type, email: email, password: password,fullName:fullName, major: major, phone:phone, matricNo:matricNo,  captcha: captcha })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("here")
+          console.log(data);
+          alert(data.msg);
+          if (data.success) return window.location.href = `/login`;
+        });
+
+    });
+  </script>
 
 </body>
 

@@ -14,7 +14,7 @@
 {{>headerSV}}
 {{>slidebar_SV}}
 
-<form class="text-center" action="/Supervisor/profile" method="POST" enctype="multipart/form-data">
+<form class="text-center" action="/Supervisor/profile/?_csrf={{csrfToken}}"  method="POST" enctype="multipart/form-data">
 
 
   <div id="userInfo">
@@ -84,6 +84,7 @@
   <div class="text-center">
 
     <a href="editinfo" name="editinfo">
+      
       <button type="button" class="btn btn-secondary"> Edit infornation</button>
 
 

@@ -10,12 +10,13 @@ const RESULT = require("../models/Result");
 const multer = require("multer");
 const path = require("path");
 var nodemailer = require("nodemailer");
-
-const { findById } = require("../models/Student");
-const Swal = require("sweetalert2");
 const formidable = require("formidable");
 var fs = require("fs");
-const { ensureAuth } = require("../middleware/auth");
+const csrf = require("csurf");
+
+const { ensureAuth, ensureSupervisor } = require("../middleware/auth");
+
+const csrfProtection = csrf();
 
 //define storage for the images
 const storage = multer.diskStorage({
@@ -79,9 +80,6 @@ route.get("/", ensureAuth, ensureSupervisor, async (req, res, next) => {
     user: req.session.user,
     layout: "mainSV.hbs",
   });
-  //res.json(req.session.user);
-
-  //  console.log('User Name from session : ', user.fullName );
 });
 //dashboard
 route.get(
@@ -106,14 +104,22 @@ route.get("/home", ensureAuth, ensureSupervisor, (req, res, next) => {
   });
 });
 //profile page
-route.get("/profile", ensureAuth, ensureSupervisor, (req, res, next) => {
-  res.render("Supervisor/profile", {
-    user: req.session.user,
-    layout: "mainSV.hbs",
-  });
-});
+route.get(
+  "/profile",
+  ensureAuth,
+  ensureSupervisor,
+  csrfProtection,
+  (req, res, next) => {
+    res.render("Supervisor/profile", {
+      user: req.session.user,
+      csrfToken: req.csrfToken(),
+      layout: "mainSV.hbs",
+    });
+  }
+);
 //students page
 route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
+ 
   try {
     const allstudents = await STUDENT.find({
       supervisorId: req.session.user._id,
@@ -123,16 +129,6 @@ route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
       .populate("examinerTwoId")
       .populate("chairPersonId");
 
-    // i tried chairpeople it did work but gives the id instead of the name
-
-    //  // await allstudents.populate("chairPersonId");
-    //   await allstudents.populate("ExaminerOneId").execPopulate();
-    //   await allstudents.populate("ExaminerTwoId").execPopulate();
-
-    //console.log('asdfghjhgfdsa');
-    //console.log(allstudents);
-    console.log("supervisor name", req.session.user.fullName);
-    console.log("THE STUDENT INFORMATION: ", allstudents);
 
     res.render("Supervisor/students", {
       students: allstudents,
@@ -143,6 +139,8 @@ route.get("/students", ensureAuth, ensureSupervisor, async (req, res, next) => {
     res.json(error);
   }
 });
+
+
 route.get(
   "/examinersInformation",
   ensureAuth,
@@ -181,9 +179,11 @@ route.get("/examInfo", ensureAuth, ensureSupervisor, async (req, res, next) => {
 });
 
 //edit info page
-route.get("/editinfo", ensureAuth, ensureSupervisor, (req, res, next) => {
+route.get("/editinfo", ensureAuth, ensureSupervisor,   csrfProtection,
+(req, res, next) => {
   res.render("Supervisor/editinfo", {
     user: req.session.user,
+    csrfToken: req.csrfToken(),
     layout: "mainSV.hbs",
   });
 });
@@ -192,10 +192,12 @@ route.get(
   "/addStudent",
   ensureAuth,
   ensureSupervisor,
+  csrfProtection,
   async (req, res, next) => {
     const students = await STUDENT.find({}).lean();
     res.render("Supervisor/students", {
       user: req.session.user,
+      csrfToken: req.csrfToken(),
       students: students,
       layout: false,
     });
@@ -206,9 +208,11 @@ route.get(
   "/manageExaminers",
   ensureAuth,
   ensureSupervisor,
+  csrfProtection,
   async (req, res, next) => {
     res.render("Supervisor/examinersSelection", {
       user: req.session.user,
+      csrfToken: req.csrfToken(),
       layout: "mainSV.hbs",
     });
   }
@@ -218,6 +222,7 @@ route.get(
   "/studentDoc",
   ensureAuth,
   ensureSupervisor,
+  csrfProtection,
   async (req, res, next) => {
     try {
       var allstudents = await STUDENT.find({
@@ -232,6 +237,7 @@ route.get(
       res.render("Supervisor/document", {
         students: allstudents,
         user: req.session.user,
+        csrfToken: req.csrfToken(),
         layout: "mainSV.hbs",
       });
     } catch (error) {
@@ -331,47 +337,79 @@ route.get(
   "/viewExamResult/:id",
   ensureAuth,
   ensureSupervisor,
+  csrfProtection,
   async (req, res, next) => {
-    console.log("stId:", req.params.id);
 
-    let studentId = req.params.id;
+    try {
 
-    const student = await STUDENT.findById(studentId)
-      .lean()
-      .populate("examinerOneId")
-      .populate("examinerTwoId")
-      .populate("chairPersonId");
-    console.log("student: ", student);
-    
-    chairId = student.chairPersonId._id;
-    EX1Id = student.examinerOneId._id;
-    EX2Id = student.examinerTwoId._id;
-    console.log("chairId",chairId);
+      console.log("stId:", req.params.id);
 
+      let studentId = req.params.id;
+  
+      const student = await STUDENT.findById(studentId)
+        .lean()
+        .populate("examinerOneId")
+        .populate("examinerTwoId")
+        .populate("chairPersonId");
+      console.log("student: ", student);
+  
+      // if(student.chairPersonId == null)
+      // {
+      //   res.send("No chair");
+      // } else if(student.examinerOneId == null){
+      //   res.send("No ex1");
+      // } else if(student.examinerTwoId == null){
+      //   res.send("no ex2");
+      // }
+  
+      chairId = student.chairPersonId._id;
+      EX1Id = student.examinerOneId._id;
+      EX2Id = student.examinerTwoId._id;
+      console.log("chairId", chairId);
+  
+      const finalChairResult = await RESULT.findOne({
+        studentId: student._id,
+        reviewerId: chairId,
+      }).lean();
+      const finalExaminerOneResult = await RESULT.findOne({
+        studentId: studentId,
+        reviewerId: EX1Id,
+      }).lean();
+      const finalExaminerTwoResult = await RESULT.findOne({
+        studentId: studentId,
+        reviewerId: EX2Id,
+      }).lean();
+      
+      // if(finalChairResult == null)
+      // {
+      //  return res.send("No chair result");
+      // } 
+      // if(finalExaminerOneResult == null)
+      // {
+      //  return res.send("No chair result");
+      // } 
+      // if(finalExaminerTwoResult == null)
+      // {
+      //  return res.send("No chair result");
+      //} 
+  
+  
+      res.render("Supervisor/showStudentResult", {
+        user: req.session.user,
+        csrfToken: req.csrfToken(),
+        student,
+        finalChairResult,
+        finalExaminerOneResult,
+        finalExaminerTwoResult,
+        layout: "mainSV.hbs",
+      });
+    } catch (error) {
 
-    const finalChairResult = await RESULT.findOne({
-      studentId: student._id,
-      reviewerId: chairId,
-    }).lean();
-    const finalExaminerOneResult = await RESULT.findOne({
-      studentId: studentId,
-      reviewerId: EX1Id,
-    }).lean();
-    const finalExaminerTwoResult = await RESULT.findOne({
-      studentId: studentId,
-      reviewerId: EX2Id,
-    }).lean();
-    console.log("finalCHAIRResult: ", finalChairResult);
-    console.log("finalEX1Result: ", finalExaminerOneResult);
-    console.log("finalEX2Result: ", finalExaminerTwoResult);
-
-    res.render("Supervisor/showStudentResult", {
-      user: req.session.user,
-      student, finalChairResult,finalExaminerOneResult,finalExaminerTwoResult,
-      layout: "mainSV.hbs",
-    });
-  }
-);
+      res.json(error)
+      
+    }
+  
+  });
 route.post(
   "/studentDoc",
   ensureAuth,
@@ -380,24 +418,20 @@ route.post(
     var student = await STUDENT.findOne({
       matricNo: req.body.matricNo,
     }).lean();
-    // console.log("The student is: ", student);
-    //console.log("The student Id is: ", student);
 
     try {
       var doc = await DOCUMENT.findOne({
         studentId: student._id,
       }).lean();
-      //console.log('doc:', doc.documentName);
     } catch (error) {
       res.json(error);
     }
-    //  re.json(doc)
-    // res.redirect("studentDocuments");
+
   }
 );
 
 //chose
-route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
+route.get("/choose", ensureAuth, ensureSupervisor,  csrfProtection, async (req, res, next) => {
   const { id, email } = req.query;
   // const id = req.params.id;
   console.log(email);
@@ -422,6 +456,7 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
         examiners: examiners,
         chairPersons: chairpersons,
         user: req.session.user,
+        csrfToken: req.csrfToken(),
         layout: "mainSV.hbs",
       });
     } else {
@@ -433,19 +468,13 @@ route.get("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
 
   //------
 });
-//sign out
-route.get("/signout", (req, res, next) => {
-  req.session.destroy();
-  res.render("login", {
-    layout: false,
-  });
-});
 
 //delete student
 route.get(
   "/deleteStudent/:id",
   ensureAuth,
   ensureSupervisor,
+  csrfProtection,
   async (req, res, next) => {
     console.log("id:", req.params.id);
 
@@ -479,22 +508,23 @@ route.get(
 );
 
 //student's viva documents
-route.post("/documents", function (request, result) {
-  var formData = new formidable.IncomingForm();
-  formData.parse(request, function (error, fields, files) {
-    var extension = files.file.name.substr(files.file.name.lastIndexOf("."));
-    var newPath = "./uploads/" + fields.fileName + extension;
-    fs.rename(files.file.path, newPath, function (errorRename) {
-      result.send("File saved = " + newPath);
-    });
-  });
-});
+// route.post("/documents", function (request, result) {
+//   var formData = new formidable.IncomingForm();
+//   formData.parse(request, function (error, fields, files) {
+//     var extension = files.file.name.substr(files.file.name.lastIndexOf("."));
+//     var newPath = "./uploads/" + fields.fileName + extension;
+//     fs.rename(files.file.path, newPath, function (errorRename) {
+//       result.send("File saved = " + newPath);
+//     });
+//   });
+// });
 
 //profile page
 route.post(
   "/profile",
   ensureAuth,
   ensureSupervisor,
+  csrfProtection,
   upload.single("image"),
   async (req, res, next) => {
     // console.log(req.file);
@@ -518,7 +548,7 @@ route.post(
           });
         }
         req.session.user = response;
-        res.redirect("profile");
+        res.redirect("/Supervisor/profile");
         console.log("This is the Response: " + response);
       }
     );
@@ -529,6 +559,7 @@ route.post(
   "/editinfo",
   ensureAuth,
   ensureSupervisor,
+  csrfProtection,
   async (req, res, next) => {
     const { fullName, phone, postion, institute, major } = req.body;
 
@@ -568,50 +599,10 @@ route.post(
     }
   }
 );
-//add student post
-route.post(
-  "/addStudent",
-  ensureAuth,
-  ensureSupervisor,
-  async (req, res, next) => {
-    const { matricNo } = req.body;
 
-    try {
-      const student = await STUDENT.findOne({
-        matricNo: matricNo,
-      }).lean();
-
-      if (!student) {
-        res.send("Matric was not found");
-      }
-
-      await STUDENT.findByIdAndUpdate(
-        student._id,
-        {
-          supervisorId: req.session.user._id,
-        },
-        {
-          new: true,
-        },
-
-        function (err, response) {
-          // Handle any possible database errors
-          if (err) {
-            console.log("we hit an error" + err);
-            res.json({
-              message: "Database Update Failure",
-            });
-          }
-          console.log("This is the Response: " + response);
-        }
-      );
-
-      res.redirect("students");
-    } catch (error) {}
-  }
-);
 //choose post
-route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
+route.post("/choose", ensureAuth, ensureSupervisor,  csrfProtection,
+async (req, res, next) => {
   console.log(req.body);
   const { matricNo, examinerOneId, examinerTwoId, chairPersonId } = req.body;
 
@@ -797,14 +788,5 @@ route.post("/choose", ensureAuth, ensureSupervisor, async (req, res, next) => {
     res.json(error);
   }
 });
-
-function ensureSupervisor(req, res, next) {
-  const secret = req.session.user.Auth;
-  if (secret === "SupAuth_$") {
-    next();
-  } else {
-    res.redirect(req.get("referer"));
-  }
-}
 
 module.exports = route;

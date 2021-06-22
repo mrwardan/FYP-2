@@ -91,7 +91,7 @@
       <label class="col-sm-2 col-form-label">Type:</label>
       <div class="col-sm-10">
 
-        <input type="text" id="inputEmail3" name="type" value="{{user.type}}" class="form-control">
+        <input type="text" id="inputEmail3" name="projectType" value="{{user.projectType}}" class="form-control">
       </div>
     </div>
     <br>
@@ -118,6 +118,7 @@
     <div class="control-group text-center">
       <!-- Button -->
       <div class="controls">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
         <button class="btn btn-primary" value="submit">Submit</button>
       </div>
     </div>

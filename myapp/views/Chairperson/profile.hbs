@@ -40,7 +40,7 @@
 {{>headerCH}}
 {{>slidebarCH}}
 
-<form class="text-center" action="/Chairperson/profile" method="POST" enctype="multipart/form-data">
+<form class="text-center" action="/Chairperson/profile/?_csrf={{csrfToken}}"  method="POST" enctype="multipart/form-data">
 
 
   <div id="userInfo">
@@ -114,8 +114,6 @@
 
 
       </a>
-
-
 
       <button class="editInfo" value="submit">Submit</button>
 
