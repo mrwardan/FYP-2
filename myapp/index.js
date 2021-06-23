@@ -13,22 +13,36 @@ const CHAIRPERSON = require("./models/Chairperson");
 const EXAMINFORMATION = require("./models/ExamInformation");
 const multer = require("multer");
 const MongoStore = require("connect-mongo");
-const { ifEquals, select, ifIn, toSplitFile } = require("./helpers/hbs");
+const {
+  ifEquals,
+  select,
+  ifIn,
+  toSplitFile
+} = require("./helpers/hbs");
 const Swal = require("sweetalert2");
-const { v4: uuidv4 } = require("uuid");
+const {
+  v4: uuidv4
+} = require("uuid");
 var nodemailer = require("nodemailer");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const logger = require("./middleware/logger");
-const {ensureCAPCHA} = require("./middleware/auth");
-const { stringify } = require('querystring');
-const fetch = require('node-fetch');
-
+const {
+  ensureCAPCHA
+} = require("./middleware/auth");
+const {
+  stringify
+} = require("querystring");
+const fetch = require("node-fetch");
 
 const bcrypt = require("bcryptjs");
-const { getLogger } = require("nodemailer/lib/shared");
-const { nextTick } = require("process");
-const csrf= require("csurf");
+const {
+  getLogger
+} = require("nodemailer/lib/shared");
+const {
+  nextTick
+} = require("process");
+const csrf = require("csurf");
 const app = express();
 const port = 3333; // || process.env.PORT
 const DBurl =
@@ -47,7 +61,6 @@ app.use(
   })
 );
 const csrfProtection = csrf();
-
 
 app.use(express.static(path.join(__dirname, "./public")));
 
@@ -68,10 +81,12 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-app.use(csrfProtection)
+app.use(csrfProtection);
 
 // body parser
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(express.json());
 //initilize middelware
 app.use(logger);
@@ -79,7 +94,12 @@ app.use(logger);
 app.engine(
   "hbs",
   exphbs({
-    helpers: { ifEquals, select, ifIn, toSplitFile },
+    helpers: {
+      ifEquals,
+      select,
+      ifIn,
+      toSplitFile
+    },
     defaultLayout: false,
     extname: "hbs",
   })
@@ -107,40 +127,56 @@ const mailOptions = {
 app.get("/", (req, res) => {
   res.redirect("/login");
 });
-app.get("/signup",csrfProtection, (req, res) => {
-  res.render("Rform", {csrfToken:req.csrfToken(), layout: "main" });
+app.get("/signup", csrfProtection, (req, res) => {
+  res.render("Rform", {
+    csrfToken: req.csrfToken(),
+    layout: "main"
+  });
 });
 
-app.get("/login",csrfProtection, (req, res) => {
-
+app.get("/login", csrfProtection, (req, res) => {
   // console.log("hmm", req.body);
-  res.render("login",{csrfToken:req.csrfToken(), layout: false});
+  res.render("login", {
+    csrfToken: req.csrfToken(),
+    layout: false
+  });
 });
 app.get("/sub", (req, res) => {
-
   // console.log("hmm", req.body);
   res.render("sub");
 });
 
-
-
 // wardan is king
 
-app.get("/resetPassword",csrfProtection, (req, res) => {
-  res.render("resetPassword", {csrfToken:req.csrfToken(), layout: false });
+app.get("/resetPassword", csrfProtection, (req, res) => {
+  res.render("resetPassword", {
+    csrfToken: req.csrfToken(),
+    layout: false
+  });
 });
 app.get("/changePassword", (req, res) => {
   // console.log(req.query);
-  const { code } = req.query;
+  const {
+    code
+  } = req.query;
 
-  res.render("changePassword", { layout: false, code: code });
+  res.render("changePassword", {
+    layout: false,
+    code: code
+  });
 });
 
-app.post("/changePassword",csrfProtection, async (req, res) => {
-  const { newPass1, newpass2, code } = req.body;
+app.post("/changePassword", csrfProtection, async (req, res) => {
+  const {
+    newPass1,
+    newpass2,
+    code
+  } = req.body;
   console.log(req.body);
 
-  var foundCode = await USER.findOne({ resetCode: code });
+  var foundCode = await USER.findOne({
+    resetCode: code
+  });
 
   if (foundCode) {
     console.log("foundcode: ", foundCode);
@@ -160,9 +196,12 @@ app.post("/changePassword",csrfProtection, async (req, res) => {
 
         try {
           await USER.findByIdAndUpdate(
-            foundCode._id,
-            { password: hashPass, resetCode: "" },
-            { new: true },
+            foundCode._id, {
+              password: hashPass,
+              resetCode: ""
+            }, {
+              new: true
+            },
 
             function (err, response) {
               // Handle any possible database errors
@@ -189,38 +228,51 @@ app.post("/changePassword",csrfProtection, async (req, res) => {
   }
 });
 
-app.post('/subscribe', async (req, res) => {
+app.post("/subscribe", async (req, res) => {
   if (!req.body.captcha)
-    return res.json({ success: false, msg: 'Please select captcha' });
+    return res.json({
+      success: false,
+      msg: "Please select captcha"
+    });
 
   // Secret key
-  const secretKey = '6Lfo1EobAAAAAMFe6l1-0iec3lZPZEnTWzmwMb9p';
+  const secretKey = "6Lfo1EobAAAAAMFe6l1-0iec3lZPZEnTWzmwMb9p";
 
   // Verify URL
   const query = stringify({
     secret: secretKey,
     response: req.body.captcha,
-    remoteip: req.socket.remoteAddress
+    remoteip: req.socket.remoteAddress,
   });
   const verifyURL = `https://google.com/recaptcha/api/siteverify?${query}`;
 
   // Make a request to verifyURL
-  const body = await fetch(verifyURL).then(res => res.json());
+  const body = await fetch(verifyURL).then((res) => res.json());
 
   // If not successful
   if (body.success !== undefined && !body.success)
-    return res.json({ success: false, msg: 'Failed captcha verification' });
+    return res.json({
+      success: false,
+      msg: "Failed captcha verification"
+    });
 
   // If successful
-  return res.json({ success: true, msg: 'Captcha passed' });
+  return res.json({
+    success: true,
+    msg: "Captcha passed"
+  });
 });
 
-app.post("/resetPassword",ensureCAPCHA, async (req, res) => {
-  const { email } = req.body;
+app.post("/resetPassword", ensureCAPCHA, async (req, res) => {
+  const {
+    email
+  } = req.body;
   console.log(email);
 
   try {
-    var foundeEmail = await USER.findOne({ email: email });
+    var foundeEmail = await USER.findOne({
+      email: email
+    });
 
     console.log("email in databse", foundeEmail);
 
@@ -230,9 +282,11 @@ app.post("/resetPassword",ensureCAPCHA, async (req, res) => {
       console.log("Hash: ", hash);
 
       await USER.findByIdAndUpdate(
-        foundeEmail._id,
-        { resetCode: hash },
-        { new: true },
+        foundeEmail._id, {
+          resetCode: hash
+        }, {
+          new: true
+        },
 
         function (err, response) {
           // Handle any possible database errors
@@ -246,7 +300,6 @@ app.post("/resetPassword",ensureCAPCHA, async (req, res) => {
           // res.send("Go to your mail")
           link = `http://localhost:9999/changePassword?code=${hash}`;
           console.log(link);
-
 
           // res.render("resetPassword", {
           //   layout: false,
@@ -264,20 +317,26 @@ app.post("/resetPassword",ensureCAPCHA, async (req, res) => {
             if (err) console.log(err);
             else console.log(info);
           });
-          return res.json({ success: true, msg: 'Captcha passed', message:"If an account exists for that email address, we will email you instructions for resetting your password. "});
-
+          return res.json({
+            success: true,
+            msg: "Captcha passed",
+            message: "If an account exists for that email address, we will email you instructions for resetting your password. ",
+          });
         }
       );
     } else {
-      return res.json({ success: true, msg: 'Captcha passed', message:"If an account exists for that email address, we will email you instructions for resetting your password. "});
-
+      return res.json({
+        success: true,
+        msg: "Captcha passed",
+        message: "If an account exists for that email address, we will email you instructions for resetting your password. ",
+      });
     }
   } catch (error) {
     res.json(error);
   }
 });
 
-app.post("/signup",csrfProtection,ensureCAPCHA, async (req, res) => {
+app.post("/signup", csrfProtection, ensureCAPCHA, async (req, res) => {
   console.log("req.body: ", req.body);
 
   const {
@@ -297,7 +356,6 @@ app.post("/signup",csrfProtection,ensureCAPCHA, async (req, res) => {
   let response_Admin = "";
 
   const password = await bcrypt.hash(plainTextPassword, 7);
-  
 
   try {
     console.log("inside try");
@@ -416,16 +474,20 @@ app.post("/signup",csrfProtection,ensureCAPCHA, async (req, res) => {
         break;
     }
 
-    
-
     console.log("User created successfully: ", response_Chairperson);
-    return res.json({ success: true, msg: 'Captcha passed'});
+    return res.json({
+      success: true,
+      msg: "Captcha passed"
+    });
 
     //alert('User is created successfully')
   } catch (error) {
     if (error.code === 11000) {
       // duplicate key
-      return res.json({ status: "error", error: "Email already in use" });
+      return res.json({
+        status: "error",
+        error: "Email already in use"
+      });
     }
     throw error;
   }
@@ -437,111 +499,129 @@ app.post("/signup",csrfProtection,ensureCAPCHA, async (req, res) => {
   //     res.redirect(req.session.user.type + "/Manageusers");
   //   }
   // }
-
 });
 
-app.post("/login", csrfProtection,ensureCAPCHA, async (req, res) => {
+app.post("/login", csrfProtection, ensureCAPCHA, async (req, res) => {
+  const {
+    email,
+    password
+  } = req.body;
 
-  const {email, password}=req.body;
-// Secret key
- const user = await USER.findOne({ email: email }).lean();
-  // console.log('The user email is: ',req.body.email);
-  // If successful
-// return res.json({ success: true, msg: 'Captcha passed' });
+ //// not complete 
+  // if(!/^[a-zA-Z0-9_+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}+)*$/.test(email))
+  // if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`|~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) 
+  // // General Email Regex (RFC 5322 Official Standard)
 
-  // else
-  console.log(req.body);
+  // //if (?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])*$/.test(email))
+  // {
 
-  if (!user) {
-    console.log("IS it null?", user);
-    return res.render("login", {
-      csrfToken:req.csrfToken(),
-      wrongPass: "Wrong email or password",
-    });
-
-    //return res.status(400).send("Cannot find username");
-  }
-
-  if (user) {
-    if (await bcrypt.compare(password, user.password)) {
-      var userData_ST = "";
-      var userData_SP = "";
-      var userData_EX = "";
-      var userData_AD = "";
-      var userData_CH = "";
-
-      switch (user.type) {
-        case "Chairperson":
-          try {
-            userData_CH  = await CHAIRPERSON.findById(user.userId);
-            req.session.user = userData_CH;
-          } catch (error) {
-            console.log(error);
-          }
-
-          break;
-
-        case "Student":
-          try {
-            userData_ST = await STUDENT.findById(user.userId);
-            console.log("Twst here: ",userData_ST);
-
-            req.session.user = userData_ST;
-            console.log(req.session.user);
-          } catch (error) {
-            console.log(error);
-          }
-
-          break;
-        case "Supervisor":
-          // console.log(req.body);
-          try {
-            userData_SP = await SUPERVISOR.findById(user.userId);
-            console.log("Twst here: ",userData_SP);
-            req.session.user = userData_SP;
-            // console.log("Supervisor's userdata : ",userData);
-
-            // console.log('The is the supervisor: ',supervisors);
-          } catch (error) {
-            console.log(error);
-          }
-
-          break;
-
-        case "Examiner":
-          try {
-            userData_EX = await EXAMINER.findById(user.userId);
-            req.session.user = userData_EX;
-          } catch (error) {
-            console.log(error);
-          }
-
-          break;
-        case "Admin":
-          try {
-            userData_AD = await ADMIN.findById(user.userId).lean();
-            console.log("admin is" + userData_AD);
-            req.session.user = userData_AD;
-          } catch (error) {
-            console.log(error);
-          }
-          break;
-
-        default:
-          res.send("user type is not correct");
-          break;
-      }
-      console.log(user);
-      return res.json({ success: true, msg: 'Captcha passed', type:user.type });
-
-
-    } else {
-      res.render("login", {
-        csrfToken:req.csrfToken(),
+  //   return res.json({
+  //     success: false,
+  //     msg: "Email provided is not valid: please follow the following format: abc@gmail.com",
+  //     // type: user.type,
+  //   });
+    // res.send(" Email containes forrbiding chars ");
+    
+  //} 
+  //else {
+    
+    console.log(req.body);
+    const user = await USER.findOne({
+      email: email
+    }).lean();
+    if (!user) {
+      console.log("IS it null?", user);
+      return res.render("login", {
+        csrfToken: req.csrfToken(),
         wrongPass: "Wrong email or password",
       });
+
+      //return res.status(400).send("Cannot find username");
     }
-  }
+
+    if (user) {
+      if (await bcrypt.compare(password, user.password)) {
+        var userData_ST = "";
+        var userData_SP = "";
+        var userData_EX = "";
+        var userData_AD = "";
+        var userData_CH = "";
+
+        switch (user.type) {
+          case "Chairperson":
+            try {
+              userData_CH = await CHAIRPERSON.findById(user.userId);
+              req.session.user = userData_CH;
+            } catch (error) {
+              console.log(error);
+            }
+
+            break;
+
+          case "Student":
+            try {
+              userData_ST = await STUDENT.findById(user.userId);
+              console.log("Twst here: ", userData_ST);
+
+              req.session.user = userData_ST;
+              console.log(req.session.user);
+            } catch (error) {
+              console.log(error);
+            }
+
+            break;
+          case "Supervisor":
+            // console.log(req.body);
+            try {
+              userData_SP = await SUPERVISOR.findById(user.userId);
+              console.log("Twst here: ", userData_SP);
+              req.session.user = userData_SP;
+              // console.log("Supervisor's userdata : ",userData);
+
+              // console.log('The is the supervisor: ',supervisors);
+            } catch (error) {
+              console.log(error);
+            }
+
+            break;
+
+          case "Examiner":
+            try {
+              userData_EX = await EXAMINER.findById(user.userId);
+              req.session.user = userData_EX;
+            } catch (error) {
+              console.log(error);
+            }
+
+            break;
+          case "Admin":
+            try {
+              userData_AD = await ADMIN.findById(user.userId).lean();
+              console.log("admin is" + userData_AD);
+              req.session.user = userData_AD;
+            } catch (error) {
+              console.log(error);
+            }
+            break;
+
+          default:
+            res.send("user type is not correct");
+            break;
+        }
+        console.log(user);
+        return res.json({
+          success: true,
+          msg: "Captcha passed",
+          type: user.type,
+        });
+      } else {
+        res.render("login", {
+          csrfToken: req.csrfToken(),
+          wrongPass: "Wrong email or password",
+        });
+      }
+    }
+//  }
 });
 
 //sign out
@@ -562,9 +642,9 @@ app.use("/Chairperson", require("./routes/chairperson"));
 
 // });
 
-app.get("*", (req, res)=>{
+app.get("*", (req, res) => {
   res.render("pageNotFound");
-})
+});
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
